@@ -34,16 +34,56 @@
   }
 
   /* ---- 1. Geocoding: address -> coordinates -------------------------- */
-  async function geocode(query) {
+
+  // JSONP loader: some public geocoders (US Census) don't send CORS headers,
+  // but do support a ?callback= wrapper, which a <script> tag can load across
+  // origins. This never sends anything to our app — the browser fetches the URL.
+  function jsonp(url, timeoutMs) {
+    return new Promise(function (resolve, reject) {
+      const cb = '__app_jsonp_' + Math.random().toString(36).slice(2);
+      const script = document.createElement('script');
+      let done = false;
+      function cleanup() {
+        done = true;
+        try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+        if (script.parentNode) script.parentNode.removeChild(script);
+        clearTimeout(timer);
+      }
+      const timer = setTimeout(function () { if (!done) { cleanup(); reject(new Error('geocoder timed out')); } }, timeoutMs || 20000);
+      window[cb] = function (data) { if (!done) { cleanup(); resolve(data); } };
+      script.onerror = function () { if (!done) { cleanup(); reject(new Error('geocoder request failed')); } };
+      script.src = url + (url.indexOf('?') === -1 ? '?' : '&') + 'callback=' + cb;
+      document.head.appendChild(script);
+    });
+  }
+
+  // US Census geocoder — authoritative coverage of U.S. street addresses.
+  async function geocodeCensus(query) {
+    const url = 'https://geocoding.geo.census.gov/geocoder/locations/onelineaddress' +
+      '?benchmark=Public_AR_Current&format=jsonp&address=' + encodeURIComponent(query);
+    const data = await jsonp(url, 20000);
+    const matches = data && data.result && data.result.addressMatches;
+    if (!matches || !matches.length) throw new Error('no census match');
+    const m = matches[0];
+    return { lat: m.coordinates.y, lon: m.coordinates.x, label: m.matchedAddress || query };
+  }
+
+  // OpenStreetMap Nominatim — better for town names, landmarks, and partial queries.
+  async function geocodeNominatim(query) {
     const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&q='
       + encodeURIComponent(query);
     const data = await getJson(url, { headers: { 'Accept': 'application/json' } }, 20000);
-    if (!Array.isArray(data) || !data.length) throw new Error('Address not found. Try adding town and state.');
-    return {
-      lat: parseFloat(data[0].lat),
-      lon: parseFloat(data[0].lon),
-      label: data[0].display_name
-    };
+    if (!Array.isArray(data) || !data.length) throw new Error('no nominatim match');
+    return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon), label: data[0].display_name };
+  }
+
+  // Try the Census geocoder first (best for exact U.S. addresses), then fall
+  // back to Nominatim (best for town names). If both miss, guide the farmer.
+  async function geocode(query) {
+    try { return await geocodeCensus(query); } catch (e) { /* fall through */ }
+    try { return await geocodeNominatim(query); } catch (e) { /* fall through */ }
+    throw new Error('Couldn’t find that address. Try a nearby town + state (e.g. "Martinsburg, WV"), ' +
+      'check the spelling, or use “Use my location” and drag the pin.');
   }
 
   /* ---- 2. Soil: SSURGO via Soil Data Access -------------------------- */
