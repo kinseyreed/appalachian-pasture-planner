@@ -1,0 +1,119 @@
+{
+  "_comment": "Citation registry. Each species and management guide references these by id. Add your own sources here (e.g. your CIG trial reports) and reference them from local-observations.json.",
+  "sources": {
+    "nrcs-appalachia": {
+      "title": "Best Management of Pasture and Hayland Species in Appalachia",
+      "org": "USDA NRCS Appalachian Plant Materials Center",
+      "url": "https://www.nrcs.usda.gov/plantmaterials/wvpmcra13890.pdf",
+      "note": "Regional species adaptation and management guidance for the Appalachian region."
+    },
+    "wvu-species": {
+      "title": "Forage Species",
+      "org": "West Virginia University Extension",
+      "url": "https://extension.wvu.edu/agriculture/pasture-hay-forage/species",
+      "note": "Species-by-species adaptation notes for West Virginia."
+    },
+    "wvu-production": {
+      "title": "Pasture and Hay Production Potential in West Virginia",
+      "org": "West Virginia University Extension",
+      "url": "https://extension.wvu.edu/agriculture/pasture-hay-forage/hay-management/pasture-and-hay-production-potential",
+      "note": "Yield and adaptation context for WV forages."
+    },
+    "wvu-grazing": {
+      "title": "Grazing for Appalachian Sustainability",
+      "org": "West Virginia University Extension",
+      "url": "https://extension.wvu.edu/agriculture/pasture-hay-forage/grazing-for-appalachian-sustainability",
+      "note": "Rotational grazing and pasture management for Appalachian producers."
+    },
+    "wvu-fertility": {
+      "title": "Soil Fertility & Fertilizers",
+      "org": "West Virginia University Extension",
+      "url": "https://extension.wvu.edu/agriculture/pasture-hay-forage/soil-fertility",
+      "note": "Soil testing, liming, and fertility management."
+    },
+    "vt-steep-pastures": {
+      "title": "Managing Virginia's Steep Pastures (VCE 418-005)",
+      "org": "Virginia Cooperative Extension / Virginia Tech",
+      "url": "https://www.pubs.ext.vt.edu/418/418-005/418-005.html",
+      "note": "Species and grazing management for sloping Appalachian pastures."
+    },
+    "psu-establishment": {
+      "title": "Successful Forage Crop Establishment",
+      "org": "Penn State Extension",
+      "url": "https://extension.psu.edu/successful-forage-crop-establishment",
+      "note": "Seeding depth, timing, seedbed, and no-till/frost seeding guidance."
+    },
+    "psu-renovation": {
+      "title": "Hay and Pasture Renovation Decisions",
+      "org": "Penn State Extension",
+      "url": "https://extension.psu.edu/hay-and-pasture-renovation-decisions",
+      "note": "When and how to renovate versus reseed pastures."
+    },
+    "psu-tall-fescue": {
+      "title": "Tall Fescue",
+      "org": "Penn State Extension",
+      "url": "https://extension.psu.edu/tall-fescue",
+      "note": "Adaptation, endophyte, and management of tall fescue."
+    },
+    "osu-fescue-ph": {
+      "title": "Tall Fescue Monograph: pH Suitability",
+      "org": "Oregon State University Forage Information System",
+      "url": "https://forages.oregonstate.edu/tallfescuemonograph/suitability/creating/edaphic/ph",
+      "note": "Detailed pH tolerance data for tall fescue."
+    },
+    "msu-seeding-rates": {
+      "title": "Forage Seeding Rates When Seeded Alone or in Mixtures",
+      "org": "Michigan State University Extension",
+      "url": "https://www.canr.msu.edu/news/forage_seeding_rates_when_seeded_alone_or_in_mixtures",
+      "note": "Seeding-rate reference for monocultures and mixes."
+    },
+    "mu-birdsfoot": {
+      "title": "Birdsfoot Trefoil (G4640)",
+      "org": "University of Missouri Extension",
+      "url": "https://extension.missouri.edu/publications/g4640",
+      "note": "Establishment and management of birdsfoot trefoil."
+    },
+    "nrcs-plants": {
+      "title": "PLANTS Database & Plant Guides",
+      "org": "USDA NRCS",
+      "url": "https://plants.usda.gov",
+      "note": "Species fact sheets and plant guides, including native warm-season grasses."
+    },
+    "forage-upick": {
+      "title": "Forage U-Pick",
+      "org": "Beef Cattle Research Council (Canada)",
+      "url": "https://www.beefresearch.ca/tools/forage-u-pick/",
+      "note": "Precedent tool cited in the CIG grant that inspired this planner."
+    },
+    "ssurgo": {
+      "title": "Web Soil Survey / SSURGO (Soil Data Access)",
+      "org": "USDA NRCS",
+      "url": "https://websoilsurvey.nrcs.usda.gov",
+      "note": "Authoritative soil map-unit data (pH, drainage class, slope, available water) queried by location for the address lookup."
+    },
+    "usgs-3dep": {
+      "title": "3DEP Elevation Point Query Service",
+      "org": "U.S. Geological Survey",
+      "url": "https://www.usgs.gov/3d-elevation-program",
+      "note": "Elevation, slope, and aspect for the address lookup."
+    },
+    "open-meteo": {
+      "title": "Historical Weather / Climate API (ERA5, 1991–2020 normals)",
+      "org": "Open-Meteo",
+      "url": "https://open-meteo.com",
+      "note": "Downscaled climate normals used to derive hardiness zone, frost-free days, and annual rainfall for the address lookup."
+    },
+    "nominatim": {
+      "title": "Nominatim Geocoding",
+      "org": "OpenStreetMap Foundation",
+      "url": "https://nominatim.org",
+      "note": "Converts a typed address to coordinates in the browser. The address is used once and never stored."
+    },
+    "climatena": {
+      "title": "ClimateNA",
+      "org": "Wang, Hamann, Spittlehouse & Carroll (Univ. of British Columbia)",
+      "url": "https://climatena.ca",
+      "note": "Downscaled climate reference named in the CIG grant. Desktop/batch tool with no browser API; Open-Meteo normals are used as the live substitute. ClimateNA point exports can be added later."
+    }
+  }
+}

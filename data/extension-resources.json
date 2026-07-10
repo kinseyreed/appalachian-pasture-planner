@@ -1,0 +1,75 @@
+{
+  "_comment": "Management recommendations and extension bulletins surfaced in the results based on the producer's goals, challenges, and establishment method. 'triggers' lists the goal/challenge/method ids that surface this card. Replace or add your CIG pasture-renovation and soil-health management-system templates here as they are published.",
+  "resources": [
+    {
+      "id": "soil-test-lime",
+      "title": "Soil test and lime before you seed",
+      "body": "Pull a soil test 6-12 months ahead. Lime takes months to react, so correcting pH before seeding is the single highest-return step. Aim for pH 6.0-6.5 for most grass-legume mixes (6.5+ if alfalfa is in the mix), and apply recommended phosphorus and potassium to feed the seedlings and the nitrogen-fixing legumes.",
+      "triggers": ["acidic", "low-fertility", "nitrogen", "always"],
+      "sources": ["wvu-fertility", "psu-establishment"]
+    },
+    {
+      "id": "frost-seeding",
+      "title": "Frost seeding legumes into existing sod",
+      "body": "The cheapest way to add clovers and diversity is frost seeding: broadcast legume seed (red clover, white clover, or a mix) onto short-grazed sod in late winter (Feb-March in most of WV). Freeze-thaw cycles work the seed into the soil. Graze or clip the existing grass hard first so seedlings get light. Best for legumes and small-seeded species; grasses establish less reliably this way.",
+      "triggers": ["nitrogen", "soil-health", "reduce-fescue-tox", "broadcast", "quick-establish"],
+      "sources": ["psu-establishment", "psu-renovation"]
+    },
+    {
+      "id": "no-till-drill",
+      "title": "No-till drilling for reliable stands",
+      "body": "A no-till drill gives the best seed-to-soil contact and establishment, especially for grasses and larger seed. Suppress the existing sod first (heavy grazing or a burndown), set seeding depth to 1/4-1/2 inch (never deeper for small forage seed), and use the drill's small-seed box for clovers and forbs. Drilling is worth renting for a new diverse mix.",
+      "triggers": ["no-till", "quick-establish", "always"],
+      "sources": ["psu-establishment", "nrcs-appalachia"]
+    },
+    {
+      "id": "rotational-grazing",
+      "title": "Rotational grazing to keep diversity in the stand",
+      "body": "Diverse mixes persist only if managed. Rotational (management-intensive) grazing — moving animals through paddocks with adequate rest — lets legumes and less grazing-tolerant species recover and reseed, extends the grazing season, and improves utilization. Leave a 3-4 inch residual on cool-season pasture (taller for warm-season natives) and rest each paddock until it regrows.",
+      "triggers": ["extend-grazing", "soil-health", "reduce-fescue-tox", "always"],
+      "sources": ["wvu-grazing", "vt-steep-pastures"]
+    },
+    {
+      "id": "novel-fescue",
+      "title": "Managing or replacing toxic tall fescue",
+      "body": "If your pasture is Kentucky-31 tall fescue, animals may show fescue toxicosis (poor gains, rough coats, heat stress, reduced conception). Options, cheapest first: interseed legumes (red/white clover, trefoil) to dilute the toxin; dilute with orchardgrass; or do a full spray-smother-spray conversion to a novel (friendly) endophyte variety. Never plant new Kentucky-31.",
+      "triggers": ["toxic-fescue", "reduce-fescue-tox"],
+      "sources": ["psu-tall-fescue", "nrcs-appalachia"]
+    },
+    {
+      "id": "stockpiling",
+      "title": "Stockpiling fescue for winter grazing",
+      "body": "To extend grazing into winter, stop grazing a tall-fescue paddock in August, apply nitrogen if warranted, and let it accumulate ('stockpile') through fall. Strip-graze it after a killing frost — fescue holds its quality into winter better than any other cool-season grass and can cut hay-feeding weeks.",
+      "triggers": ["extend-grazing"],
+      "sources": ["nrcs-appalachia", "wvu-grazing"]
+    },
+    {
+      "id": "warm-season-paddock",
+      "title": "Give warm-season grasses their own paddock",
+      "body": "Native warm-season grasses (switchgrass, big bluestem, indiangrass, gamagrass) fill the July-August 'summer slump' but must be managed separately from cool-season pasture: they establish slowly (often a year), need to be grazed tall (start ~18-20 in, stop ~8 in), and require rest. Fence them as a dedicated summer paddock and rotate cool- and warm-season fields by season.",
+      "triggers": ["summer-forage", "drought"],
+      "sources": ["nrcs-plants", "vt-steep-pastures"]
+    },
+    {
+      "id": "steep-slopes",
+      "title": "Seeding and grazing steep slopes",
+      "body": "On steep Appalachian hillsides, protect the soil during establishment: seed with a cover/nurse crop or into existing sod (no-till or frost seed rather than tillage), keep sod-forming species in the mix (bluegrass, tall fescue) to bind soil, and graze to maintain cover — never overgraze slopes. Fence cattle away from the steepest, most erosion-prone areas.",
+      "triggers": ["slopes", "erosion"],
+      "sources": ["vt-steep-pastures", "nrcs-appalachia"]
+    },
+    {
+      "id": "wet-areas",
+      "title": "Managing wet spots and poorly drained ground",
+      "body": "Match species to the wet areas rather than fighting them: reed canarygrass, eastern gamagrass, tall fescue, alsike clover, and birdsfoot trefoil all tolerate wet ground. Avoid grazing saturated soils to prevent pugging and compaction, and consider fencing chronically wet areas or waterways as buffers.",
+      "triggers": ["wet"],
+      "sources": ["nrcs-appalachia", "psu-establishment"]
+    },
+    {
+      "id": "diversity-rationale",
+      "title": "Why a diverse mix",
+      "body": "A pasture with several grasses, legumes, and forbs spreads production across the season, buffers drought and wet years, fixes its own nitrogen, improves soil health and animal performance, and resists weeds better than a monoculture. Aim for at least one reliable base grass, one or two legumes, and a forb for diversity — then let grazing management keep the balance.",
+      "triggers": ["soil-health", "always"],
+      "sources": ["nrcs-appalachia", "forage-upick"]
+    }
+  ]
+}

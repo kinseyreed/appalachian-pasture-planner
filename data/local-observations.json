@@ -1,0 +1,44 @@
+{
+  "_comment": "YOUR DATA GOES HERE. This file lets you fold your West Virginia CIG trial results (2022 seedings: soil health, grazing, and establishment success) into the planner WITHOUT touching the base species database. It is loaded on top of species.json at runtime. Everything below is optional — the planner works with an empty observations list. See README.md ('Adding your own data') for the full schema.",
+
+  "meta": {
+    "source": "USDA NRCS CIG Soil Health Demonstration — Appalachian Pasture Planner trials",
+    "region": "West Virginia",
+    "seedingYear": 2022,
+    "lastUpdated": "",
+    "citationId": "cig-wv-trials",
+    "citation": {
+      "title": "West Virginia CIG pasture establishment & soil health trials (2022 seedings)",
+      "org": "West Virginia University / USDA NRCS CIG",
+      "url": "",
+      "note": "Add the report/DOI/URL when published. This citation appears in results whenever an observation informs the output."
+    }
+  },
+
+  "observations": [
+    {
+      "_example": "Delete this example and add your own. establishmentSuccess (0-1) nudges a species' score up or down and shows a 'WV trial: 82% established' badge. Optional: pin the observation to conditions (pH band, drainage, region) so it only applies when the producer's inputs match.",
+      "speciesId": "orchardgrass",
+      "establishmentSuccess": 0.82,
+      "conditions": { "phMin": 5.5, "phMax": 6.5, "drainage": ["well", "moderate"], "region": "north-central-wv" },
+      "note": "Strong first-year establishment on well-drained ridgetop sites; thinned on the wettest plots.",
+      "enabled": false
+    }
+  ],
+
+  "traitOverrides": [
+    {
+      "_example": "Optionally override any trait in species.json with your measured value. Only listed fields change; the rest of the base record is kept. Set enabled:true to activate.",
+      "speciesId": "red-clover",
+      "overrides": { "droughtTolerance": 4 },
+      "note": "Held better than expected through the 2023 dry spell in WV plots.",
+      "enabled": false
+    }
+  ],
+
+  "newSpecies": [
+    {
+      "_comment": "Add entirely new species you have tested that are not in the base database. Use the same field structure as entries in species.json. Set enabled:true to activate."
+    }
+  ]
+}
