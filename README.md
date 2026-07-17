@@ -30,7 +30,9 @@ appalachian-pasture-planner/
 │   ├── recommender.js            Scoring + mix-composition engine (the "brain")
 │   └── app.js                    Loads data, renders the form and results
 ├── data/
-│   ├── species.json              Base forage species database (traits + sources)
+│   ├── species.json              Forage/native species database (46 species: traits + sources)
+│   ├── seed-prep.json            Per-species seeds/lb, PLS, depth, seed box, price, varieties, sources
+│   ├── seed-vendors.json         Reputable seed-supplier registry
 │   ├── sources.json              Citation registry
 │   ├── extension-resources.json  Management/bulletin cards keyed to goals & challenges
 │   └── local-observations.json   >>> YOUR West Virginia trial data goes here <<<
@@ -104,6 +106,25 @@ The grant references downscaled climate from **ClimateNA**. ClimateNA is a deskt
 ### Notes for production
 - **Nominatim usage policy** asks for ≤1 request/second and light use; that's fine for a low-traffic extension tool. If APP gets heavy traffic, swap in a dedicated geocoder (e.g., a keyed Census/Mapbox endpoint or a small proxy).
 - To **disable** the lookup entirely, delete the `.lookup-card` section from `index.html`; the manual questionnaire works on its own.
+
+## Seasonal strategy, mix composition & the seed table
+
+Before building a mix, the farmer picks a **growth pattern** — cool-season (spring/fall), warm-season (summer), or a **year-round mix** (a cool + warm blend for moderate growth with no big flushes). This filters which species are eligible and, for the year-round option, pairs a cool-season and a warm-season grass.
+
+Every result includes a **live seed-mix table** ([`buildSeedTableSection`](js/app.js) + [`buildSeedPlan`](js/recommender.js)) that turns the chosen species into a buy-and-plant plan:
+
+- **Composition targeting** — PLS pounds are allocated so the mix lands at ~**50% grasses / 35% legumes / 15% forbs** (midpoints of the 45–55 / 30–40 / 10–20% goals), measured as a share of total PLS weight. The actual percentages are shown.
+- **PLS math** — from `seed-prep.json` each species carries typical purity and germination; the table shows **PLS lb/ac** (what you're targeting), **bulk lb/ac** (`PLS ÷ (purity×germ)` — what you actually weigh out and buy), computed with the UT PB1752 formula.
+- **Total rate control** — a live input (default 12 lb PLS/ac drilled) rescales the whole table instantly.
+- **Variety, seed box, depth, planting window** — suggested cultivars (e.g. novel-endophyte fescue, low-alkaloid reed canarygrass, upland switchgrass), which drill box each species goes in, seeding depth, and the planting date window.
+- **Reputable sources + estimated cost** — each species links to suppliers (native species → Ernst/Roundstone/Bamert/Prairie Moon; forages → Barenbrug/DLF-Seedway/King's/co-ops), with an estimated `$/ac` range.
+- **"Filling your drill boxes"** — species are grouped by seed box with total bulk pounds, so the farmer knows exactly what to weigh and combine.
+
+### About the estimates
+Prices in `seed-prep.json` are **rough 2026 planning figures in $/PLS-lb** and varieties/purity/germination are typical defaults — seed prices swing widely by year, vendor, and volume, and native seed especially. They live in their own file precisely so you can drop in your real quotes and tags without touching anything else. Confirm current pricing and **regional ecotypes** with the suppliers before buying.
+
+### Species coverage (46 species)
+The database now spans introduced forages **and** natives, with an emphasis on species native to Appalachia. Highlights added for this: native warm-season grasses (little bluestem, sideoats grama + existing big bluestem/indiangrass/switchgrass/gamagrass); **native cool-season grasses** (Virginia wildrye/PA ecotype, Canada wildrye, bottlebrush grass); native legumes (purple prairie clover, Illinois bundleflower, showy tick-trefoil, slender/Virginia lespedeza, partridge pea); native forbs (Maximilian & oxeye sunflower, gray-headed coneflower, lanceleaf coreopsis); and introduced options requested (sainfoin, kura clover, balansa clover, strawberry clover, white/yellow sweetclover, intermediate wheatgrass/Kernza, a perennial×Italian ryegrass blend, small burnet, plus meadow fescue). The `native` flag is on each record. Species data draws on UT Extension **PB1752** (native grasses, PLS, seeding), USDA-NRCS plant guides, and Extension forage references.
 
 ## Adding your own data
 

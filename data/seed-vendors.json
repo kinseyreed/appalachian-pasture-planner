@@ -1,0 +1,15 @@
+{
+  "_comment": "Reputable seed suppliers referenced by seed-prep.json. 'region' notes which are best positioned for Appalachia. These are starting points, not endorsements — always compare current quotes and confirm regional ecotypes/varieties.",
+  "vendors": {
+    "ernst": { "name": "Ernst Conservation Seeds", "location": "Meadville, PA", "region": "Appalachian / Mid-Atlantic", "focus": "native grasses, forbs, legumes + forages; regional ecotypes", "url": "https://www.ernstseed.com" },
+    "roundstone": { "name": "Roundstone Native Seed", "location": "Upton, KY", "region": "Appalachian / Mid-South", "focus": "native warm-season grasses, forbs, legumes", "url": "https://www.roundstoneseed.com" },
+    "bamert": { "name": "Bamert Seed Company", "location": "Muleshoe, TX", "region": "national", "focus": "native grasses and forbs", "url": "https://www.bamertseed.com" },
+    "turner": { "name": "Turner Seed", "location": "Breckenridge, TX", "region": "national", "focus": "native and forage grasses/legumes", "url": "https://www.turnerseed.com" },
+    "prairie-moon": { "name": "Prairie Moon Nursery", "location": "Winona, MN", "region": "national", "focus": "native forbs and legumes (small quantities available)", "url": "https://www.prairiemoon.com" },
+    "barenbrug": { "name": "Barenbrug USA", "location": "national", "region": "national", "focus": "forage grasses, clovers, novel-endophyte fescue", "url": "https://www.barusa.com" },
+    "dlf-seedway": { "name": "DLF Pickseed / Seedway", "location": "Northeast / national", "region": "Mid-Atlantic / Northeast", "focus": "forage grasses and legumes", "url": "https://www.seedway.com" },
+    "kings": { "name": "King's AgriSeeds", "location": "Ronks, PA", "region": "Appalachian / Mid-Atlantic", "focus": "forage and cover-crop mixes, clovers", "url": "https://www.kingsagriseeds.com" },
+    "southern-states": { "name": "Southern States Co-op / local farm co-op", "location": "regional", "region": "Appalachian / Southeast", "focus": "common forage grasses and clovers, inoculant", "url": "https://www.southernstates.com" },
+    "hancock": { "name": "Hancock Seed Company", "location": "Dade City, FL", "region": "Southeast / national", "focus": "forage grasses, clovers, sainfoin", "url": "https://hancockseed.com" }
+  }
+}

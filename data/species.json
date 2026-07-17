@@ -5,419 +5,2098 @@
       "id": "tall-fescue",
       "commonName": "Tall Fescue (novel/friendly endophyte)",
       "scientificName": "Schedonorus arundinaceus",
-      "type": "grass", "season": "cool", "lifecycle": "perennial",
-      "phMin": 5.5, "phMax": 7.0, "phTolerantLow": 4.5,
-      "drainage": ["well", "moderate", "poor", "wet"],
-      "droughtTolerance": 4, "floodTolerance": 3, "shadeTolerance": 3,
-      "fertilityNeed": "low", "grazingTolerance": 5, "establishmentEase": 4, "winterHardiness": 5,
+      "type": "grass",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "phMin": 5.5,
+      "phMax": 7.0,
+      "phTolerantLow": 4.5,
+      "drainage": [
+        "well",
+        "moderate",
+        "poor",
+        "wet"
+      ],
+      "droughtTolerance": 4,
+      "floodTolerance": 3,
+      "shadeTolerance": 3,
+      "fertilityNeed": "low",
+      "grazingTolerance": 5,
+      "establishmentEase": 4,
+      "winterHardiness": 5,
       "nitrogenFixer": false,
-      "seedingRateMonoLow": 15, "seedingRateMonoHigh": 20,
-      "seedingRateMixLow": 8, "seedingRateMixHigh": 12,
-      "goalsServed": ["extend-grazing", "erosion", "drought", "hay", "reduce-fescue-tox"],
-      "challengesFit": ["acidic", "slopes", "wet", "droughty", "low-fertility"],
+      "seedingRateMonoLow": 15,
+      "seedingRateMonoHigh": 20,
+      "seedingRateMixLow": 8,
+      "seedingRateMixHigh": 12,
+      "goalsServed": [
+        "extend-grazing",
+        "erosion",
+        "drought",
+        "hay",
+        "reduce-fescue-tox"
+      ],
+      "challengesFit": [
+        "acidic",
+        "slopes",
+        "wet",
+        "droughty",
+        "low-fertility"
+      ],
       "summary": "The workhorse base grass of the region: tough, persistent, and productive on a wide range of soils, and outstanding for stockpiling for winter grazing.",
       "strengths": "Tolerates acid, wet, and droughty soils better than most grasses, holds up to close/continuous grazing and traffic, and stockpiles well for fall/winter grazing.",
       "cautions": "Plant only NOVEL (friendly) endophyte or endophyte-free varieties. Common 'Kentucky-31' carries a toxic endophyte that causes fescue toxicosis (reduced gains, poor conception, heat stress). If your goal is to reduce fescue toxicity, pair with legumes and consider converting toxic stands.",
-      "sources": ["nrcs-appalachia", "psu-tall-fescue", "osu-fescue-ph"]
+      "sources": [
+        "nrcs-appalachia",
+        "psu-tall-fescue",
+        "osu-fescue-ph"
+      ],
+      "native": false
     },
     {
       "id": "orchardgrass",
       "commonName": "Orchardgrass",
       "scientificName": "Dactylis glomerata",
-      "type": "grass", "season": "cool", "lifecycle": "perennial",
-      "phMin": 5.5, "phMax": 7.0, "phTolerantLow": 5.3,
-      "drainage": ["well", "moderate"],
-      "droughtTolerance": 3, "floodTolerance": 1, "shadeTolerance": 3,
-      "fertilityNeed": "medium", "grazingTolerance": 3, "establishmentEase": 4, "winterHardiness": 4,
+      "type": "grass",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "phMin": 5.5,
+      "phMax": 7.0,
+      "phTolerantLow": 5.3,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 3,
+      "floodTolerance": 1,
+      "shadeTolerance": 3,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 3,
+      "establishmentEase": 4,
+      "winterHardiness": 4,
       "nitrogenFixer": false,
-      "seedingRateMonoLow": 10, "seedingRateMonoHigh": 12,
-      "seedingRateMixLow": 4, "seedingRateMixHigh": 8,
-      "goalsServed": ["extend-grazing", "hay", "reduce-fescue-tox", "quick-establish"],
-      "challengesFit": ["slopes"],
+      "seedingRateMonoLow": 10,
+      "seedingRateMonoHigh": 12,
+      "seedingRateMixLow": 4,
+      "seedingRateMixHigh": 8,
+      "goalsServed": [
+        "extend-grazing",
+        "hay",
+        "reduce-fescue-tox",
+        "quick-establish"
+      ],
+      "challengesFit": [
+        "slopes"
+      ],
       "summary": "A high-quality, palatable bunchgrass and the most common non-toxic alternative or companion to tall fescue.",
       "strengths": "More palatable and shade-tolerant than fescue, good regrowth, mixes well with legumes, and tolerates some shade on wooded slopes.",
       "cautions": "Does not tolerate wet soils, drought, or heavy trampling, and can be thinned by close continuous grazing. Match a late-maturing variety with red clover or alfalfa so maturity lines up at harvest.",
-      "sources": ["nrcs-appalachia", "wvu-species", "psu-establishment"]
+      "sources": [
+        "nrcs-appalachia",
+        "wvu-species",
+        "psu-establishment"
+      ],
+      "native": false
     },
     {
       "id": "kentucky-bluegrass",
       "commonName": "Kentucky Bluegrass",
       "scientificName": "Poa pratensis",
-      "type": "grass", "season": "cool", "lifecycle": "perennial",
-      "phMin": 6.0, "phMax": 7.0, "phTolerantLow": 5.5,
-      "drainage": ["well", "moderate"],
-      "droughtTolerance": 2, "floodTolerance": 2, "shadeTolerance": 2,
-      "fertilityNeed": "medium", "grazingTolerance": 5, "establishmentEase": 3, "winterHardiness": 5,
+      "type": "grass",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "phMin": 6.0,
+      "phMax": 7.0,
+      "phTolerantLow": 5.5,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 2,
+      "floodTolerance": 2,
+      "shadeTolerance": 2,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 5,
+      "establishmentEase": 3,
+      "winterHardiness": 5,
       "nitrogenFixer": false,
-      "seedingRateMonoLow": 10, "seedingRateMonoHigh": 15,
-      "seedingRateMixLow": 2, "seedingRateMixHigh": 4,
-      "goalsServed": ["extend-grazing", "erosion"],
-      "challengesFit": ["slopes", "toxic-fescue"],
+      "seedingRateMonoLow": 10,
+      "seedingRateMonoHigh": 15,
+      "seedingRateMixLow": 2,
+      "seedingRateMixHigh": 4,
+      "goalsServed": [
+        "extend-grazing",
+        "erosion"
+      ],
+      "challengesFit": [
+        "slopes",
+        "toxic-fescue"
+      ],
       "summary": "A dense, sod-forming grass that thrives under close, continuous grazing and knits a tight, erosion-resistant turf.",
       "strengths": "Extremely tolerant of close grazing and traffic, forms a dense sod that resists erosion and fills gaps between bunchgrasses.",
       "cautions": "Shallow-rooted with low yield and summer dormancy; best as a companion in a mix rather than the main forage. Slow to establish.",
-      "sources": ["nrcs-appalachia", "wvu-species"]
+      "sources": [
+        "nrcs-appalachia",
+        "wvu-species"
+      ],
+      "native": false
     },
     {
       "id": "timothy",
       "commonName": "Timothy",
       "scientificName": "Phleum pratense",
-      "type": "grass", "season": "cool", "lifecycle": "perennial",
-      "phMin": 5.5, "phMax": 7.0, "phTolerantLow": 5.3,
-      "drainage": ["moderate", "poor"],
-      "droughtTolerance": 1, "floodTolerance": 2, "shadeTolerance": 2,
-      "fertilityNeed": "medium", "grazingTolerance": 2, "establishmentEase": 4, "winterHardiness": 5,
+      "type": "grass",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "phMin": 5.5,
+      "phMax": 7.0,
+      "phTolerantLow": 5.3,
+      "drainage": [
+        "moderate",
+        "poor"
+      ],
+      "droughtTolerance": 1,
+      "floodTolerance": 2,
+      "shadeTolerance": 2,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 2,
+      "establishmentEase": 4,
+      "winterHardiness": 5,
       "nitrogenFixer": false,
-      "seedingRateMonoLow": 8, "seedingRateMonoHigh": 10,
-      "seedingRateMixLow": 3, "seedingRateMixHigh": 6,
-      "goalsServed": ["hay"],
-      "challengesFit": ["wet"],
+      "seedingRateMonoLow": 8,
+      "seedingRateMonoHigh": 10,
+      "seedingRateMixLow": 3,
+      "seedingRateMixHigh": 6,
+      "goalsServed": [
+        "hay"
+      ],
+      "challengesFit": [
+        "wet"
+      ],
       "summary": "A cold-hardy hay grass suited to cooler, moister mountain sites and higher elevations.",
       "strengths": "Very winter-hardy, palatable, and well suited to cool, moist, higher-elevation sites; a classic horse-hay grass.",
       "cautions": "Poor drought and close-grazing tolerance. Best for hay or cooler wetter fields, not heavily grazed summer pasture.",
-      "sources": ["nrcs-appalachia", "psu-establishment"]
+      "sources": [
+        "nrcs-appalachia",
+        "psu-establishment"
+      ],
+      "native": false
     },
     {
       "id": "perennial-ryegrass",
       "commonName": "Perennial Ryegrass",
       "scientificName": "Lolium perenne",
-      "type": "grass", "season": "cool", "lifecycle": "perennial",
-      "phMin": 6.0, "phMax": 7.0, "phTolerantLow": 5.6,
-      "drainage": ["well", "moderate"],
-      "droughtTolerance": 2, "floodTolerance": 2, "shadeTolerance": 2,
-      "fertilityNeed": "high", "grazingTolerance": 5, "establishmentEase": 5, "winterHardiness": 3,
+      "type": "grass",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "phMin": 6.0,
+      "phMax": 7.0,
+      "phTolerantLow": 5.6,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 2,
+      "floodTolerance": 2,
+      "shadeTolerance": 2,
+      "fertilityNeed": "high",
+      "grazingTolerance": 5,
+      "establishmentEase": 5,
+      "winterHardiness": 3,
       "nitrogenFixer": false,
-      "seedingRateMonoLow": 20, "seedingRateMonoHigh": 25,
-      "seedingRateMixLow": 4, "seedingRateMixHigh": 8,
-      "goalsServed": ["quick-establish", "extend-grazing"],
+      "seedingRateMonoLow": 20,
+      "seedingRateMonoHigh": 25,
+      "seedingRateMixLow": 4,
+      "seedingRateMixHigh": 8,
+      "goalsServed": [
+        "quick-establish",
+        "extend-grazing"
+      ],
       "challengesFit": [],
       "summary": "Fast-establishing, highly digestible grass that excels under rotational grazing on fertile, moist sites.",
       "strengths": "Germinates and establishes very quickly, extremely palatable and digestible, and tolerates intensive rotational grazing. Useful as a nurse component for slower species.",
       "cautions": "Short-lived and prone to winterkill on exposed or higher-elevation sites; needs good fertility and moisture. Use as a minor component, not the backbone of a permanent stand.",
-      "sources": ["psu-establishment", "nrcs-appalachia", "msu-seeding-rates"]
+      "sources": [
+        "psu-establishment",
+        "nrcs-appalachia",
+        "msu-seeding-rates"
+      ],
+      "native": false
     },
     {
       "id": "smooth-bromegrass",
       "commonName": "Smooth Bromegrass",
       "scientificName": "Bromus inermis",
-      "type": "grass", "season": "cool", "lifecycle": "perennial",
-      "phMin": 6.0, "phMax": 7.5, "phTolerantLow": 5.8,
-      "drainage": ["well", "moderate"],
-      "droughtTolerance": 4, "floodTolerance": 2, "shadeTolerance": 2,
-      "fertilityNeed": "medium", "grazingTolerance": 3, "establishmentEase": 3, "winterHardiness": 5,
+      "type": "grass",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "phMin": 6.0,
+      "phMax": 7.5,
+      "phTolerantLow": 5.8,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 4,
+      "floodTolerance": 2,
+      "shadeTolerance": 2,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 3,
+      "establishmentEase": 3,
+      "winterHardiness": 5,
       "nitrogenFixer": false,
-      "seedingRateMonoLow": 12, "seedingRateMonoHigh": 16,
-      "seedingRateMixLow": 6, "seedingRateMixHigh": 10,
-      "goalsServed": ["hay", "drought", "erosion"],
-      "challengesFit": ["droughty", "slopes"],
+      "seedingRateMonoLow": 12,
+      "seedingRateMonoHigh": 16,
+      "seedingRateMixLow": 6,
+      "seedingRateMixHigh": 10,
+      "goalsServed": [
+        "hay",
+        "drought",
+        "erosion"
+      ],
+      "challengesFit": [
+        "droughty",
+        "slopes"
+      ],
       "summary": "A sod-forming, drought-hardy grass valued for early-spring growth and hay on better-drained upland soils.",
       "strengths": "Good drought tolerance and winter hardiness, strong spring production, and a rhizomatous sod that resists erosion. Pairs well with alfalfa.",
       "cautions": "Slower to establish, needs well-drained fertile ground, and slow to recover if grazed too short. Less productive in hot, humid mid-summer than fescue.",
-      "sources": ["nrcs-appalachia", "msu-seeding-rates"]
+      "sources": [
+        "nrcs-appalachia",
+        "msu-seeding-rates"
+      ],
+      "native": false
     },
     {
       "id": "reed-canarygrass",
       "commonName": "Reed Canarygrass (low-alkaloid)",
       "scientificName": "Phalaris arundinacea",
-      "type": "grass", "season": "cool", "lifecycle": "perennial",
-      "phMin": 5.5, "phMax": 7.5, "phTolerantLow": 5.0,
-      "drainage": ["moderate", "poor", "wet"],
-      "droughtTolerance": 4, "floodTolerance": 5, "shadeTolerance": 2,
-      "fertilityNeed": "medium", "grazingTolerance": 3, "establishmentEase": 2, "winterHardiness": 5,
+      "type": "grass",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "phMin": 5.5,
+      "phMax": 7.5,
+      "phTolerantLow": 5.0,
+      "drainage": [
+        "moderate",
+        "poor",
+        "wet"
+      ],
+      "droughtTolerance": 4,
+      "floodTolerance": 5,
+      "shadeTolerance": 2,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 3,
+      "establishmentEase": 2,
+      "winterHardiness": 5,
       "nitrogenFixer": false,
-      "seedingRateMonoLow": 8, "seedingRateMonoHigh": 12,
-      "seedingRateMixLow": 6, "seedingRateMixHigh": 10,
-      "goalsServed": ["hay", "drought", "erosion"],
-      "challengesFit": ["wet", "droughty"],
+      "seedingRateMonoLow": 8,
+      "seedingRateMonoHigh": 12,
+      "seedingRateMixLow": 6,
+      "seedingRateMixHigh": 10,
+      "goalsServed": [
+        "hay",
+        "drought",
+        "erosion"
+      ],
+      "challengesFit": [
+        "wet",
+        "droughty"
+      ],
       "summary": "The go-to perennial grass for wet ground and streambanks that also tolerates drought once established.",
       "strengths": "Thrives on poorly drained, wet, and periodically flooded soils where other grasses fail, yet is surprisingly drought-tolerant once rooted. Excellent for wet swales and streambanks.",
       "cautions": "Plant only certified low-alkaloid varieties (older strains reduce palatability). Slow and difficult to establish, and can become aggressive/invasive in wetlands, so keep it on problem wet areas.",
-      "sources": ["psu-establishment", "nrcs-appalachia"]
+      "sources": [
+        "psu-establishment",
+        "nrcs-appalachia"
+      ],
+      "native": false
     },
     {
       "id": "white-clover",
       "commonName": "White / Ladino Clover",
       "scientificName": "Trifolium repens",
-      "type": "legume", "season": "cool", "lifecycle": "perennial",
-      "phMin": 6.0, "phMax": 7.0, "phTolerantLow": 5.5,
-      "drainage": ["well", "moderate", "poor"],
-      "droughtTolerance": 2, "floodTolerance": 3, "shadeTolerance": 3,
-      "fertilityNeed": "medium", "grazingTolerance": 5, "establishmentEase": 4, "winterHardiness": 5,
+      "type": "legume",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "phMin": 6.0,
+      "phMax": 7.0,
+      "phTolerantLow": 5.5,
+      "drainage": [
+        "well",
+        "moderate",
+        "poor"
+      ],
+      "droughtTolerance": 2,
+      "floodTolerance": 3,
+      "shadeTolerance": 3,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 5,
+      "establishmentEase": 4,
+      "winterHardiness": 5,
       "nitrogenFixer": true,
-      "seedingRateMonoLow": 2, "seedingRateMonoHigh": 4,
-      "seedingRateMixLow": 1, "seedingRateMixHigh": 3,
-      "goalsServed": ["nitrogen", "soil-health", "pollinators", "extend-grazing", "reduce-fescue-tox"],
-      "challengesFit": ["low-fertility", "toxic-fescue"],
+      "seedingRateMonoLow": 2,
+      "seedingRateMonoHigh": 4,
+      "seedingRateMixLow": 1,
+      "seedingRateMixHigh": 3,
+      "goalsServed": [
+        "nitrogen",
+        "soil-health",
+        "pollinators",
+        "extend-grazing",
+        "reduce-fescue-tox"
+      ],
+      "challengesFit": [
+        "low-fertility",
+        "toxic-fescue"
+      ],
       "summary": "The most grazing-tolerant legume and the single best nitrogen-fixer to interseed into grass pastures.",
       "strengths": "Spreads by stolons and thrives under close, continuous grazing, fixes nitrogen for the companion grass, boosts animal gains, and dilutes toxic-fescue effects. Easy to frost-seed into existing sod.",
       "cautions": "Shallow-rooted, so it fades in summer drought; needs adequate moisture. Can cause bloat in pure or clover-dominant stands, so keep grass in the mix.",
-      "sources": ["nrcs-appalachia", "wvu-species", "msu-seeding-rates"]
+      "sources": [
+        "nrcs-appalachia",
+        "wvu-species",
+        "msu-seeding-rates"
+      ],
+      "native": false
     },
     {
       "id": "red-clover",
       "commonName": "Red Clover",
       "scientificName": "Trifolium pratense",
-      "type": "legume", "season": "cool", "lifecycle": "biennial",
-      "phMin": 6.0, "phMax": 7.0, "phTolerantLow": 5.6,
-      "drainage": ["well", "moderate", "poor"],
-      "droughtTolerance": 3, "floodTolerance": 3, "shadeTolerance": 3,
-      "fertilityNeed": "medium", "grazingTolerance": 3, "establishmentEase": 4, "winterHardiness": 4,
+      "type": "legume",
+      "season": "cool",
+      "lifecycle": "biennial",
+      "phMin": 6.0,
+      "phMax": 7.0,
+      "phTolerantLow": 5.6,
+      "drainage": [
+        "well",
+        "moderate",
+        "poor"
+      ],
+      "droughtTolerance": 3,
+      "floodTolerance": 3,
+      "shadeTolerance": 3,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 3,
+      "establishmentEase": 4,
+      "winterHardiness": 4,
       "nitrogenFixer": true,
-      "seedingRateMonoLow": 8, "seedingRateMonoHigh": 12,
-      "seedingRateMixLow": 4, "seedingRateMixHigh": 8,
-      "goalsServed": ["nitrogen", "soil-health", "hay", "quick-establish", "reduce-fescue-tox", "pollinators"],
-      "challengesFit": ["low-fertility", "acidic", "wet", "toxic-fescue"],
+      "seedingRateMonoLow": 8,
+      "seedingRateMonoHigh": 12,
+      "seedingRateMixLow": 4,
+      "seedingRateMixHigh": 8,
+      "goalsServed": [
+        "nitrogen",
+        "soil-health",
+        "hay",
+        "quick-establish",
+        "reduce-fescue-tox",
+        "pollinators"
+      ],
+      "challengesFit": [
+        "low-fertility",
+        "acidic",
+        "wet",
+        "toxic-fescue"
+      ],
       "summary": "The easiest legume to establish by frost seeding and the top choice for adding nitrogen and quality to acid or moist soils.",
       "strengths": "Outperforms alfalfa on wetter, more acidic, and lower-fertility ground; establishes readily from frost/broadcast seeding; deep taproot adds organic matter and fixes nitrogen. Excellent pasture renovator.",
       "cautions": "Short-lived (2-3 years) so plan to re-seed or let it reseed. Can cause bloat, and high intake can cause slobbers (a harmless salivation). Best as a productive early component of a diverse mix.",
-      "sources": ["nrcs-appalachia", "psu-establishment", "msu-seeding-rates"]
+      "sources": [
+        "nrcs-appalachia",
+        "psu-establishment",
+        "msu-seeding-rates"
+      ],
+      "native": false
     },
     {
       "id": "alfalfa",
       "commonName": "Alfalfa",
       "scientificName": "Medicago sativa",
-      "type": "legume", "season": "cool", "lifecycle": "perennial",
-      "phMin": 6.5, "phMax": 7.5, "phTolerantLow": 6.2,
-      "drainage": ["well"],
-      "droughtTolerance": 5, "floodTolerance": 1, "shadeTolerance": 1,
-      "fertilityNeed": "high", "grazingTolerance": 2, "establishmentEase": 3, "winterHardiness": 4,
+      "type": "legume",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "phMin": 6.5,
+      "phMax": 7.5,
+      "phTolerantLow": 6.2,
+      "drainage": [
+        "well"
+      ],
+      "droughtTolerance": 5,
+      "floodTolerance": 1,
+      "shadeTolerance": 1,
+      "fertilityNeed": "high",
+      "grazingTolerance": 2,
+      "establishmentEase": 3,
+      "winterHardiness": 4,
       "nitrogenFixer": true,
-      "seedingRateMonoLow": 12, "seedingRateMonoHigh": 18,
-      "seedingRateMixLow": 8, "seedingRateMixHigh": 12,
-      "goalsServed": ["hay", "drought", "nitrogen", "soil-health"],
-      "challengesFit": ["droughty"],
+      "seedingRateMonoLow": 12,
+      "seedingRateMonoHigh": 18,
+      "seedingRateMixLow": 8,
+      "seedingRateMixHigh": 12,
+      "goalsServed": [
+        "hay",
+        "drought",
+        "nitrogen",
+        "soil-health"
+      ],
+      "challengesFit": [
+        "droughty"
+      ],
       "summary": "The highest-yielding, most drought-resistant legume — but only on deep, well-drained, near-neutral soils.",
       "strengths": "A deep taproot delivers unmatched drought resistance and yield, high protein, and large nitrogen contributions. Best legume for hay on your best-drained, limed ground.",
       "cautions": "Will not tolerate wet, shallow, acidic, or low-fertility soils, which rules out much Appalachian ground. Needs rotational grazing with rest, high fertility, and pH near 6.8; bloat risk. Consider grazing-tolerant varieties if grazing.",
-      "sources": ["psu-establishment", "msu-seeding-rates", "nrcs-appalachia"]
+      "sources": [
+        "psu-establishment",
+        "msu-seeding-rates",
+        "nrcs-appalachia"
+      ],
+      "native": false
     },
     {
       "id": "birdsfoot-trefoil",
       "commonName": "Birdsfoot Trefoil",
       "scientificName": "Lotus corniculatus",
-      "type": "legume", "season": "cool", "lifecycle": "perennial",
-      "phMin": 5.5, "phMax": 7.0, "phTolerantLow": 5.2,
-      "drainage": ["well", "moderate", "poor"],
-      "droughtTolerance": 3, "floodTolerance": 3, "shadeTolerance": 2,
-      "fertilityNeed": "low", "grazingTolerance": 4, "establishmentEase": 2, "winterHardiness": 5,
+      "type": "legume",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "phMin": 5.5,
+      "phMax": 7.0,
+      "phTolerantLow": 5.2,
+      "drainage": [
+        "well",
+        "moderate",
+        "poor"
+      ],
+      "droughtTolerance": 3,
+      "floodTolerance": 3,
+      "shadeTolerance": 2,
+      "fertilityNeed": "low",
+      "grazingTolerance": 4,
+      "establishmentEase": 2,
+      "winterHardiness": 5,
       "nitrogenFixer": true,
-      "seedingRateMonoLow": 6, "seedingRateMonoHigh": 10,
-      "seedingRateMixLow": 4, "seedingRateMixHigh": 6,
-      "goalsServed": ["nitrogen", "soil-health", "pollinators", "extend-grazing", "reduce-fescue-tox"],
-      "challengesFit": ["acidic", "wet", "low-fertility", "toxic-fescue"],
+      "seedingRateMonoLow": 6,
+      "seedingRateMonoHigh": 10,
+      "seedingRateMixLow": 4,
+      "seedingRateMixHigh": 6,
+      "goalsServed": [
+        "nitrogen",
+        "soil-health",
+        "pollinators",
+        "extend-grazing",
+        "reduce-fescue-tox"
+      ],
+      "challengesFit": [
+        "acidic",
+        "wet",
+        "low-fertility",
+        "toxic-fescue"
+      ],
       "summary": "A non-bloating perennial legume that persists on acidic, wet, low-fertility soils where clover and alfalfa struggle.",
       "strengths": "Tolerates acid, wet, and infertile ground better than other legumes, does NOT cause bloat, contains condensed tannins that improve protein use and reduce parasites, and reseeds itself if allowed to flower.",
       "cautions": "Weak seedling vigor makes it slow and tricky to establish, so keep competition down and be patient. Graze rotationally and let it set some seed periodically to maintain the stand.",
-      "sources": ["mu-birdsfoot", "nrcs-appalachia", "psu-establishment"]
+      "sources": [
+        "mu-birdsfoot",
+        "nrcs-appalachia",
+        "psu-establishment"
+      ],
+      "native": false
     },
     {
       "id": "alsike-clover",
       "commonName": "Alsike Clover",
       "scientificName": "Trifolium hybridum",
-      "type": "legume", "season": "cool", "lifecycle": "biennial",
-      "phMin": 5.5, "phMax": 7.0, "phTolerantLow": 5.0,
-      "drainage": ["moderate", "poor", "wet"],
-      "droughtTolerance": 1, "floodTolerance": 4, "shadeTolerance": 2,
-      "fertilityNeed": "low", "grazingTolerance": 3, "establishmentEase": 4, "winterHardiness": 5,
+      "type": "legume",
+      "season": "cool",
+      "lifecycle": "biennial",
+      "phMin": 5.5,
+      "phMax": 7.0,
+      "phTolerantLow": 5.0,
+      "drainage": [
+        "moderate",
+        "poor",
+        "wet"
+      ],
+      "droughtTolerance": 1,
+      "floodTolerance": 4,
+      "shadeTolerance": 2,
+      "fertilityNeed": "low",
+      "grazingTolerance": 3,
+      "establishmentEase": 4,
+      "winterHardiness": 5,
       "nitrogenFixer": true,
-      "seedingRateMonoLow": 4, "seedingRateMonoHigh": 6,
-      "seedingRateMixLow": 2, "seedingRateMixHigh": 4,
-      "goalsServed": ["nitrogen", "soil-health", "pollinators"],
-      "challengesFit": ["wet", "acidic", "low-fertility"],
+      "seedingRateMonoLow": 4,
+      "seedingRateMonoHigh": 6,
+      "seedingRateMixLow": 2,
+      "seedingRateMixHigh": 4,
+      "goalsServed": [
+        "nitrogen",
+        "soil-health",
+        "pollinators"
+      ],
+      "challengesFit": [
+        "wet",
+        "acidic",
+        "low-fertility"
+      ],
       "summary": "A wet- and acid-tolerant clover for low, poorly drained, or sour spots that defeat other legumes.",
       "strengths": "Handles standing water, flooding, and acidic soils better than red or white clover, and fixes nitrogen on problem wet ground. Winter hardy.",
       "cautions": "Short-lived and intolerant of drought and heat. Can cause photosensitization in horses, so avoid in horse pastures. Best reserved for wet/acid areas of a field.",
-      "sources": ["nrcs-appalachia", "psu-establishment"]
+      "sources": [
+        "nrcs-appalachia",
+        "psu-establishment"
+      ],
+      "native": false
     },
     {
       "id": "annual-lespedeza",
       "commonName": "Annual (Korean/Kobe) Lespedeza",
       "scientificName": "Kummerowia striata",
-      "type": "legume", "season": "warm", "lifecycle": "annual",
-      "phMin": 5.0, "phMax": 6.5, "phTolerantLow": 4.5,
-      "drainage": ["well", "moderate"],
-      "droughtTolerance": 4, "floodTolerance": 1, "shadeTolerance": 2,
-      "fertilityNeed": "low", "grazingTolerance": 4, "establishmentEase": 4, "winterHardiness": 3,
+      "type": "legume",
+      "season": "warm",
+      "lifecycle": "annual",
+      "phMin": 5.0,
+      "phMax": 6.5,
+      "phTolerantLow": 4.5,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 4,
+      "floodTolerance": 1,
+      "shadeTolerance": 2,
+      "fertilityNeed": "low",
+      "grazingTolerance": 4,
+      "establishmentEase": 4,
+      "winterHardiness": 3,
       "nitrogenFixer": true,
-      "seedingRateMonoLow": 15, "seedingRateMonoHigh": 25,
-      "seedingRateMixLow": 8, "seedingRateMixHigh": 15,
-      "goalsServed": ["nitrogen", "summer-forage", "pollinators", "low-input"],
-      "challengesFit": ["acidic", "low-fertility", "droughty"],
+      "seedingRateMonoLow": 15,
+      "seedingRateMonoHigh": 25,
+      "seedingRateMixLow": 8,
+      "seedingRateMixHigh": 15,
+      "goalsServed": [
+        "nitrogen",
+        "summer-forage",
+        "pollinators",
+        "low-input"
+      ],
+      "challengesFit": [
+        "acidic",
+        "low-fertility",
+        "droughty"
+      ],
       "summary": "A reseeding summer annual legume that thrives on the acidic, low-fertility soils common across Appalachia and fills the summer slump.",
       "strengths": "Grows and fixes nitrogen on sour, infertile ground where nothing else legume-y will, provides quality mid-to-late-summer grazing when cool-season forage stalls, is non-bloating, and reseeds itself year to year.",
       "cautions": "An annual, so it depends on reseeding — avoid clipping/grazing it below 3-4 inches at flowering and don't use pre-emergent herbicides. Yields are modest; treat it as a summer supplement.",
-      "sources": ["nrcs-appalachia", "wvu-species"]
+      "sources": [
+        "nrcs-appalachia",
+        "wvu-species"
+      ],
+      "native": false
     },
     {
       "id": "crimson-clover",
       "commonName": "Crimson Clover",
       "scientificName": "Trifolium incarnatum",
-      "type": "legume", "season": "cool", "lifecycle": "annual",
-      "phMin": 5.5, "phMax": 7.0, "phTolerantLow": 5.3,
-      "drainage": ["well", "moderate"],
-      "droughtTolerance": 2, "floodTolerance": 2, "shadeTolerance": 2,
-      "fertilityNeed": "medium", "grazingTolerance": 3, "establishmentEase": 5, "winterHardiness": 3,
+      "type": "legume",
+      "season": "cool",
+      "lifecycle": "annual",
+      "phMin": 5.5,
+      "phMax": 7.0,
+      "phTolerantLow": 5.3,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 2,
+      "floodTolerance": 2,
+      "shadeTolerance": 2,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 3,
+      "establishmentEase": 5,
+      "winterHardiness": 3,
       "nitrogenFixer": true,
-      "seedingRateMonoLow": 15, "seedingRateMonoHigh": 20,
-      "seedingRateMixLow": 8, "seedingRateMixHigh": 12,
-      "goalsServed": ["nitrogen", "quick-establish", "pollinators", "soil-health"],
-      "challengesFit": ["low-fertility"],
+      "seedingRateMonoLow": 15,
+      "seedingRateMonoHigh": 20,
+      "seedingRateMixLow": 8,
+      "seedingRateMixHigh": 12,
+      "goalsServed": [
+        "nitrogen",
+        "quick-establish",
+        "pollinators",
+        "soil-health"
+      ],
+      "challengesFit": [
+        "low-fertility"
+      ],
       "summary": "A fast, showy cool-season annual legume for quick nitrogen, early grazing, and overseeding into thin sod.",
       "strengths": "Establishes and grows very quickly for a fast shot of nitrogen and early-spring grazing, and its deep-red blooms are excellent for pollinators. Good for overseeding warm-season grass or thin pasture.",
       "cautions": "An annual with limited winter hardiness at higher elevations; it completes its cycle by early summer. Use for quick cover, renovation, or as a companion, not for permanent stands.",
-      "sources": ["wvu-species", "nrcs-appalachia"]
+      "sources": [
+        "wvu-species",
+        "nrcs-appalachia"
+      ],
+      "native": false
     },
     {
       "id": "chicory",
       "commonName": "Forage Chicory",
       "scientificName": "Cichorium intybus",
-      "type": "forb", "season": "cool", "lifecycle": "perennial",
-      "phMin": 5.5, "phMax": 7.0, "phTolerantLow": 5.3,
-      "drainage": ["well", "moderate"],
-      "droughtTolerance": 4, "floodTolerance": 1, "shadeTolerance": 2,
-      "fertilityNeed": "medium", "grazingTolerance": 4, "establishmentEase": 4, "winterHardiness": 4,
+      "type": "forb",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "phMin": 5.5,
+      "phMax": 7.0,
+      "phTolerantLow": 5.3,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 4,
+      "floodTolerance": 1,
+      "shadeTolerance": 2,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 4,
+      "establishmentEase": 4,
+      "winterHardiness": 4,
       "nitrogenFixer": false,
-      "seedingRateMonoLow": 4, "seedingRateMonoHigh": 6,
-      "seedingRateMixLow": 1, "seedingRateMixHigh": 3,
-      "goalsServed": ["summer-forage", "drought", "soil-health", "extend-grazing"],
-      "challengesFit": ["droughty"],
+      "seedingRateMonoLow": 4,
+      "seedingRateMonoHigh": 6,
+      "seedingRateMixLow": 1,
+      "seedingRateMixHigh": 3,
+      "goalsServed": [
+        "summer-forage",
+        "drought",
+        "soil-health",
+        "extend-grazing"
+      ],
+      "challengesFit": [
+        "droughty"
+      ],
       "summary": "A deep-taprooted forb that delivers high-quality summer grazing and mines minerals when grasses go dormant.",
       "strengths": "Its taproot pulls moisture and minerals from deep in the profile for productive, highly digestible summer forage; condensed tannins can help with internal parasites, and it adds real diversity to a grass-legume mix.",
       "cautions": "Manage grazing to keep it leafy — let it bolt and it becomes stemmy and bitter. Stands thin after 3-5 years. Keep it a minor component (1-3 lbs/acre) of a diverse mix.",
-      "sources": ["psu-establishment", "nrcs-appalachia"]
+      "sources": [
+        "psu-establishment",
+        "nrcs-appalachia"
+      ],
+      "native": false
     },
     {
       "id": "plantain",
       "commonName": "Forage Plantain",
       "scientificName": "Plantago lanceolata",
-      "type": "forb", "season": "cool", "lifecycle": "perennial",
-      "phMin": 5.5, "phMax": 7.0, "phTolerantLow": 5.3,
-      "drainage": ["well", "moderate"],
-      "droughtTolerance": 3, "floodTolerance": 2, "shadeTolerance": 2,
-      "fertilityNeed": "low", "grazingTolerance": 4, "establishmentEase": 4, "winterHardiness": 4,
+      "type": "forb",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "phMin": 5.5,
+      "phMax": 7.0,
+      "phTolerantLow": 5.3,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 3,
+      "floodTolerance": 2,
+      "shadeTolerance": 2,
+      "fertilityNeed": "low",
+      "grazingTolerance": 4,
+      "establishmentEase": 4,
+      "winterHardiness": 4,
       "nitrogenFixer": false,
-      "seedingRateMonoLow": 4, "seedingRateMonoHigh": 6,
-      "seedingRateMixLow": 1, "seedingRateMixHigh": 2,
-      "goalsServed": ["summer-forage", "soil-health", "extend-grazing"],
-      "challengesFit": ["low-fertility"],
+      "seedingRateMonoLow": 4,
+      "seedingRateMonoHigh": 6,
+      "seedingRateMixLow": 1,
+      "seedingRateMixHigh": 2,
+      "goalsServed": [
+        "summer-forage",
+        "soil-health",
+        "extend-grazing"
+      ],
+      "challengesFit": [
+        "low-fertility"
+      ],
       "summary": "A mineral-rich perennial forb that adds diversity, palatability, and trace minerals to a pasture mix.",
       "strengths": "Palatable and rich in minerals, tolerant of grazing and modest fertility, and quick to establish. A useful low-rate diversity component alongside chicory and clover.",
       "cautions": "Relatively short-lived and low-yielding; include as a minor mix component rather than a main forage.",
-      "sources": ["nrcs-plants", "nrcs-appalachia"]
+      "sources": [
+        "nrcs-plants",
+        "nrcs-appalachia"
+      ],
+      "native": false
     },
     {
       "id": "switchgrass",
       "commonName": "Switchgrass (native)",
       "scientificName": "Panicum virgatum",
-      "type": "grass", "season": "warm", "lifecycle": "perennial",
-      "phMin": 5.0, "phMax": 7.0, "phTolerantLow": 4.8,
-      "drainage": ["well", "moderate", "poor"],
-      "droughtTolerance": 5, "floodTolerance": 3, "shadeTolerance": 1,
-      "fertilityNeed": "low", "grazingTolerance": 3, "establishmentEase": 2, "winterHardiness": 5,
+      "type": "grass",
+      "season": "warm",
+      "lifecycle": "perennial",
+      "phMin": 5.0,
+      "phMax": 7.0,
+      "phTolerantLow": 4.8,
+      "drainage": [
+        "well",
+        "moderate",
+        "poor"
+      ],
+      "droughtTolerance": 5,
+      "floodTolerance": 3,
+      "shadeTolerance": 1,
+      "fertilityNeed": "low",
+      "grazingTolerance": 3,
+      "establishmentEase": 2,
+      "winterHardiness": 5,
       "nitrogenFixer": false,
-      "seedingRateMonoLow": 6, "seedingRateMonoHigh": 10,
-      "seedingRateMixLow": 4, "seedingRateMixHigh": 6,
-      "goalsServed": ["summer-forage", "drought", "erosion", "pollinators"],
-      "challengesFit": ["droughty", "slopes", "acidic", "low-fertility"],
+      "seedingRateMonoLow": 6,
+      "seedingRateMonoHigh": 10,
+      "seedingRateMixLow": 4,
+      "seedingRateMixHigh": 6,
+      "goalsServed": [
+        "summer-forage",
+        "drought",
+        "erosion",
+        "pollinators"
+      ],
+      "challengesFit": [
+        "droughty",
+        "slopes",
+        "acidic",
+        "low-fertility"
+      ],
       "summary": "A deep-rooted native warm-season grass that produces abundant summer grazing on droughty, low-fertility, or eroded ground.",
       "strengths": "Exceptional drought tolerance and summer production exactly when cool-season pastures slump; thrives on marginal, acidic, low-fertility, erosion-prone sites and provides excellent wildlife habitat.",
       "cautions": "Slow and finicky to establish (often a full year from dormant seed) and needs its own paddock managed separately from cool-season pasture. Graze at 18-20 inches and stop by ~8 inches to keep the stand vigorous.",
-      "sources": ["nrcs-plants", "vt-steep-pastures"]
+      "sources": [
+        "nrcs-plants",
+        "vt-steep-pastures"
+      ],
+      "native": true
     },
     {
       "id": "big-bluestem",
       "commonName": "Big Bluestem (native)",
       "scientificName": "Andropogon gerardii",
-      "type": "grass", "season": "warm", "lifecycle": "perennial",
-      "phMin": 5.5, "phMax": 7.0, "phTolerantLow": 5.2,
-      "drainage": ["well", "moderate"],
-      "droughtTolerance": 5, "floodTolerance": 2, "shadeTolerance": 1,
-      "fertilityNeed": "low", "grazingTolerance": 3, "establishmentEase": 2, "winterHardiness": 5,
+      "type": "grass",
+      "season": "warm",
+      "lifecycle": "perennial",
+      "phMin": 5.5,
+      "phMax": 7.0,
+      "phTolerantLow": 5.2,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 5,
+      "floodTolerance": 2,
+      "shadeTolerance": 1,
+      "fertilityNeed": "low",
+      "grazingTolerance": 3,
+      "establishmentEase": 2,
+      "winterHardiness": 5,
       "nitrogenFixer": false,
-      "seedingRateMonoLow": 8, "seedingRateMonoHigh": 10,
-      "seedingRateMixLow": 4, "seedingRateMixHigh": 6,
-      "goalsServed": ["summer-forage", "drought", "pollinators", "erosion"],
-      "challengesFit": ["droughty", "slopes", "low-fertility"],
+      "seedingRateMonoLow": 8,
+      "seedingRateMonoHigh": 10,
+      "seedingRateMixLow": 4,
+      "seedingRateMixHigh": 6,
+      "goalsServed": [
+        "summer-forage",
+        "drought",
+        "pollinators",
+        "erosion"
+      ],
+      "challengesFit": [
+        "droughty",
+        "slopes",
+        "low-fertility"
+      ],
       "summary": "The most palatable and highest-quality native warm-season grass for summer grazing on drought-prone upland soils.",
       "strengths": "High-quality, palatable summer forage with excellent drought tolerance; often planted in a native mix with indiangrass for summer pasture and wildlife habitat.",
       "cautions": "Slow to establish from dormant seed and needs a dedicated summer paddock with rotational grazing and adequate rest. Do not graze below 8 inches.",
-      "sources": ["nrcs-plants", "vt-steep-pastures"]
+      "sources": [
+        "nrcs-plants",
+        "vt-steep-pastures"
+      ],
+      "native": true
     },
     {
       "id": "indiangrass",
       "commonName": "Indiangrass (native)",
       "scientificName": "Sorghastrum nutans",
-      "type": "grass", "season": "warm", "lifecycle": "perennial",
-      "phMin": 5.0, "phMax": 7.0, "phTolerantLow": 4.8,
-      "drainage": ["well", "moderate"],
-      "droughtTolerance": 5, "floodTolerance": 2, "shadeTolerance": 1,
-      "fertilityNeed": "low", "grazingTolerance": 3, "establishmentEase": 2, "winterHardiness": 5,
+      "type": "grass",
+      "season": "warm",
+      "lifecycle": "perennial",
+      "phMin": 5.0,
+      "phMax": 7.0,
+      "phTolerantLow": 4.8,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 5,
+      "floodTolerance": 2,
+      "shadeTolerance": 1,
+      "fertilityNeed": "low",
+      "grazingTolerance": 3,
+      "establishmentEase": 2,
+      "winterHardiness": 5,
       "nitrogenFixer": false,
-      "seedingRateMonoLow": 8, "seedingRateMonoHigh": 10,
-      "seedingRateMixLow": 4, "seedingRateMixHigh": 6,
-      "goalsServed": ["summer-forage", "drought", "pollinators", "erosion"],
-      "challengesFit": ["droughty", "slopes", "acidic", "low-fertility"],
+      "seedingRateMonoLow": 8,
+      "seedingRateMonoHigh": 10,
+      "seedingRateMixLow": 4,
+      "seedingRateMixHigh": 6,
+      "goalsServed": [
+        "summer-forage",
+        "drought",
+        "pollinators",
+        "erosion"
+      ],
+      "challengesFit": [
+        "droughty",
+        "slopes",
+        "acidic",
+        "low-fertility"
+      ],
       "summary": "A drought-hardy native warm-season grass, usually mixed with big bluestem for summer pasture and wildlife cover.",
       "strengths": "Tolerates drought, acidity, and low fertility, produces good summer forage, and provides excellent nesting and wildlife habitat. Complements big bluestem in native mixes.",
       "cautions": "Slow establishment from dormant seed; best in a dedicated native warm-season paddock grazed rotationally with rest.",
-      "sources": ["nrcs-plants", "vt-steep-pastures"]
+      "sources": [
+        "nrcs-plants",
+        "vt-steep-pastures"
+      ],
+      "native": true
     },
     {
       "id": "eastern-gamagrass",
       "commonName": "Eastern Gamagrass (native)",
       "scientificName": "Tripsacum dactyloides",
-      "type": "grass", "season": "warm", "lifecycle": "perennial",
-      "phMin": 5.5, "phMax": 7.5, "phTolerantLow": 5.2,
-      "drainage": ["moderate", "poor", "wet"],
-      "droughtTolerance": 4, "floodTolerance": 4, "shadeTolerance": 1,
-      "fertilityNeed": "medium", "grazingTolerance": 3, "establishmentEase": 2, "winterHardiness": 5,
+      "type": "grass",
+      "season": "warm",
+      "lifecycle": "perennial",
+      "phMin": 5.5,
+      "phMax": 7.5,
+      "phTolerantLow": 5.2,
+      "drainage": [
+        "moderate",
+        "poor",
+        "wet"
+      ],
+      "droughtTolerance": 4,
+      "floodTolerance": 4,
+      "shadeTolerance": 1,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 3,
+      "establishmentEase": 2,
+      "winterHardiness": 5,
       "nitrogenFixer": false,
-      "seedingRateMonoLow": 8, "seedingRateMonoHigh": 12,
-      "seedingRateMixLow": 6, "seedingRateMixHigh": 10,
-      "goalsServed": ["summer-forage", "hay", "erosion"],
-      "challengesFit": ["wet", "droughty"],
+      "seedingRateMonoLow": 8,
+      "seedingRateMonoHigh": 12,
+      "seedingRateMixLow": 6,
+      "seedingRateMixHigh": 10,
+      "goalsServed": [
+        "summer-forage",
+        "hay",
+        "erosion"
+      ],
+      "challengesFit": [
+        "wet",
+        "droughty"
+      ],
       "summary": "A high-yielding native warm-season grass that tolerates both wet ground and drought and makes excellent summer forage or hay.",
       "strengths": "Very high-yielding and palatable summer forage that handles poorly drained AND droughty soils, with deep roots good for streambanks and erosion control.",
       "cautions": "Hard to establish (seed needs cold stratification) and very palatable — do not graze below 6-8 inches or cattle will graze it out. Best in its own well-rested paddock.",
-      "sources": ["nrcs-plants", "vt-steep-pastures"]
+      "sources": [
+        "nrcs-plants",
+        "vt-steep-pastures"
+      ],
+      "native": true
     },
     {
       "id": "crabgrass",
       "commonName": "Forage Crabgrass",
       "scientificName": "Digitaria sanguinalis",
-      "type": "grass", "season": "warm", "lifecycle": "annual",
-      "phMin": 5.5, "phMax": 7.0, "phTolerantLow": 5.2,
-      "drainage": ["well", "moderate"],
-      "droughtTolerance": 3, "floodTolerance": 2, "shadeTolerance": 2,
-      "fertilityNeed": "low", "grazingTolerance": 5, "establishmentEase": 5, "winterHardiness": 1,
+      "type": "grass",
+      "season": "warm",
+      "lifecycle": "annual",
+      "phMin": 5.5,
+      "phMax": 7.0,
+      "phTolerantLow": 5.2,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 3,
+      "floodTolerance": 2,
+      "shadeTolerance": 2,
+      "fertilityNeed": "low",
+      "grazingTolerance": 5,
+      "establishmentEase": 5,
+      "winterHardiness": 1,
       "nitrogenFixer": false,
-      "seedingRateMonoLow": 4, "seedingRateMonoHigh": 6,
-      "seedingRateMixLow": 2, "seedingRateMixHigh": 4,
-      "goalsServed": ["summer-forage", "quick-establish", "low-input"],
-      "challengesFit": ["droughty", "low-fertility"],
+      "seedingRateMonoLow": 4,
+      "seedingRateMonoHigh": 6,
+      "seedingRateMixLow": 2,
+      "seedingRateMixHigh": 4,
+      "goalsServed": [
+        "summer-forage",
+        "quick-establish",
+        "low-input"
+      ],
+      "challengesFit": [
+        "droughty",
+        "low-fertility"
+      ],
       "summary": "A reseeding summer annual grass that volunteers readily and provides surprisingly high-quality summer grazing when cool-season forage fades.",
       "strengths": "Improved forage types are palatable, digestible, and productive in mid-summer heat, establish very fast, tolerate close grazing, and reseed reliably year to year with light disturbance.",
       "cautions": "A warm-season annual that dies at frost and depends on reseeding, so leave it to set seed. Often grown as a companion in fields also used for cool-season forage.",
-      "sources": ["nrcs-appalachia", "nrcs-plants"]
+      "sources": [
+        "nrcs-appalachia",
+        "nrcs-plants"
+      ],
+      "native": false
     },
     {
       "id": "bermudagrass",
       "commonName": "Bermudagrass",
       "scientificName": "Cynodon dactylon",
-      "type": "grass", "season": "warm", "lifecycle": "perennial",
-      "phMin": 5.5, "phMax": 7.0, "phTolerantLow": 5.3,
-      "drainage": ["well", "moderate"],
-      "droughtTolerance": 4, "floodTolerance": 2, "shadeTolerance": 1,
-      "fertilityNeed": "medium", "grazingTolerance": 5, "establishmentEase": 3, "winterHardiness": 2,
+      "type": "grass",
+      "season": "warm",
+      "lifecycle": "perennial",
+      "phMin": 5.5,
+      "phMax": 7.0,
+      "phTolerantLow": 5.3,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 4,
+      "floodTolerance": 2,
+      "shadeTolerance": 1,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 5,
+      "establishmentEase": 3,
+      "winterHardiness": 2,
       "nitrogenFixer": false,
-      "seedingRateMonoLow": 5, "seedingRateMonoHigh": 10,
-      "seedingRateMixLow": 3, "seedingRateMixHigh": 6,
-      "goalsServed": ["summer-forage", "drought", "erosion"],
-      "challengesFit": ["droughty", "slopes"],
+      "seedingRateMonoLow": 5,
+      "seedingRateMonoHigh": 10,
+      "seedingRateMixLow": 3,
+      "seedingRateMixHigh": 6,
+      "goalsServed": [
+        "summer-forage",
+        "drought",
+        "erosion"
+      ],
+      "challengesFit": [
+        "droughty",
+        "slopes"
+      ],
       "summary": "A sod-forming warm-season perennial for summer grazing at lower elevations and warmer valleys of the southern Appalachians.",
       "strengths": "Very tolerant of close grazing and traffic, drought-hardy, and productive in summer heat; forms a dense erosion-resistant sod on warm sites.",
       "cautions": "Limited winter hardiness — reliable only at lower elevations and in the southern part of the region; can winterkill in colder mountain counties and can become weedy in cropland. Confirm cold-hardy varieties for your location.",
-      "sources": ["nrcs-plants", "nrcs-appalachia"]
+      "sources": [
+        "nrcs-plants",
+        "nrcs-appalachia"
+      ],
+      "native": false
+    },
+    {
+      "id": "little-bluestem",
+      "commonName": "Little Bluestem (native)",
+      "scientificName": "Schizachyrium scoparium",
+      "type": "grass",
+      "season": "warm",
+      "lifecycle": "perennial",
+      "native": true,
+      "phMin": 5.0,
+      "phMax": 7.0,
+      "phTolerantLow": 4.8,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 5,
+      "floodTolerance": 1,
+      "shadeTolerance": 2,
+      "fertilityNeed": "low",
+      "grazingTolerance": 3,
+      "establishmentEase": 2,
+      "winterHardiness": 5,
+      "nitrogenFixer": false,
+      "seedingRateMonoLow": 10,
+      "seedingRateMonoHigh": 12,
+      "seedingRateMixLow": 3,
+      "seedingRateMixHigh": 5,
+      "goalsServed": [
+        "summer-forage",
+        "drought",
+        "erosion",
+        "pollinators",
+        "low-input"
+      ],
+      "challengesFit": [
+        "droughty",
+        "slopes",
+        "acidic",
+        "low-fertility"
+      ],
+      "summary": "A fine-leaved native warm-season bunchgrass for droughty, low-fertility, erosion-prone ground and outstanding wildlife cover.",
+      "strengths": "Thrives on the poorest, driest, most acidic sites, holds soil on steep ground, and gives excellent nesting/brood cover. Beautiful russet fall color.",
+      "cautions": "Slow to establish from dormant seed and modest yield; best in a native warm-season paddock grazed tall (start ~10-12 in, stop ~4-6 in) with rest.",
+      "sources": [
+        "pb1752",
+        "nrcs-plants"
+      ]
+    },
+    {
+      "id": "sideoats-grama",
+      "commonName": "Sideoats Grama (native)",
+      "scientificName": "Bouteloua curtipendula",
+      "type": "grass",
+      "season": "warm",
+      "lifecycle": "perennial",
+      "native": true,
+      "phMin": 5.5,
+      "phMax": 7.8,
+      "phTolerantLow": 5.2,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 5,
+      "floodTolerance": 1,
+      "shadeTolerance": 1,
+      "fertilityNeed": "low",
+      "grazingTolerance": 3,
+      "establishmentEase": 2,
+      "winterHardiness": 5,
+      "nitrogenFixer": false,
+      "seedingRateMonoLow": 4,
+      "seedingRateMonoHigh": 6,
+      "seedingRateMixLow": 2,
+      "seedingRateMixHigh": 4,
+      "goalsServed": [
+        "summer-forage",
+        "drought",
+        "erosion",
+        "pollinators",
+        "low-input"
+      ],
+      "challengesFit": [
+        "droughty",
+        "slopes"
+      ],
+      "summary": "A drought-hardy short native warm-season grass, especially good on higher-pH, limestone-influenced, rocky slopes.",
+      "strengths": "Very drought tolerant, palatable, and well adapted to droughty calcareous or rocky ground; good nesting cover and pollinator value.",
+      "cautions": "Prefers near-neutral/limestone soils and is less productive on strongly acidic sites; slow to establish. Best in a native summer paddock.",
+      "sources": [
+        "pb1752",
+        "nrcs-plants"
+      ]
+    },
+    {
+      "id": "virginia-wildrye",
+      "commonName": "Virginia Wildrye (native, PA ecotype)",
+      "scientificName": "Elymus virginicus",
+      "type": "grass",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "native": true,
+      "phMin": 5.5,
+      "phMax": 7.5,
+      "phTolerantLow": 5.2,
+      "drainage": [
+        "well",
+        "moderate",
+        "poor"
+      ],
+      "droughtTolerance": 3,
+      "floodTolerance": 3,
+      "shadeTolerance": 4,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 3,
+      "establishmentEase": 4,
+      "winterHardiness": 5,
+      "nitrogenFixer": false,
+      "seedingRateMonoLow": 8,
+      "seedingRateMonoHigh": 12,
+      "seedingRateMixLow": 4,
+      "seedingRateMixHigh": 8,
+      "goalsServed": [
+        "extend-grazing",
+        "soil-health",
+        "erosion",
+        "pollinators"
+      ],
+      "challengesFit": [
+        "wet",
+        "slopes",
+        "acidic"
+      ],
+      "summary": "Appalachia's own native cool-season grass — shade-tolerant, easy to establish, and at home on moist bottoms and wooded edges.",
+      "strengths": "A true regional native cool-season grass: establishes far more easily than native warm-season grasses, tolerates shade and wet ground, and is excellent for silvopasture, streambanks, and cool-season diversity.",
+      "cautions": "Shorter-lived and lower-yielding than tall fescue; graze rotationally and let it reseed. Use a regional (e.g. PA) ecotype for best adaptation.",
+      "sources": [
+        "nrcs-plants",
+        "ernst-src"
+      ]
+    },
+    {
+      "id": "canada-wildrye",
+      "commonName": "Canada Wildrye (native)",
+      "scientificName": "Elymus canadensis",
+      "type": "grass",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "native": true,
+      "phMin": 5.5,
+      "phMax": 8.0,
+      "phTolerantLow": 5.3,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 4,
+      "floodTolerance": 2,
+      "shadeTolerance": 3,
+      "fertilityNeed": "low",
+      "grazingTolerance": 3,
+      "establishmentEase": 5,
+      "winterHardiness": 5,
+      "nitrogenFixer": false,
+      "seedingRateMonoLow": 8,
+      "seedingRateMonoHigh": 12,
+      "seedingRateMixLow": 4,
+      "seedingRateMixHigh": 6,
+      "goalsServed": [
+        "quick-establish",
+        "erosion",
+        "extend-grazing",
+        "pollinators"
+      ],
+      "challengesFit": [
+        "droughty",
+        "slopes"
+      ],
+      "summary": "A fast-establishing native cool-season grass — an ideal quick-cover nurse crop that buys time while slower natives fill in.",
+      "strengths": "Germinates and establishes very fast for a native, giving quick erosion cover and early grazing; drought-tolerant and cold-hardy.",
+      "cautions": "Short-lived (a few years) and thins as longer-lived species take over; treat it as a nurse/cover component rather than the backbone.",
+      "sources": [
+        "nrcs-plants",
+        "pb1752"
+      ]
+    },
+    {
+      "id": "bottlebrush-grass",
+      "commonName": "Bottlebrush Grass (native)",
+      "scientificName": "Elymus hystrix",
+      "type": "grass",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "native": true,
+      "phMin": 5.5,
+      "phMax": 7.5,
+      "phTolerantLow": 5.2,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 3,
+      "floodTolerance": 2,
+      "shadeTolerance": 5,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 2,
+      "establishmentEase": 3,
+      "winterHardiness": 5,
+      "nitrogenFixer": false,
+      "seedingRateMonoLow": 6,
+      "seedingRateMonoHigh": 10,
+      "seedingRateMixLow": 3,
+      "seedingRateMixHigh": 5,
+      "goalsServed": [
+        "soil-health",
+        "pollinators",
+        "erosion"
+      ],
+      "challengesFit": [
+        "slopes",
+        "acidic"
+      ],
+      "summary": "A shade-loving woodland native cool-season grass for silvopasture and shaded field edges where other grasses thin out.",
+      "strengths": "The most shade-tolerant grass in the set — grows under partial canopy where fescue and orchardgrass fail, adding native diversity to wooded edges and silvopasture.",
+      "cautions": "Modest forage yield and not very grazing-tolerant; use as a shade/diversity component, not a main pasture grass.",
+      "sources": [
+        "nrcs-plants"
+      ]
+    },
+    {
+      "id": "intermediate-wheatgrass",
+      "commonName": "Intermediate Wheatgrass",
+      "scientificName": "Thinopyrum intermedium",
+      "type": "grass",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "native": false,
+      "phMin": 6.0,
+      "phMax": 8.0,
+      "phTolerantLow": 5.6,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 4,
+      "floodTolerance": 2,
+      "shadeTolerance": 2,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 3,
+      "establishmentEase": 3,
+      "winterHardiness": 5,
+      "nitrogenFixer": false,
+      "seedingRateMonoLow": 12,
+      "seedingRateMonoHigh": 16,
+      "seedingRateMixLow": 6,
+      "seedingRateMixHigh": 10,
+      "goalsServed": [
+        "hay",
+        "drought",
+        "erosion",
+        "soil-health",
+        "extend-grazing"
+      ],
+      "challengesFit": [
+        "droughty",
+        "slopes"
+      ],
+      "summary": "A sod-forming, drought-hardy cool-season grass with strong spring/fall growth; the perennial-grain type (Kernza) doubles as forage.",
+      "strengths": "Persistent and winter-hardy with a spreading root system that resists erosion; good drought tolerance and quality on better-drained upland soils. Kernza® cultivars offer dual grain-and-forage use.",
+      "cautions": "Prefers near-neutral, well-drained ground and is less suited to strongly acidic or wet Appalachian soils; slower to establish than ryegrass.",
+      "sources": [
+        "nrcs-plants"
+      ]
+    },
+    {
+      "id": "ryegrass-blend",
+      "commonName": "Perennial × Italian Ryegrass blend",
+      "scientificName": "Lolium perenne × Festuca perennis",
+      "type": "grass",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "native": false,
+      "phMin": 6.0,
+      "phMax": 7.0,
+      "phTolerantLow": 5.6,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 2,
+      "floodTolerance": 2,
+      "shadeTolerance": 2,
+      "fertilityNeed": "high",
+      "grazingTolerance": 5,
+      "establishmentEase": 5,
+      "winterHardiness": 3,
+      "nitrogenFixer": false,
+      "seedingRateMonoLow": 20,
+      "seedingRateMonoHigh": 25,
+      "seedingRateMixLow": 4,
+      "seedingRateMixHigh": 8,
+      "goalsServed": [
+        "quick-establish",
+        "extend-grazing",
+        "hay"
+      ],
+      "challengesFit": [],
+      "summary": "A 75% perennial / 25% Italian ryegrass blend: the Italian gives fast first-year growth, the perennial gives a few years of high-quality grazing.",
+      "strengths": "Fastest establishment and highest digestibility in the set, superb under rotational grazing on fertile, moist ground; a strong nurse component that produces the first season.",
+      "cautions": "Short-lived and winterkill-prone on exposed or higher-elevation sites; needs good fertility and moisture. Keep it a minor component of a permanent stand.",
+      "sources": [
+        "psu-establishment",
+        "nrcs-plants"
+      ]
+    },
+    {
+      "id": "meadow-fescue",
+      "commonName": "Meadow Fescue",
+      "scientificName": "Festuca pratensis",
+      "type": "grass",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "native": false,
+      "phMin": 5.6,
+      "phMax": 7.0,
+      "phTolerantLow": 5.3,
+      "drainage": [
+        "well",
+        "moderate",
+        "poor"
+      ],
+      "droughtTolerance": 3,
+      "floodTolerance": 3,
+      "shadeTolerance": 3,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 4,
+      "establishmentEase": 4,
+      "winterHardiness": 5,
+      "nitrogenFixer": false,
+      "seedingRateMonoLow": 12,
+      "seedingRateMonoHigh": 16,
+      "seedingRateMixLow": 6,
+      "seedingRateMixHigh": 10,
+      "goalsServed": [
+        "extend-grazing",
+        "hay",
+        "soil-health",
+        "reduce-fescue-tox"
+      ],
+      "challengesFit": [
+        "wet",
+        "slopes"
+      ],
+      "summary": "A soft-leaved, highly palatable non-toxic fescue — more winter-hardy and persistent than orchardgrass on cool, moist sites, and an excellent clover companion.",
+      "strengths": "Combines tall fescue-like persistence and winter hardiness with orchardgrass-like palatability, no toxic endophyte, and superb compatibility with clovers; great on cooler, wetter ground.",
+      "cautions": "Lower-yielding than tall fescue and less heat/drought tolerant; shines in cool, moist pastures and mixes rather than droughty ridges.",
+      "sources": [
+        "nrcs-plants",
+        "psu-establishment"
+      ]
+    },
+    {
+      "id": "maximilian-sunflower",
+      "commonName": "Maximilian Sunflower (native)",
+      "scientificName": "Helianthus maximiliani",
+      "type": "forb",
+      "season": "warm",
+      "lifecycle": "perennial",
+      "native": true,
+      "phMin": 5.5,
+      "phMax": 7.5,
+      "phTolerantLow": 5.2,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 5,
+      "floodTolerance": 1,
+      "shadeTolerance": 1,
+      "fertilityNeed": "low",
+      "grazingTolerance": 3,
+      "establishmentEase": 3,
+      "winterHardiness": 5,
+      "nitrogenFixer": false,
+      "seedingRateMonoLow": 2,
+      "seedingRateMonoHigh": 4,
+      "seedingRateMixLow": 0.5,
+      "seedingRateMixHigh": 1.5,
+      "goalsServed": [
+        "pollinators",
+        "summer-forage",
+        "soil-health",
+        "drought",
+        "low-input"
+      ],
+      "challengesFit": [
+        "droughty",
+        "slopes",
+        "low-fertility"
+      ],
+      "summary": "A tall, deep-rooted native perennial sunflower — a top late-season pollinator plant that livestock and wildlife also browse.",
+      "strengths": "Blooms in late summer/fall when little else does, feeding pollinators; deep roots break compaction and add organic matter; young growth is browsed by cattle and wildlife.",
+      "cautions": "Tall and can dominate if over-seeded — keep it a low-rate diversity/pollinator component and graze or clip to manage height.",
+      "sources": [
+        "nrcs-plants",
+        "ernst-src"
+      ]
+    },
+    {
+      "id": "oxeye-sunflower",
+      "commonName": "Oxeye / False Sunflower (native)",
+      "scientificName": "Heliopsis helianthoides",
+      "type": "forb",
+      "season": "warm",
+      "lifecycle": "perennial",
+      "native": true,
+      "phMin": 5.5,
+      "phMax": 7.5,
+      "phTolerantLow": 5.2,
+      "drainage": [
+        "well",
+        "moderate",
+        "poor"
+      ],
+      "droughtTolerance": 3,
+      "floodTolerance": 2,
+      "shadeTolerance": 3,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 3,
+      "establishmentEase": 4,
+      "winterHardiness": 5,
+      "nitrogenFixer": false,
+      "seedingRateMonoLow": 2,
+      "seedingRateMonoHigh": 4,
+      "seedingRateMixLow": 0.5,
+      "seedingRateMixHigh": 1.5,
+      "goalsServed": [
+        "pollinators",
+        "soil-health",
+        "summer-forage"
+      ],
+      "challengesFit": [
+        "slopes"
+      ],
+      "summary": "An adaptable, long-blooming native perennial forb that is one of the easier natives to establish and a reliable pollinator source.",
+      "strengths": "Tolerates a wide range of sites including partial shade and heavier soils, establishes readily, and provides months of pollinator bloom with palatable young foliage.",
+      "cautions": "A diversity/pollinator component rather than a forage staple; keep the seeding rate low in a mix.",
+      "sources": [
+        "nrcs-plants",
+        "ernst-src"
+      ]
+    },
+    {
+      "id": "grayhead-coneflower",
+      "commonName": "Gray-headed (Pinnate) Prairie Coneflower (native)",
+      "scientificName": "Ratibida pinnata",
+      "type": "forb",
+      "season": "warm",
+      "lifecycle": "perennial",
+      "native": true,
+      "phMin": 5.5,
+      "phMax": 7.5,
+      "phTolerantLow": 5.2,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 4,
+      "floodTolerance": 2,
+      "shadeTolerance": 2,
+      "fertilityNeed": "low",
+      "grazingTolerance": 2,
+      "establishmentEase": 3,
+      "winterHardiness": 5,
+      "nitrogenFixer": false,
+      "seedingRateMonoLow": 1,
+      "seedingRateMonoHigh": 3,
+      "seedingRateMixLow": 0.25,
+      "seedingRateMixHigh": 1,
+      "goalsServed": [
+        "pollinators",
+        "soil-health",
+        "drought"
+      ],
+      "challengesFit": [
+        "droughty",
+        "slopes",
+        "low-fertility"
+      ],
+      "summary": "A deep-rooted, drought-tolerant native prairie forb and premier pollinator plant that adds structure and diversity.",
+      "strengths": "Very drought- and poor-soil tolerant with a deep taproot; long summer bloom is a magnet for native bees and butterflies.",
+      "cautions": "Low forage value and not grazing-tolerant — include as a low-rate pollinator/diversity component.",
+      "sources": [
+        "nrcs-plants",
+        "ernst-src"
+      ]
+    },
+    {
+      "id": "lanceleaf-coreopsis",
+      "commonName": "Lanceleaf Coreopsis (native)",
+      "scientificName": "Coreopsis lanceolata",
+      "type": "forb",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "native": true,
+      "phMin": 5.0,
+      "phMax": 7.0,
+      "phTolerantLow": 4.8,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 4,
+      "floodTolerance": 1,
+      "shadeTolerance": 2,
+      "fertilityNeed": "low",
+      "grazingTolerance": 2,
+      "establishmentEase": 4,
+      "winterHardiness": 5,
+      "nitrogenFixer": false,
+      "seedingRateMonoLow": 1,
+      "seedingRateMonoHigh": 3,
+      "seedingRateMixLow": 0.25,
+      "seedingRateMixHigh": 1,
+      "goalsServed": [
+        "pollinators",
+        "soil-health",
+        "drought",
+        "low-input"
+      ],
+      "challengesFit": [
+        "droughty",
+        "acidic",
+        "slopes",
+        "low-fertility"
+      ],
+      "summary": "A tough, early-blooming native perennial forb that thrives on poor, acidic, droughty ground and starts the pollinator season.",
+      "strengths": "One of the easiest natives to establish, tolerating acidic and infertile soils; early-summer bloom supports pollinators before prairie species flower.",
+      "cautions": "Light forage value and short-lived, though it reseeds; use as a low-rate diversity/pollinator component.",
+      "sources": [
+        "nrcs-plants",
+        "roundstone-src"
+      ]
+    },
+    {
+      "id": "small-burnet",
+      "commonName": "Small Burnet",
+      "scientificName": "Sanguisorba minor",
+      "type": "forb",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "native": false,
+      "phMin": 6.0,
+      "phMax": 7.5,
+      "phTolerantLow": 5.5,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 4,
+      "floodTolerance": 1,
+      "shadeTolerance": 2,
+      "fertilityNeed": "low",
+      "grazingTolerance": 4,
+      "establishmentEase": 4,
+      "winterHardiness": 5,
+      "nitrogenFixer": false,
+      "seedingRateMonoLow": 8,
+      "seedingRateMonoHigh": 12,
+      "seedingRateMixLow": 2,
+      "seedingRateMixHigh": 4,
+      "goalsServed": [
+        "pollinators",
+        "summer-forage",
+        "extend-grazing",
+        "drought"
+      ],
+      "challengesFit": [
+        "droughty",
+        "slopes"
+      ],
+      "summary": "A palatable, semi-evergreen forb that stays green through drought and cold, extending grazing on the shoulders of the season.",
+      "strengths": "Highly palatable and drought-hardy, holds green leaves into winter and early spring for shoulder-season grazing and wildlife; adds mineral-rich diversity.",
+      "cautions": "Introduced (Eurasian) but non-invasive; prefers better-drained, near-neutral soils. A minor mix component.",
+      "sources": [
+        "nrcs-plants"
+      ]
+    },
+    {
+      "id": "purple-prairie-clover",
+      "commonName": "Purple Prairie Clover (native)",
+      "scientificName": "Dalea purpurea",
+      "type": "legume",
+      "season": "warm",
+      "lifecycle": "perennial",
+      "native": true,
+      "phMin": 5.5,
+      "phMax": 7.5,
+      "phTolerantLow": 5.2,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 5,
+      "floodTolerance": 1,
+      "shadeTolerance": 1,
+      "fertilityNeed": "low",
+      "grazingTolerance": 3,
+      "establishmentEase": 2,
+      "winterHardiness": 5,
+      "nitrogenFixer": true,
+      "seedingRateMonoLow": 4,
+      "seedingRateMonoHigh": 8,
+      "seedingRateMixLow": 1,
+      "seedingRateMixHigh": 3,
+      "goalsServed": [
+        "nitrogen",
+        "pollinators",
+        "soil-health",
+        "drought",
+        "low-input",
+        "summer-forage"
+      ],
+      "challengesFit": [
+        "droughty",
+        "slopes",
+        "low-fertility"
+      ],
+      "summary": "A high-quality, drought-proof native legume that fixes nitrogen, feeds pollinators, and is very palatable to grazing livestock and wildlife.",
+      "strengths": "Deep taproot delivers outstanding drought tolerance on poor, droughty ground; one of the most nutritious native legumes, excellent pollinator value, and readily grazed.",
+      "cautions": "Slow to establish and not very tolerant of heavy repeated grazing while young; give it a rest-rotation and a couple of years to reach full production.",
+      "sources": [
+        "nrcs-plants",
+        "roundstone-src",
+        "ernst-src"
+      ]
+    },
+    {
+      "id": "illinois-bundleflower",
+      "commonName": "Illinois Bundleflower (native)",
+      "scientificName": "Desmanthus illinoensis",
+      "type": "legume",
+      "season": "warm",
+      "lifecycle": "perennial",
+      "native": true,
+      "phMin": 6.0,
+      "phMax": 8.0,
+      "phTolerantLow": 5.6,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 5,
+      "floodTolerance": 2,
+      "shadeTolerance": 1,
+      "fertilityNeed": "low",
+      "grazingTolerance": 3,
+      "establishmentEase": 3,
+      "winterHardiness": 5,
+      "nitrogenFixer": true,
+      "seedingRateMonoLow": 6,
+      "seedingRateMonoHigh": 10,
+      "seedingRateMixLow": 2,
+      "seedingRateMixHigh": 4,
+      "goalsServed": [
+        "nitrogen",
+        "soil-health",
+        "drought",
+        "pollinators",
+        "summer-forage",
+        "low-input"
+      ],
+      "challengesFit": [
+        "droughty",
+        "slopes"
+      ],
+      "summary": "One of the most palatable and nutritious native legumes — a deep-rooted, drought-hardy nitrogen-fixer prized for both forage and wildlife.",
+      "strengths": "High protein and very palatable to livestock; deep taproot gives strong drought tolerance and soil-building; abundant seed is excellent quail and songbird food.",
+      "cautions": "Prefers near-neutral, well-drained ground and establishes moderately slowly; graze rotationally to keep it in the stand.",
+      "sources": [
+        "nrcs-plants",
+        "ernst-src"
+      ]
+    },
+    {
+      "id": "showy-ticktrefoil",
+      "commonName": "Showy Tick-trefoil (native)",
+      "scientificName": "Desmodium canadense",
+      "type": "legume",
+      "season": "warm",
+      "lifecycle": "perennial",
+      "native": true,
+      "phMin": 5.0,
+      "phMax": 7.0,
+      "phTolerantLow": 4.8,
+      "drainage": [
+        "well",
+        "moderate",
+        "poor"
+      ],
+      "droughtTolerance": 3,
+      "floodTolerance": 3,
+      "shadeTolerance": 3,
+      "fertilityNeed": "low",
+      "grazingTolerance": 4,
+      "establishmentEase": 3,
+      "winterHardiness": 5,
+      "nitrogenFixer": true,
+      "seedingRateMonoLow": 4,
+      "seedingRateMonoHigh": 8,
+      "seedingRateMixLow": 1,
+      "seedingRateMixHigh": 3,
+      "goalsServed": [
+        "nitrogen",
+        "pollinators",
+        "soil-health",
+        "summer-forage",
+        "low-input"
+      ],
+      "challengesFit": [
+        "acidic",
+        "low-fertility",
+        "slopes",
+        "wet"
+      ],
+      "summary": "An Appalachian-native perennial legume with exceptional forage and wildlife value that tolerates acidic, lower-fertility soils.",
+      "strengths": "Very high forage quality and palatability plus superb pollinator and wildlife value; tolerates acidity and partial shade, fixes nitrogen, and persists under rotational grazing.",
+      "cautions": "Sticky seed pods (\"beggar-ticks\") cling to animals — a minor nuisance; establish with reduced competition.",
+      "sources": [
+        "nrcs-plants",
+        "ernst-src"
+      ]
+    },
+    {
+      "id": "slender-lespedeza",
+      "commonName": "Slender (Virginia) Lespedeza (native)",
+      "scientificName": "Lespedeza virginica",
+      "type": "legume",
+      "season": "warm",
+      "lifecycle": "perennial",
+      "native": true,
+      "phMin": 4.8,
+      "phMax": 6.5,
+      "phTolerantLow": 4.5,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 4,
+      "floodTolerance": 1,
+      "shadeTolerance": 2,
+      "fertilityNeed": "low",
+      "grazingTolerance": 3,
+      "establishmentEase": 3,
+      "winterHardiness": 4,
+      "nitrogenFixer": true,
+      "seedingRateMonoLow": 8,
+      "seedingRateMonoHigh": 12,
+      "seedingRateMixLow": 3,
+      "seedingRateMixHigh": 6,
+      "goalsServed": [
+        "nitrogen",
+        "summer-forage",
+        "pollinators",
+        "low-input",
+        "soil-health"
+      ],
+      "challengesFit": [
+        "acidic",
+        "low-fertility",
+        "droughty",
+        "slopes"
+      ],
+      "summary": "A native perennial lespedeza (not the invasive sericea) built for the acidic, low-fertility soils that dominate Appalachian hill pastures.",
+      "strengths": "Fixes nitrogen and produces summer forage on sour, infertile ground where most legumes fail; excellent quail and pollinator food and a genuine regional native.",
+      "cautions": "Modest yield and best as a summer/low-input component; do not confuse with invasive sericea lespedeza (Lespedeza cuneata), which should be avoided.",
+      "sources": [
+        "nrcs-plants",
+        "pb1752"
+      ]
+    },
+    {
+      "id": "partridge-pea",
+      "commonName": "Partridge Pea (native)",
+      "scientificName": "Chamaecrista fasciculata",
+      "type": "legume",
+      "season": "warm",
+      "lifecycle": "annual",
+      "native": true,
+      "phMin": 4.8,
+      "phMax": 7.0,
+      "phTolerantLow": 4.5,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 4,
+      "floodTolerance": 1,
+      "shadeTolerance": 1,
+      "fertilityNeed": "low",
+      "grazingTolerance": 2,
+      "establishmentEase": 4,
+      "winterHardiness": 3,
+      "nitrogenFixer": true,
+      "seedingRateMonoLow": 8,
+      "seedingRateMonoHigh": 15,
+      "seedingRateMixLow": 2,
+      "seedingRateMixHigh": 5,
+      "goalsServed": [
+        "nitrogen",
+        "pollinators",
+        "soil-health",
+        "low-input"
+      ],
+      "challengesFit": [
+        "acidic",
+        "low-fertility",
+        "droughty",
+        "slopes"
+      ],
+      "summary": "A native reseeding annual legume that fixes nitrogen on the poorest acidic soils and is a premier pollinator and quail plant.",
+      "strengths": "Establishes easily and reseeds on sour, droughty, infertile ground, fixing nitrogen and providing outstanding pollinator bloom and wildlife seed.",
+      "cautions": "Foliage and seed can be cathartic/mildly toxic to livestock if eaten in quantity — keep it a low-rate wildlife/pollinator and soil-building component, not a primary forage.",
+      "sources": [
+        "nrcs-plants",
+        "roundstone-src"
+      ]
+    },
+    {
+      "id": "sainfoin",
+      "commonName": "Sainfoin",
+      "scientificName": "Onobrychis viciifolia",
+      "type": "legume",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "native": false,
+      "phMin": 6.0,
+      "phMax": 8.0,
+      "phTolerantLow": 5.8,
+      "drainage": [
+        "well"
+      ],
+      "droughtTolerance": 5,
+      "floodTolerance": 1,
+      "shadeTolerance": 1,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 2,
+      "establishmentEase": 3,
+      "winterHardiness": 4,
+      "nitrogenFixer": true,
+      "seedingRateMonoLow": 25,
+      "seedingRateMonoHigh": 35,
+      "seedingRateMixLow": 10,
+      "seedingRateMixHigh": 18,
+      "goalsServed": [
+        "hay",
+        "drought",
+        "nitrogen",
+        "pollinators",
+        "soil-health"
+      ],
+      "challengesFit": [
+        "droughty"
+      ],
+      "summary": "A non-bloating, deep-rooted perennial legume (\"holy hay\") — drought-hardy, high quality, and a superb pollinator plant on well-drained, near-neutral soils.",
+      "strengths": "Condensed tannins make it non-bloating and improve protein use; a deep taproot gives excellent drought tolerance and high-quality hay or grazing; famous nectar source for bees.",
+      "cautions": "Requires well-drained, near-neutral ground — it will not tolerate wet or strongly acidic Appalachian soils; graze rotationally with rest and use large seed at a high rate.",
+      "sources": [
+        "nrcs-plants"
+      ]
+    },
+    {
+      "id": "kura-clover",
+      "commonName": "Kura Clover (often blended with white)",
+      "scientificName": "Trifolium ambiguum",
+      "type": "legume",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "native": false,
+      "phMin": 6.0,
+      "phMax": 7.0,
+      "phTolerantLow": 5.7,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 4,
+      "floodTolerance": 2,
+      "shadeTolerance": 2,
+      "fertilityNeed": "medium",
+      "grazingTolerance": 5,
+      "establishmentEase": 1,
+      "winterHardiness": 5,
+      "nitrogenFixer": true,
+      "seedingRateMonoLow": 8,
+      "seedingRateMonoHigh": 10,
+      "seedingRateMixLow": 4,
+      "seedingRateMixHigh": 6,
+      "goalsServed": [
+        "nitrogen",
+        "soil-health",
+        "extend-grazing",
+        "pollinators"
+      ],
+      "challengesFit": [
+        "slopes"
+      ],
+      "summary": "An extraordinarily persistent, rhizomatous perennial clover that, once established, tolerates hard grazing for decades — often sown blended with white clover.",
+      "strengths": "Spreads by rhizomes and can persist for decades under close, continuous grazing where white clover fades; deep roots, strong nitrogen fixation, excellent pollinator value.",
+      "cautions": "Very slow to establish (often a full year, needs its specific inoculant) and can cause bloat — keep grass in the mix. Blending with white clover gives quicker early cover while kura establishes.",
+      "sources": [
+        "uky-kura",
+        "nrcs-plants"
+      ]
+    },
+    {
+      "id": "balansa-clover",
+      "commonName": "Balansa Clover",
+      "scientificName": "Trifolium michelianum",
+      "type": "legume",
+      "season": "cool",
+      "lifecycle": "annual",
+      "native": false,
+      "phMin": 4.5,
+      "phMax": 8.0,
+      "phTolerantLow": 4.5,
+      "drainage": [
+        "well",
+        "moderate",
+        "poor"
+      ],
+      "droughtTolerance": 2,
+      "floodTolerance": 3,
+      "shadeTolerance": 2,
+      "fertilityNeed": "low",
+      "grazingTolerance": 4,
+      "establishmentEase": 5,
+      "winterHardiness": 3,
+      "nitrogenFixer": true,
+      "seedingRateMonoLow": 3,
+      "seedingRateMonoHigh": 6,
+      "seedingRateMixLow": 1,
+      "seedingRateMixHigh": 4,
+      "goalsServed": [
+        "nitrogen",
+        "quick-establish",
+        "pollinators",
+        "soil-health",
+        "extend-grazing"
+      ],
+      "challengesFit": [
+        "acidic",
+        "wet",
+        "low-fertility"
+      ],
+      "summary": "A fast, prolific reseeding annual clover with an exceptionally wide pH range — it thrives on the acidic, sometimes wet soils common across Appalachia.",
+      "strengths": "Tolerates pH as low as 4.5 and wet feet, establishes and fixes nitrogen fast, and reseeds aggressively for a low-cost annual clover; hollow stems make good grazing and it tolerates set-stocking.",
+      "cautions": "A winter annual (limited hardiness at higher elevations) that completes its cycle by early summer; let it set seed to persist. Best for quick nitrogen, overseeding, and acid soils.",
+      "sources": [
+        "nrcs-plants"
+      ]
+    },
+    {
+      "id": "strawberry-clover",
+      "commonName": "Strawberry Clover",
+      "scientificName": "Trifolium fragiferum",
+      "type": "legume",
+      "season": "cool",
+      "lifecycle": "perennial",
+      "native": false,
+      "phMin": 5.3,
+      "phMax": 8.2,
+      "phTolerantLow": 5.0,
+      "drainage": [
+        "moderate",
+        "poor",
+        "wet"
+      ],
+      "droughtTolerance": 2,
+      "floodTolerance": 4,
+      "shadeTolerance": 2,
+      "fertilityNeed": "low",
+      "grazingTolerance": 5,
+      "establishmentEase": 4,
+      "winterHardiness": 5,
+      "nitrogenFixer": true,
+      "seedingRateMonoLow": 2,
+      "seedingRateMonoHigh": 4,
+      "seedingRateMixLow": 1,
+      "seedingRateMixHigh": 3,
+      "goalsServed": [
+        "nitrogen",
+        "soil-health",
+        "extend-grazing",
+        "pollinators"
+      ],
+      "challengesFit": [
+        "wet",
+        "acidic"
+      ],
+      "summary": "A white-clover-like perennial legume that spreads by stolons and tolerates wet, flooded, and saline ground far better than white clover.",
+      "strengths": "Handles poorly drained, periodically flooded, and marginally saline spots while still fixing nitrogen and tolerating close grazing; a good clover for wet toeslopes and seeps.",
+      "cautions": "Lower-yielding on good ground than white clover and can cause bloat — keep grass in the mix. Reserve it for the wet areas where it shines.",
+      "sources": [
+        "usda-strawberry",
+        "nrcs-plants"
+      ]
+    },
+    {
+      "id": "white-sweetclover",
+      "commonName": "White Sweetclover",
+      "scientificName": "Melilotus alba",
+      "type": "legume",
+      "season": "cool",
+      "lifecycle": "biennial",
+      "native": false,
+      "phMin": 6.5,
+      "phMax": 8.0,
+      "phTolerantLow": 6.0,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 5,
+      "floodTolerance": 1,
+      "shadeTolerance": 1,
+      "fertilityNeed": "low",
+      "grazingTolerance": 2,
+      "establishmentEase": 4,
+      "winterHardiness": 5,
+      "nitrogenFixer": true,
+      "seedingRateMonoLow": 8,
+      "seedingRateMonoHigh": 15,
+      "seedingRateMixLow": 4,
+      "seedingRateMixHigh": 8,
+      "goalsServed": [
+        "nitrogen",
+        "soil-health",
+        "pollinators",
+        "drought"
+      ],
+      "challengesFit": [
+        "droughty"
+      ],
+      "summary": "A deep-taprooted biennial legume that builds soil, fixes large amounts of nitrogen, and is a legendary honeybee plant — best on higher-pH ground.",
+      "strengths": "Enormous taproot breaks compaction and adds organic matter; huge nitrogen contribution and top-tier nectar source; very drought tolerant on limed soils.",
+      "cautions": "Needs near-neutral pH (poor on acid soils) and is a biennial (big growth year two, then reseeds). Coumarin content means spoiled/moldy hay can be toxic — graze or ensile properly. Best as a soil-building/pollinator and early-grazing component.",
+      "sources": [
+        "nrcs-plants"
+      ]
+    },
+    {
+      "id": "yellow-sweetclover",
+      "commonName": "Yellow Sweetclover",
+      "scientificName": "Melilotus officinalis",
+      "type": "legume",
+      "season": "cool",
+      "lifecycle": "biennial",
+      "native": false,
+      "phMin": 6.0,
+      "phMax": 8.0,
+      "phTolerantLow": 5.7,
+      "drainage": [
+        "well",
+        "moderate"
+      ],
+      "droughtTolerance": 5,
+      "floodTolerance": 1,
+      "shadeTolerance": 1,
+      "fertilityNeed": "low",
+      "grazingTolerance": 2,
+      "establishmentEase": 4,
+      "winterHardiness": 5,
+      "nitrogenFixer": true,
+      "seedingRateMonoLow": 8,
+      "seedingRateMonoHigh": 15,
+      "seedingRateMixLow": 4,
+      "seedingRateMixHigh": 8,
+      "goalsServed": [
+        "nitrogen",
+        "soil-health",
+        "pollinators",
+        "drought",
+        "low-input"
+      ],
+      "challengesFit": [
+        "droughty",
+        "low-fertility"
+      ],
+      "summary": "Like white sweetclover but earlier, shorter, and a bit more tolerant of poorer, slightly more acidic ground — a tough soil-building, nitrogen-fixing pollinator biennial.",
+      "strengths": "Deep taproot and strong nitrogen fixation build soil on droughty, low-fertility sites; blooms earlier than white sweetclover for early-season pollinators; very drought hardy.",
+      "cautions": "Still prefers near-neutral pH and is a biennial that reseeds; the same coumarin/moldy-hay caution applies. Best as a soil-building/pollinator and early-grazing component.",
+      "sources": [
+        "nrcs-plants"
+      ]
     }
   ]
 }

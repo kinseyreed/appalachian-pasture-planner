@@ -109,6 +109,36 @@
       "url": "https://nominatim.org",
       "note": "Converts a typed address to coordinates in the browser. The address is used once and never stored."
     },
+    "pb1752": {
+      "title": "Native Warm-Season Grasses: Identification, Establishment and Management (PB1752)",
+      "org": "University of Tennessee Extension (Harper, Bates, et al.)",
+      "url": "https://extension.tennessee.edu/publications/Documents/PB1752.pdf",
+      "note": "Authoritative manual on native warm-season grasses/forbs: PLS, seeding rates, depth, timing, and seed sources."
+    },
+    "ernst-src": {
+      "title": "Ernst Conservation Seeds — species pages",
+      "org": "Ernst Conservation Seeds (Meadville, PA)",
+      "url": "https://www.ernstseed.com",
+      "note": "Regional (Appalachian/Mid-Atlantic) grower of native and forage seed; species adaptation and availability."
+    },
+    "roundstone-src": {
+      "title": "Roundstone Native Seed — species pages",
+      "org": "Roundstone Native Seed (Upton, KY)",
+      "url": "https://www.roundstoneseed.com",
+      "note": "Regional native seed grower; species adaptation, seeding, and availability."
+    },
+    "uky-kura": {
+      "title": "Kura Clover for Kentucky (AGR-141)",
+      "org": "University of Kentucky Cooperative Extension",
+      "url": "https://publications.mgcafe.uky.edu/files/agr141.pdf",
+      "note": "Establishment, pH, seeding rate, and management of kura clover."
+    },
+    "usda-strawberry": {
+      "title": "Strawberry Clover Plant Guide",
+      "org": "USDA NRCS",
+      "url": "https://plants.sc.egov.usda.gov/DocumentLibrary/plantguide/pdf/pg_trfr2.pdf",
+      "note": "Adaptation and management of strawberry clover on wet/saline soils."
+    },
     "climatena": {
       "title": "ClimateNA",
       "org": "Wang, Hamann, Spittlehouse & Carroll (Univ. of British Columbia)",

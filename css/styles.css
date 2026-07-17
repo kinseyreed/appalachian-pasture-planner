@@ -330,6 +330,43 @@ main { padding-bottom: 60px; }
 .empty-state { text-align: center; padding: 40px 20px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); }
 .empty-state h2 { font-family: var(--font-head); color: var(--forest-dark); }
 
+/* ---- season selector accent ---- */
+.season-block { border-color: #d7e3c5; background: linear-gradient(160deg, #fbfdf7 0%, #f2f7ea 100%); }
+.season-block .q-num { background: var(--amber); }
+
+/* ---- seed mix table ---- */
+.seed-table-section { margin-top: 8px; }
+.seed-ctrl { background: #f7f5ec; border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; margin-bottom: 12px; font-weight: 600; color: var(--forest-dark); }
+.seed-ctrl input { width: 64px; font-family: inherit; font-size: 1rem; padding: 6px 8px; border: 1.5px solid var(--line); border-radius: 8px; margin: 0 4px; }
+.seed-ctrl .ctrl-hint { font-weight: 400; font-size: .82rem; color: var(--ink-soft); }
+.comp-summary { font-size: .9rem; color: var(--ink-soft); margin-bottom: 12px; }
+.comp-chip { display: inline-block; font-weight: 700; font-size: .82rem; padding: 3px 10px; border-radius: 20px; margin-left: 6px; }
+.comp-chip.grass { background: #eef2e8; color: var(--forest-dark); }
+.comp-chip.legume { background: #f3ecf7; color: #6b4d86; }
+.comp-chip.forb { background: #fdf0e6; color: #a2632b; }
+
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 11px; -webkit-overflow-scrolling: touch; }
+.seed-table { border-collapse: collapse; width: 100%; min-width: 780px; font-size: .84rem; background: var(--paper); }
+.seed-table th, .seed-table td { text-align: left; padding: 9px 11px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.seed-table thead th { background: var(--forest); color: #f4f1e6; font-size: .76rem; text-transform: uppercase; letter-spacing: .03em; position: sticky; top: 0; }
+.seed-table td.num, .seed-table th.num { text-align: right; white-space: nowrap; }
+.seed-table .tsci { font-style: italic; color: var(--ink-soft); font-size: .76rem; }
+.seed-table tbody tr.grp-grass { border-left: 3px solid var(--moss); }
+.seed-table tbody tr.grp-legume { border-left: 3px solid #a98bc4; }
+.seed-table tbody tr.grp-forb { border-left: 3px solid var(--amber); }
+.seed-table tbody tr:nth-child(even) { background: #fbfaf5; }
+.seed-table .src a { color: var(--moss); text-decoration: none; white-space: nowrap; }
+.seed-table .src a:hover { text-decoration: underline; }
+.seed-table tfoot td { font-weight: 800; color: var(--forest-dark); background: #eef2e8; border-top: 2px solid var(--moss); }
+
+.box-summary { margin-top: 16px; background: #f7f8f1; border: 1px solid var(--line); border-radius: 11px; padding: 14px 18px; }
+.box-summary h4 { margin: 0 0 10px; font-family: var(--font-head); color: var(--forest-dark); font-size: 1.05rem; }
+.box-list { display: flex; flex-direction: column; gap: 10px; }
+.box-item { border-left: 3px solid var(--sage); padding-left: 12px; }
+.box-name { font-weight: 700; color: var(--ink); font-size: .9rem; }
+.box-species { font-size: .85rem; color: var(--ink-soft); }
+.seed-note { font-size: .82rem; color: var(--ink-soft); margin: 12px 0 0; background: #f7f5ec; padding: 10px 12px; border-radius: 8px; }
+
 /* ---- footer ---- */
 .site-footer { background: var(--forest-dark); color: #d8e0cd; padding: 30px 0; margin-top: 30px; font-size: .9rem; }
 .site-footer p { margin: 0 0 10px; max-width: 80ch; }

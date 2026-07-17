@@ -1,0 +1,1177 @@
+{
+ "_comment": "Seed-preparation and procurement data powering the mix table. seedsPerLb and native seeding data draw on UT PB1752 and extension/supplier sources; purity/germ are typical defaults for the PLS calc and pricePerPlsLb is a rough 2026 estimate ($/lb of pure live seed) — EDIT these to your quotes. Cost in the app = PLS lbs/ac x pricePerPlsLb.",
+ "species": {
+  "tall-fescue": {
+   "seedsPerLb": 227000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4-1/2 in",
+   "seedBox": "Regular grass box",
+   "method": "No-till drill or prepared seedbed + cultipack",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    3,
+    6
+   ],
+   "varieties": [
+    {
+     "name": "Novel (\"friendly\") endophyte: MaxQ II, BarOptima Plus E34, Estancia+",
+     "note": "avoids fescue toxicosis — never plant KY-31"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "orchardgrass": {
+   "seedsPerLb": 416000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "No-till drill or prepared seedbed + cultipack",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    3,
+    6
+   ],
+   "varieties": [
+    {
+     "name": "Late-maturing: Persist, Benchmark Plus, Intensiv",
+     "note": "match maturity to companion legume"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "kentucky-bluegrass": {
+   "seedsPerLb": 1440000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "No-till drill or prepared seedbed + cultipack",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    4,
+    8
+   ],
+   "varieties": [
+    {
+     "name": "Ginger, Livingston, or common pasture type",
+     "note": ""
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "timothy": {
+   "seedsPerLb": 1152000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "No-till drill or prepared seedbed + cultipack",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    3,
+    5
+   ],
+   "varieties": [
+    {
+     "name": "Climax, Clair",
+     "note": "cooler/wetter, hay"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "perennial-ryegrass": {
+   "seedsPerLb": 227000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4-1/2 in",
+   "seedBox": "Regular grass box",
+   "method": "No-till drill or prepared seedbed + cultipack",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    3,
+    5
+   ],
+   "varieties": [
+    {
+     "name": "Late-heading diploid/tetraploid: Remington, BG-34",
+     "note": ""
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "smooth-bromegrass": {
+   "seedsPerLb": 135000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4-1/2 in",
+   "seedBox": "Regular grass box",
+   "method": "No-till drill or prepared seedbed + cultipack",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    4,
+    7
+   ],
+   "varieties": [
+    {
+     "name": "Lincoln, Rebound",
+     "note": ""
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "reed-canarygrass": {
+   "seedsPerLb": 530000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "No-till drill or prepared seedbed + cultipack",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    6,
+    11
+   ],
+   "varieties": [
+    {
+     "name": "Low-alkaloid: Palaton, Venture, Rival",
+     "note": "plant ONLY low-alkaloid types"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "white-clover": {
+   "seedsPerLb": 800000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    4,
+    8
+   ],
+   "varieties": [
+    {
+     "name": "Grazing ladino: Durana, Patriot, Regal Graze",
+     "note": "persistent under grazing"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "red-clover": {
+   "seedsPerLb": 275000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "early spring or late summer",
+   "pricePerPlsLb": [
+    3,
+    6
+   ],
+   "varieties": [
+    {
+     "name": "Freedom! MR, Cinnamon Plus, Duration",
+     "note": "disease-resistant, longer-lived"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "alfalfa": {
+   "seedsPerLb": 220000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    4,
+    8
+   ],
+   "varieties": [
+    {
+     "name": "Grazing-tolerant: Bulldog 805, AmeriGraze 401",
+     "note": "only on well-drained, limed ground"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "birdsfoot-trefoil": {
+   "seedsPerLb": 375000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    6,
+    12
+   ],
+   "varieties": [
+    {
+     "name": "Pardee, Norcen, AU Dewey",
+     "note": ""
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "alsike-clover": {
+   "seedsPerLb": 700000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "early spring or late summer",
+   "pricePerPlsLb": [
+    4,
+    8
+   ],
+   "varieties": [
+    {
+     "name": "Common / Aurora",
+     "note": "wet-acid spots"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "annual-lespedeza": {
+   "seedsPerLb": 240000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "late spring (May-Jun)",
+   "pricePerPlsLb": [
+    4,
+    8
+   ],
+   "varieties": [
+    {
+     "name": "Korean (Climax), Kobe",
+     "note": "reseeding, acid soils"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "crimson-clover": {
+   "seedsPerLb": 150000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "late summer/early fall (or frost-seed late winter)",
+   "pricePerPlsLb": [
+    3,
+    6
+   ],
+   "varieties": [
+    {
+     "name": "Dixie, AU Robin, Kentucky Pride",
+     "note": ""
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "chicory": {
+   "seedsPerLb": 260000,
+   "purity": 92,
+   "germ": 80,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill or broadcast + cultipack; do not bury",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    8,
+    16
+   ],
+   "varieties": [
+    {
+     "name": "Puna II, Choice, Oasis",
+     "note": "manage to prevent bolting"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "plantain": {
+   "seedsPerLb": 560000,
+   "purity": 92,
+   "germ": 80,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill or broadcast + cultipack; do not bury",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    8,
+    16
+   ],
+   "varieties": [
+    {
+     "name": "Tonic, Agritonic",
+     "note": ""
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "switchgrass": {
+   "seedsPerLb": 389000,
+   "purity": 65,
+   "germ": 75,
+   "depth": "<=1/4 in",
+   "seedBox": "Fluffy / native-grass box (use debearded seed)",
+   "method": "Native-seed no-till drill or broadcast + cultipack; keep shallow, ~30% of seed visible",
+   "seasonWindow": "mid-Apr to May (soil >=60F)",
+   "pricePerPlsLb": [
+    10,
+    16
+   ],
+   "varieties": [
+    {
+     "name": "Upland: Cave-in-Rock, Blackwell, Carthage",
+     "note": "lowland Kanlow/Alamo for wetter, southern"
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "big-bluestem": {
+   "seedsPerLb": 165000,
+   "purity": 65,
+   "germ": 75,
+   "depth": "<=1/4 in",
+   "seedBox": "Fluffy / native-grass box (use debearded seed)",
+   "method": "Native-seed no-till drill or broadcast + cultipack; keep shallow, ~30% of seed visible",
+   "seasonWindow": "mid-Apr to May (soil >=60F)",
+   "pricePerPlsLb": [
+    14,
+    22
+   ],
+   "varieties": [
+    {
+     "name": "Rountree, Niagara, Southlow, OZ-70",
+     "note": "use adapted latitude"
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "indiangrass": {
+   "seedsPerLb": 175000,
+   "purity": 65,
+   "germ": 75,
+   "depth": "<=1/4 in",
+   "seedBox": "Fluffy / native-grass box (use debearded seed)",
+   "method": "Native-seed no-till drill or broadcast + cultipack; keep shallow, ~30% of seed visible",
+   "seasonWindow": "mid-Apr to May (soil >=60F)",
+   "pricePerPlsLb": [
+    14,
+    22
+   ],
+   "varieties": [
+    {
+     "name": "Rumsey, Osage, Cheyenne",
+     "note": ""
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "eastern-gamagrass": {
+   "seedsPerLb": 7500,
+   "purity": 65,
+   "germ": 75,
+   "depth": "1 in",
+   "seedBox": "Large-seed / grain box",
+   "method": "Native-seed no-till drill or broadcast + cultipack; keep shallow, ~30% of seed visible",
+   "seasonWindow": "mid-Apr to May (soil >=60F)",
+   "pricePerPlsLb": [
+    12,
+    20
+   ],
+   "varieties": [
+    {
+     "name": "Pete, Highlander, Jackson",
+     "note": "cold-stratified seed; plant ~1 in"
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "crabgrass": {
+   "seedsPerLb": 825000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "No-till drill or prepared seedbed + cultipack",
+   "seasonWindow": "mid-Apr to May (soil >=60F)",
+   "pricePerPlsLb": [
+    6,
+    10
+   ],
+   "varieties": [
+    {
+     "name": "Red River, Quick-N-Big",
+     "note": "improved forage crabgrass"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "bermudagrass": {
+   "seedsPerLb": 2071000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "No-till drill or prepared seedbed + cultipack",
+   "seasonWindow": "mid-Apr to May (soil >=60F)",
+   "pricePerPlsLb": [
+    6,
+    12
+   ],
+   "varieties": [
+    {
+     "name": "Cold-hardy seeded: Wrangler, Ranchero Frio",
+     "note": "southern/low elevation only"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "little-bluestem": {
+   "seedsPerLb": 240000,
+   "purity": 65,
+   "germ": 75,
+   "depth": "<=1/4 in",
+   "seedBox": "Fluffy / native-grass box (use debearded seed)",
+   "method": "Native-seed no-till drill or broadcast + cultipack; keep shallow, ~30% of seed visible",
+   "seasonWindow": "mid-Apr to May (soil >=60F)",
+   "pricePerPlsLb": [
+    16,
+    26
+   ],
+   "varieties": [
+    {
+     "name": "Aldous, Cimarron, Camper",
+     "note": ""
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "sideoats-grama": {
+   "seedsPerLb": 191000,
+   "purity": 65,
+   "germ": 75,
+   "depth": "<=1/4 in",
+   "seedBox": "Fluffy / native-grass box (use debearded seed)",
+   "method": "Native-seed no-till drill or broadcast + cultipack; keep shallow, ~30% of seed visible",
+   "seasonWindow": "mid-Apr to May (soil >=60F)",
+   "pricePerPlsLb": [
+    12,
+    20
+   ],
+   "varieties": [
+    {
+     "name": "El Reno, Haskell, Trailway",
+     "note": "prefers higher-pH/rocky"
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "virginia-wildrye": {
+   "seedsPerLb": 110000,
+   "purity": 65,
+   "germ": 75,
+   "depth": "1/4-1/2 in",
+   "seedBox": "Regular grass box",
+   "method": "No-till drill or prepared seedbed + cultipack",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    14,
+    24
+   ],
+   "varieties": [
+    {
+     "name": "PA / regional source-identified ecotype (Ernst)",
+     "note": "use nearest ecotype"
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "canada-wildrye": {
+   "seedsPerLb": 115000,
+   "purity": 65,
+   "germ": 75,
+   "depth": "1/4-1/2 in",
+   "seedBox": "Regular grass box",
+   "method": "No-till drill or prepared seedbed + cultipack",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    10,
+    18
+   ],
+   "varieties": [
+    {
+     "name": "Mandan, or regional ecotype",
+     "note": "fast nurse crop"
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "bottlebrush-grass": {
+   "seedsPerLb": 90000,
+   "purity": 65,
+   "germ": 75,
+   "depth": "1/4-1/2 in",
+   "seedBox": "Regular grass box",
+   "method": "No-till drill or prepared seedbed + cultipack",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    20,
+    35
+   ],
+   "varieties": [
+    {
+     "name": "Regional ecotype",
+     "note": "shade/silvopasture"
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "intermediate-wheatgrass": {
+   "seedsPerLb": 80000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4-1/2 in",
+   "seedBox": "Regular grass box",
+   "method": "No-till drill or prepared seedbed + cultipack",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    5,
+    9
+   ],
+   "varieties": [
+    {
+     "name": "Oahe, Rush; Kernza (grain+forage)",
+     "note": "Kernza for dual-use"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "ryegrass-blend": {
+   "seedsPerLb": 224000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4-1/2 in",
+   "seedBox": "Regular grass box",
+   "method": "No-till drill or prepared seedbed + cultipack",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    3,
+    6
+   ],
+   "varieties": [
+    {
+     "name": "75% perennial (e.g. BG-34) + 25% Italian (e.g. Fria)",
+     "note": "quick + persistent"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "meadow-fescue": {
+   "seedsPerLb": 230000,
+   "purity": 97,
+   "germ": 88,
+   "depth": "1/4-1/2 in",
+   "seedBox": "Regular grass box",
+   "method": "No-till drill or prepared seedbed + cultipack",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    4,
+    7
+   ],
+   "varieties": [
+    {
+     "name": "Hidden Valley, Pradel",
+     "note": "soft-leaf, non-toxic"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "maximilian-sunflower": {
+   "seedsPerLb": 200000,
+   "purity": 85,
+   "germ": 62,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill or broadcast + cultipack; do not bury",
+   "seasonWindow": "mid-Apr to Jun",
+   "pricePerPlsLb": [
+    20,
+    45
+   ],
+   "varieties": [
+    {
+     "name": "Aztec; or regional ecotype",
+     "note": ""
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "oxeye-sunflower": {
+   "seedsPerLb": 130000,
+   "purity": 85,
+   "germ": 62,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill or broadcast + cultipack; do not bury",
+   "seasonWindow": "mid-Apr to Jun",
+   "pricePerPlsLb": [
+    30,
+    60
+   ],
+   "varieties": [
+    {
+     "name": "Regional ecotype",
+     "note": "easy native forb"
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "grayhead-coneflower": {
+   "seedsPerLb": 500000,
+   "purity": 85,
+   "germ": 62,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill or broadcast + cultipack; do not bury",
+   "seasonWindow": "mid-Apr to Jun",
+   "pricePerPlsLb": [
+    30,
+    70
+   ],
+   "varieties": [
+    {
+     "name": "Regional ecotype",
+     "note": "pollinator"
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "lanceleaf-coreopsis": {
+   "seedsPerLb": 500000,
+   "purity": 85,
+   "germ": 62,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill or broadcast + cultipack; do not bury",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    20,
+    45
+   ],
+   "varieties": [
+    {
+     "name": "Regional ecotype",
+     "note": "early pollinator, acid-tolerant"
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "small-burnet": {
+   "seedsPerLb": 55000,
+   "purity": 92,
+   "germ": 80,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill or broadcast + cultipack; do not bury",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    6,
+    12
+   ],
+   "varieties": [
+    {
+     "name": "Delar",
+     "note": "semi-evergreen"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "purple-prairie-clover": {
+   "seedsPerLb": 300000,
+   "purity": 90,
+   "germ": 70,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "mid-Apr to Jun",
+   "pricePerPlsLb": [
+    30,
+    60
+   ],
+   "varieties": [
+    {
+     "name": "Bismarck; or regional ecotype",
+     "note": ""
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "illinois-bundleflower": {
+   "seedsPerLb": 65000,
+   "purity": 90,
+   "germ": 70,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "mid-Apr to Jun",
+   "pricePerPlsLb": [
+    20,
+    45
+   ],
+   "varieties": [
+    {
+     "name": "Sabine; or regional ecotype",
+     "note": ""
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "showy-ticktrefoil": {
+   "seedsPerLb": 71000,
+   "purity": 90,
+   "germ": 70,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "mid-Apr to Jun",
+   "pricePerPlsLb": [
+    40,
+    90
+   ],
+   "varieties": [
+    {
+     "name": "Regional ecotype",
+     "note": "high wildlife value"
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "slender-lespedeza": {
+   "seedsPerLb": 180000,
+   "purity": 90,
+   "germ": 70,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "mid-Apr to Jun",
+   "pricePerPlsLb": [
+    20,
+    45
+   ],
+   "varieties": [
+    {
+     "name": "Regional native ecotype",
+     "note": "NOT sericea — avoid L. cuneata"
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "partridge-pea": {
+   "seedsPerLb": 65000,
+   "purity": 90,
+   "germ": 70,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "late spring (May-Jun)",
+   "pricePerPlsLb": [
+    8,
+    20
+   ],
+   "varieties": [
+    {
+     "name": "Comanche; or regional ecotype",
+     "note": "wildlife/pollinator, low rate"
+    }
+   ],
+   "sources": [
+    "ernst",
+    "roundstone",
+    "bamert",
+    "prairie-moon"
+   ]
+  },
+  "sainfoin": {
+   "seedsPerLb": 30000,
+   "purity": 95,
+   "germ": 85,
+   "depth": "1/2-1 in",
+   "seedBox": "Large-seed / grain box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    3,
+    6
+   ],
+   "varieties": [
+    {
+     "name": "Shoshone, Delaney, Melrose",
+     "note": "well-drained, near-neutral only"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "hancock",
+    "kings"
+   ]
+  },
+  "kura-clover": {
+   "seedsPerLb": 250000,
+   "purity": 98,
+   "germ": 85,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    12,
+    22
+   ],
+   "varieties": [
+    {
+     "name": "Endura, Rhizo",
+     "note": "use kura-specific inoculant; slow"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "hancock",
+    "kings"
+   ]
+  },
+  "balansa-clover": {
+   "seedsPerLb": 300000,
+   "purity": 98,
+   "germ": 85,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "late summer/early fall (or frost-seed late winter)",
+   "pricePerPlsLb": [
+    5,
+    10
+   ],
+   "varieties": [
+    {
+     "name": "FIXatioN, Frontier",
+     "note": "very wide pH; reseeds"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "hancock",
+    "kings"
+   ]
+  },
+  "strawberry-clover": {
+   "seedsPerLb": 300000,
+   "purity": 98,
+   "germ": 85,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "late summer (Aug-Sep) or early spring",
+   "pricePerPlsLb": [
+    6,
+    12
+   ],
+   "varieties": [
+    {
+     "name": "O'Connor's, Palestine",
+     "note": "wet/saline spots"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "white-sweetclover": {
+   "seedsPerLb": 260000,
+   "purity": 98,
+   "germ": 85,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "early spring or late summer",
+   "pricePerPlsLb": [
+    3,
+    6
+   ],
+   "varieties": [
+    {
+     "name": "Common; Denta (low-coumarin)",
+     "note": "higher pH; soil-building"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  },
+  "yellow-sweetclover": {
+   "seedsPerLb": 260000,
+   "purity": 98,
+   "germ": 85,
+   "depth": "1/4 in",
+   "seedBox": "Small-seed / legume box",
+   "method": "Drill, broadcast, or frost-seed into short sod; INOCULATE; firm seedbed",
+   "seasonWindow": "early spring or late summer",
+   "pricePerPlsLb": [
+    3,
+    6
+   ],
+   "varieties": [
+    {
+     "name": "Madrid, Norgold",
+     "note": "soil-building, early bloom"
+    }
+   ],
+   "sources": [
+    "barenbrug",
+    "dlf-seedway",
+    "kings",
+    "southern-states",
+    "hancock"
+   ]
+  }
+ }
+}

@@ -58,6 +58,12 @@ const ELEVATION_OPTIONS = [
   { id: 'high', label: 'Higher / colder mountains', hint: 'Above ~2,500 ft' }
 ];
 
+const SEASON_OPTIONS = [
+  { id: 'cool', label: '❄️ Cool-season (spring & fall)', hint: 'Strong spring/fall growth; slumps in summer heat' },
+  { id: 'warm', label: '☀️ Warm-season (summer pasture)', hint: 'Beats the summer slump; dormant in cool months' },
+  { id: 'both', label: '🔄 Year-round mix', hint: 'Moderate growth all season — no big flushes' }
+];
+
 const TYPE_LABEL = {
   grass: 'Grass', legume: 'Legume', forb: 'Forb'
 };
@@ -88,10 +94,12 @@ function applyLocal(speciesFile, local) {
 }
 
 async function loadData() {
-  const [speciesFile, sources, resources] = await Promise.all([
+  const [speciesFile, sources, resources, prep, vendors] = await Promise.all([
     fetchJson('data/species.json'),
     fetchJson('data/sources.json'),
-    fetchJson('data/extension-resources.json')
+    fetchJson('data/extension-resources.json'),
+    fetchJson('data/seed-prep.json'),
+    fetchJson('data/seed-vendors.json')
   ]);
   let local = null;
   try { local = await fetchJson('data/local-observations.json'); } catch (e) { local = null; }
@@ -99,6 +107,8 @@ async function loadData() {
     species: applyLocal(speciesFile, local),
     sources: sources,
     resources: resources,
+    prep: prep,
+    vendors: vendors,
     local: local
   };
 }
@@ -135,6 +145,7 @@ function renderChips(container, options, name, multi) {
 }
 
 function buildForm() {
+  renderChips(document.getElementById('q-season'), SEASON_OPTIONS, 'season', false);
   renderChips(document.getElementById('q-elevation'), ELEVATION_OPTIONS, 'elevation', false);
   renderChips(document.getElementById('q-ph'), PH_OPTIONS, 'ph', false);
   renderChips(document.getElementById('q-drainage'), DRAINAGE_OPTIONS, 'drainage', false);
@@ -144,6 +155,7 @@ function buildForm() {
   renderChips(document.getElementById('q-grazing'), GRAZING_OPTIONS, 'grazing', false);
 
   // sensible defaults
+  selectDefault('season', 'both');
   selectDefault('elevation', 'low');
   selectDefault('drainage', 'moderate');
   selectDefault('ph', 'unknown');
@@ -182,6 +194,7 @@ function readAnswers() {
     challenges: readMulti('challenges'),
     method: readSingle('method'),
     grazing: readSingle('grazing'),
+    season: readSingle('season') || 'both',
     autofill: AUTOFILL
   };
 }
@@ -254,6 +267,97 @@ function speciesCard(result, sourcesData) {
   return card;
 }
 
+function money(a, b) { return '$' + Math.round(a) + '–' + Math.round(b); }
+
+// The live seed-mix table: composition targeting, PLS math, suggested varieties,
+// reputable sources, and estimated cost. Recomputes when the total rate changes.
+function buildSeedTableSection(mix, data) {
+  const section = el('section', 'seed-table-section');
+  section.appendChild(el('h3', 'section-h', 'Seed mix table — what to buy & how to plant it'));
+
+  const ctrl = el('div', 'seed-ctrl no-print');
+  ctrl.innerHTML = 'Total seeding rate: <input type="number" id="total-pls" value="12" min="4" max="30" step="1"> lb PLS/acre ' +
+    '<span class="ctrl-hint">(drilled; add ~50% if broadcasting)</span>';
+  section.appendChild(ctrl);
+
+  const comp = el('div', 'comp-summary');
+  section.appendChild(comp);
+
+  const scroll = el('div', 'table-scroll');
+  const table = el('table', 'seed-table');
+  scroll.appendChild(table);
+  section.appendChild(scroll);
+
+  const boxes = el('div', 'box-summary');
+  section.appendChild(boxes);
+
+  section.appendChild(el('p', 'seed-note',
+    '💲 Costs and varieties are planning estimates (dollars per pound of pure live seed) — confirm current quotes and regional ' +
+    'ecotypes with the sources listed. <strong>PLS</strong> = Pure Live Seed (purity × germination); <strong>Bulk lb</strong> is what you weigh out and buy. ' +
+    'Inoculate all legumes with the correct rhizobium before planting.'));
+
+  const V = (data.vendors && data.vendors.vendors) || {};
+
+  function update() {
+    const inp = document.getElementById('total-pls');
+    const total = inp ? (parseFloat(inp.value) || 12) : 12;
+    const plan = window.APP_RECOMMENDER.buildSeedPlan(mix, data.prep, total);
+    const c = plan.composition;
+    comp.innerHTML = 'Actual composition (by PLS weight): ' +
+      '<span class="comp-chip grass">Grasses ' + (c.grass || 0) + '%</span>' +
+      '<span class="comp-chip legume">Legumes ' + (c.legume || 0) + '%</span>' +
+      '<span class="comp-chip forb">Forbs ' + (c.forb || 0) + '%</span>';
+
+    let html = '<thead><tr><th>Species</th><th>Suggested variety</th><th>Seed box</th><th>Depth</th><th>When to plant</th>' +
+      '<th class="num">PLS<br>lb/ac</th><th class="num">Bulk<br>lb/ac</th><th class="num">Est.<br>$/ac</th><th>Sources</th></tr></thead><tbody>';
+    plan.rows.forEach(function (r) {
+      const p = r.prep || {};
+      const v = (p.varieties && p.varieties[0]) || { name: '—', note: '' };
+      const srcs = (p.sources || []).map(function (id) {
+        const x = V[id]; if (!x) return '';
+        return '<a href="' + x.url + '" target="_blank" rel="noopener" title="' + x.name + ' — ' + (x.region || '') + '">' + x.name.split(' ')[0] + '</a>';
+      }).filter(Boolean).join(', ');
+      html += '<tr class="grp-' + r.group + '">' +
+        '<td><strong>' + r.species.commonName + '</strong><br><span class="tsci">' + r.species.scientificName + '</span></td>' +
+        '<td title="' + (v.note || '') + '">' + v.name + '</td>' +
+        '<td>' + (p.seedBox || '—') + '</td>' +
+        '<td>' + (p.depth || '—') + '</td>' +
+        '<td>' + (p.seasonWindow || '—') + '</td>' +
+        '<td class="num">' + r.plsRate.toFixed(1) + '</td>' +
+        '<td class="num">' + r.bulkRate.toFixed(1) + '</td>' +
+        '<td class="num">' + money(r.costLow, r.costHigh) + '</td>' +
+        '<td class="src">' + srcs + '</td></tr>';
+    });
+    html += '</tbody><tfoot><tr><td colspan="5">TOTAL per acre</td>' +
+      '<td class="num">' + plan.totals.pls.toFixed(1) + '</td>' +
+      '<td class="num">' + plan.totals.bulk.toFixed(1) + '</td>' +
+      '<td class="num">' + money(plan.totals.costLow, plan.totals.costHigh) + '</td><td></td></tr></tfoot>';
+    table.innerHTML = html;
+
+    // Drill-box / mixing summary — groups species by which box they go in.
+    const byBox = {};
+    plan.rows.forEach(function (r) { const b = (r.prep && r.prep.seedBox) || 'Other'; (byBox[b] = byBox[b] || []).push(r); });
+    let bh = '<h4>📦 Filling your drill boxes</h4><div class="box-list">';
+    Object.keys(byBox).forEach(function (b) {
+      const rows = byBox[b];
+      const tot = rows.reduce(function (a, r) { return a + r.bulkRate; }, 0);
+      bh += '<div class="box-item"><div class="box-name">' + b + ' — ' + tot.toFixed(1) + ' bulk lb/ac</div>' +
+        '<div class="box-species">' + rows.map(function (r) { return r.species.commonName + ' (' + r.bulkRate.toFixed(1) + ')'; }).join(', ') + '</div></div>';
+    });
+    bh += '</div>';
+    boxes.innerHTML = bh;
+  }
+
+  // Attach the live listener once the section is in the DOM.
+  setTimeout(function () {
+    const inp = document.getElementById('total-pls');
+    if (inp) inp.addEventListener('input', update);
+    update();
+  }, 0);
+
+  return section;
+}
+
 function renderResults(rec, data) {
   const out = document.getElementById('results');
   out.innerHTML = '';
@@ -288,11 +392,10 @@ function renderResults(rec, data) {
   mainMix.forEach(function (r) { grid.appendChild(speciesCard(r, data.sources)); });
   out.appendChild(grid);
 
-  // Total rate
-  const total = mainMix.reduce(function (sum, r) { return sum + suggestedRate(r.species); }, 0);
-  out.appendChild(el('div', 'rate-total',
-    'Suggested total for the base mix: <strong>' + Math.round(total * 10) / 10 + ' lb/acre</strong> ' +
-    '(' + mainMix.length + ' species). Adjust up ~10–20% for broadcast seeding.'));
+  // Seed mix table (composition targeting + PLS + varieties + sources + cost)
+  if (data.prep && window.APP_RECOMMENDER.buildSeedPlan) {
+    out.appendChild(buildSeedTableSection(mainMix, data));
+  }
 
   if (paddock.length) {
     out.appendChild(el('h3', 'section-h', 'For a separate summer / warm-season paddock'));

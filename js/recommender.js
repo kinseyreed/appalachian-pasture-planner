@@ -208,8 +208,11 @@ function pickTop(list, n, minScore) {
 }
 
 function composeMix(scored, ctx) {
-  const eligible = scored.filter(function (r) { return !r.disqualified && r.score > -Infinity; })
-    .sort(function (a, b) { return b.score - a.score; });
+  const season = ctx.season || 'both'; // 'cool' | 'warm' | 'both'
+  let eligible = scored.filter(function (r) { return !r.disqualified && r.score > -Infinity; });
+  if (season === 'warm') eligible = eligible.filter(function (r) { return r.species.season === 'warm'; });
+  else if (season === 'cool') eligible = eligible.filter(function (r) { return r.species.season === 'cool'; });
+  eligible.sort(function (a, b) { return b.score - a.score; });
 
   const coolGrass = eligible.filter(function (r) { return r.species.type === 'grass' && r.species.season === 'cool'; });
   const warmGrass = eligible.filter(function (r) { return r.species.type === 'grass' && r.species.season === 'warm'; });
@@ -217,40 +220,84 @@ function composeMix(scored, ctx) {
   const forbs = eligible.filter(function (r) { return r.species.type === 'forb'; });
 
   const chosen = [];
-  const wantSummer = ctx.goals.indexOf('summer-forage') !== -1 || ctx.goals.indexOf('drought') !== -1;
+  function add(r) { if (r && chosen.indexOf(r) === -1) chosen.push(r); }
 
-  // Base grasses: top cool-season, add a second for diversity if it scores well.
-  if (coolGrass.length) {
-    chosen.push(coolGrass[0]);
-    if (coolGrass[1] && coolGrass[1].score > 0 && coolGrass[1].score >= coolGrass[0].score * 0.6) {
-      chosen.push(coolGrass[1]);
-    }
+  // Grasses — tuned to the seasonal strategy.
+  if (season === 'warm') {
+    warmGrass.slice(0, 2).forEach(add);
+  } else if (season === 'cool') {
+    if (coolGrass[0]) add(coolGrass[0]);
+    if (coolGrass[1] && coolGrass[1].score > 0 && coolGrass[1].score >= coolGrass[0].score * 0.6) add(coolGrass[1]);
+  } else { // both — pair a cool-season and a warm-season grass for year-round growth
+    if (coolGrass[0]) add(coolGrass[0]);
+    if (warmGrass[0] && warmGrass[0].score > 0) add(warmGrass[0]);
+    if (coolGrass[1] && coolGrass[1].score > 0 && coolGrass[1].score >= coolGrass[0].score * 0.65) add(coolGrass[1]);
   }
 
-  // Warm-season grass only when summer/drought is a stated aim (needs its own paddock).
-  if (wantSummer && warmGrass.length && warmGrass[0].score > 0) {
-    warmGrass[0].separatePaddock = true;
-    chosen.push(warmGrass[0]);
-  }
-
-  // Legumes: aim for one or two, at least one if any is eligible.
+  // Legumes: one or two (aim ~30-40% of the mix).
   const legPicks = pickTop(legumes, 2, -2);
-  if (legPicks.length === 0 && legumes.length) legPicks.push(legumes[0]);
-  legPicks.forEach(function (l) { chosen.push(l); });
+  if (!legPicks.length && legumes.length) legPicks.push(legumes[0]);
+  legPicks.forEach(add);
 
-  // One forb for diversity if it scores positively.
-  const forbPicks = pickTop(forbs, 1, 0);
-  forbPicks.forEach(function (f) { chosen.push(f); });
+  // Forbs: one or two for diversity (aim ~10-20% of the mix).
+  let forbPicks = pickTop(forbs, 2, -1).slice(0, 2);
+  if (!forbPicks.length && forbs.length) forbPicks.push(forbs[0]);
+  forbPicks.forEach(add);
 
   return {
     mix: chosen,
-    alternates: {
-      coolGrass: coolGrass,
-      warmGrass: warmGrass,
-      legumes: legumes,
-      forbs: forbs
-    }
+    alternates: { coolGrass: coolGrass, warmGrass: warmGrass, legumes: legumes, forbs: forbs }
   };
+}
+
+/* ---- seed plan: composition targeting + PLS math ----------------------- */
+
+// Target functional-group composition, as a fraction of total PLS lbs/acre.
+// Midpoints of 45-55% grass, 30-40% legume, 10-20% forb.
+var COMPOSITION_TARGET = { grass: 0.50, legume: 0.35, forb: 0.15 };
+
+// Given the chosen mix, a seed-prep dataset, and a total PLS seeding rate,
+// allocate PLS lbs to each species to hit the group composition, then compute
+// PLS%, bulk lbs, and estimated cost. All the numbers behind the mix table.
+function buildSeedPlan(mix, prepData, totalPls) {
+  totalPls = totalPls || 12;
+  const prep = (prepData && prepData.species) || {};
+  const groups = { grass: [], legume: [], forb: [] };
+  mix.forEach(function (m) { if (groups[m.species.type]) groups[m.species.type].push(m); });
+
+  const present = Object.keys(groups).filter(function (g) { return groups[g].length; });
+  const tsum = present.reduce(function (a, g) { return a + COMPOSITION_TARGET[g]; }, 0) || 1;
+
+  const rows = [];
+  const groupPls = {};
+  present.forEach(function (g) {
+    const gTarget = totalPls * (COMPOSITION_TARGET[g] / tsum);
+    groupPls[g] = gTarget;
+    const members = groups[g];
+    const mids = members.map(function (m) { return (m.species.seedingRateMixLow + m.species.seedingRateMixHigh) / 2; });
+    const midSum = mids.reduce(function (a, b) { return a + b; }, 0) || members.length;
+    members.forEach(function (m, i) {
+      const pls = gTarget * (mids[i] / midSum);
+      const p = prep[m.species.id];
+      const plsFrac = p && p.purity && p.germ ? (p.purity * p.germ / 10000) : 0.85;
+      const price = (p && p.pricePerPlsLb) || [6, 12];
+      rows.push({
+        species: m.species, group: g, prep: p || null,
+        plsRate: pls, plsPct: plsFrac * 100, bulkRate: pls / plsFrac,
+        costLow: pls * price[0], costHigh: pls * price[1]
+      });
+    });
+  });
+
+  const order = { grass: 0, legume: 1, forb: 2 };
+  rows.sort(function (a, b) { return order[a.group] - order[b.group] || b.plsRate - a.plsRate; });
+
+  const totals = { pls: 0, bulk: 0, costLow: 0, costHigh: 0 };
+  rows.forEach(function (r) { totals.pls += r.plsRate; totals.bulk += r.bulkRate; totals.costLow += r.costLow; totals.costHigh += r.costHigh; });
+  const composition = {};
+  present.forEach(function (g) { composition[g] = Math.round(groupPls[g] / totalPls * 100); });
+
+  return { rows: rows, totals: totals, composition: composition, totalPls: totalPls };
 }
 
 /* ---- management resources + sources ------------------------------------ */
@@ -308,6 +355,7 @@ function buildContext(answers) {
     method: answers.method || 'no-till',
     grazing: answers.grazing || 'rotational',
     cold: answers.elevation === 'high',
+    season: answers.season || 'both',
     aspectDryness: aspectDryness,
     recentDroughtStress: Math.max(0, Math.min(1, af.recentDroughtStress || 0))
   };
@@ -340,6 +388,7 @@ function zoneAnswers(farmer, phBand, drainage, extraChallenges) {
     challenges: uniq((farmer.challenges || []).concat(extraChallenges || [])),
     method: farmer.method,
     grazing: farmer.grazing,
+    season: farmer.season,
     autofill: farmer.autofill
   };
 }
@@ -370,6 +419,7 @@ function recommendPasture(farmer, profile, data) {
 window.APP_RECOMMENDER = {
   recommend: recommend,
   recommendPasture: recommendPasture,
+  buildSeedPlan: buildSeedPlan,
   scoreSpecies: scoreSpecies,
   buildContext: buildContext
 };
