@@ -52,7 +52,8 @@
         "osu-fescue-ph"
       ],
       "native": false,
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 4
     },
     {
       "id": "orchardgrass",
@@ -98,7 +99,8 @@
         "psu-establishment"
       ],
       "native": false,
-      "longevity": 4
+      "longevity": 4,
+      "rootDepth": 3
     },
     {
       "id": "kentucky-bluegrass",
@@ -142,7 +144,8 @@
         "wvu-species"
       ],
       "native": false,
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 1
     },
     {
       "id": "timothy",
@@ -184,7 +187,8 @@
         "psu-establishment"
       ],
       "native": false,
-      "longevity": 3
+      "longevity": 3,
+      "rootDepth": 2
     },
     {
       "id": "perennial-ryegrass",
@@ -226,7 +230,8 @@
         "msu-seeding-rates"
       ],
       "native": false,
-      "longevity": 3
+      "longevity": 3,
+      "rootDepth": 2
     },
     {
       "id": "smooth-bromegrass",
@@ -271,53 +276,8 @@
         "msu-seeding-rates"
       ],
       "native": false,
-      "longevity": 5
-    },
-    {
-      "id": "reed-canarygrass",
-      "commonName": "Reed Canarygrass (low-alkaloid)",
-      "scientificName": "Phalaris arundinacea",
-      "type": "grass",
-      "season": "cool",
-      "lifecycle": "perennial",
-      "phMin": 5.5,
-      "phMax": 7.5,
-      "phTolerantLow": 5.0,
-      "drainage": [
-        "moderate",
-        "poor",
-        "wet"
-      ],
-      "droughtTolerance": 4,
-      "floodTolerance": 5,
-      "shadeTolerance": 2,
-      "fertilityNeed": "medium",
-      "grazingTolerance": 3,
-      "establishmentEase": 2,
-      "winterHardiness": 5,
-      "nitrogenFixer": false,
-      "seedingRateMonoLow": 8,
-      "seedingRateMonoHigh": 12,
-      "seedingRateMixLow": 6,
-      "seedingRateMixHigh": 10,
-      "goalsServed": [
-        "hay",
-        "drought",
-        "erosion"
-      ],
-      "challengesFit": [
-        "wet",
-        "droughty"
-      ],
-      "summary": "The go-to perennial grass for wet ground and streambanks that also tolerates drought once established.",
-      "strengths": "Thrives on poorly drained, wet, and periodically flooded soils where other grasses fail, yet is surprisingly drought-tolerant once rooted. Excellent for wet swales and streambanks.",
-      "cautions": "Plant only certified low-alkaloid varieties (older strains reduce palatability). Slow and difficult to establish, and can become aggressive/invasive in wetlands, so keep it on problem wet areas.",
-      "sources": [
-        "psu-establishment",
-        "nrcs-appalachia"
-      ],
-      "native": false,
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 4
     },
     {
       "id": "white-clover",
@@ -366,7 +326,8 @@
         "msu-seeding-rates"
       ],
       "native": false,
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 2
     },
     {
       "id": "red-clover",
@@ -418,7 +379,8 @@
         "msu-seeding-rates"
       ],
       "native": false,
-      "longevity": 3
+      "longevity": 3,
+      "rootDepth": 4
     },
     {
       "id": "alfalfa",
@@ -463,7 +425,8 @@
         "nrcs-appalachia"
       ],
       "native": false,
-      "longevity": 4
+      "longevity": 4,
+      "rootDepth": 5
     },
     {
       "id": "birdsfoot-trefoil",
@@ -514,7 +477,8 @@
         "psu-establishment"
       ],
       "native": false,
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 4
     },
     {
       "id": "alsike-clover",
@@ -561,7 +525,8 @@
         "psu-establishment"
       ],
       "native": false,
-      "longevity": 2
+      "longevity": 2,
+      "rootDepth": 3
     },
     {
       "id": "annual-lespedeza",
@@ -608,7 +573,8 @@
         "wvu-species"
       ],
       "native": false,
-      "longevity": 1
+      "longevity": 1,
+      "rootDepth": 3
     },
     {
       "id": "crimson-clover",
@@ -653,7 +619,8 @@
         "nrcs-appalachia"
       ],
       "native": false,
-      "longevity": 1
+      "longevity": 1,
+      "rootDepth": 3
     },
     {
       "id": "chicory",
@@ -698,7 +665,8 @@
         "nrcs-appalachia"
       ],
       "native": false,
-      "longevity": 3
+      "longevity": 3,
+      "rootDepth": 5
     },
     {
       "id": "plantain",
@@ -742,7 +710,8 @@
         "nrcs-appalachia"
       ],
       "native": false,
-      "longevity": 3
+      "longevity": 3,
+      "rootDepth": 3
     },
     {
       "id": "switchgrass",
@@ -791,7 +760,8 @@
         "vt-steep-pastures"
       ],
       "native": true,
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 5
     },
     {
       "id": "big-bluestem",
@@ -838,7 +808,8 @@
         "vt-steep-pastures"
       ],
       "native": true,
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 5
     },
     {
       "id": "indiangrass",
@@ -886,7 +857,8 @@
         "vt-steep-pastures"
       ],
       "native": true,
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 5
     },
     {
       "id": "eastern-gamagrass",
@@ -932,7 +904,8 @@
         "vt-steep-pastures"
       ],
       "native": true,
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 5
     },
     {
       "id": "crabgrass",
@@ -977,7 +950,8 @@
         "nrcs-plants"
       ],
       "native": false,
-      "longevity": 1
+      "longevity": 1,
+      "rootDepth": 3
     },
     {
       "id": "bermudagrass",
@@ -1022,7 +996,8 @@
         "nrcs-appalachia"
       ],
       "native": false,
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 4
     },
     {
       "id": "little-bluestem",
@@ -1071,7 +1046,8 @@
         "pb1752",
         "nrcs-plants"
       ],
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 5
     },
     {
       "id": "sideoats-grama",
@@ -1118,7 +1094,8 @@
         "pb1752",
         "nrcs-plants"
       ],
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 4
     },
     {
       "id": "virginia-wildrye",
@@ -1166,7 +1143,8 @@
         "nrcs-plants",
         "ernst-src"
       ],
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 4
     },
     {
       "id": "canada-wildrye",
@@ -1212,7 +1190,8 @@
         "nrcs-plants",
         "pb1752"
       ],
-      "longevity": 3
+      "longevity": 3,
+      "rootDepth": 4
     },
     {
       "id": "bottlebrush-grass",
@@ -1256,7 +1235,8 @@
       "sources": [
         "nrcs-plants"
       ],
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 4
     },
     {
       "id": "intermediate-wheatgrass",
@@ -1302,7 +1282,8 @@
       "sources": [
         "nrcs-plants"
       ],
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 4
     },
     {
       "id": "ryegrass-blend",
@@ -1344,7 +1325,8 @@
         "psu-establishment",
         "nrcs-plants"
       ],
-      "longevity": 3
+      "longevity": 3,
+      "rootDepth": 2
     },
     {
       "id": "meadow-fescue",
@@ -1391,7 +1373,8 @@
         "nrcs-plants",
         "psu-establishment"
       ],
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 3
     },
     {
       "id": "maximilian-sunflower",
@@ -1439,7 +1422,8 @@
         "nrcs-plants",
         "ernst-src"
       ],
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 5
     },
     {
       "id": "oxeye-sunflower",
@@ -1484,7 +1468,8 @@
         "nrcs-plants",
         "ernst-src"
       ],
-      "longevity": 3
+      "longevity": 3,
+      "rootDepth": 4
     },
     {
       "id": "grayhead-coneflower",
@@ -1530,7 +1515,8 @@
         "nrcs-plants",
         "ernst-src"
       ],
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 4
     },
     {
       "id": "lanceleaf-coreopsis",
@@ -1578,7 +1564,8 @@
         "nrcs-plants",
         "roundstone-src"
       ],
-      "longevity": 3
+      "longevity": 3,
+      "rootDepth": 4
     },
     {
       "id": "small-burnet",
@@ -1623,7 +1610,8 @@
       "sources": [
         "nrcs-plants"
       ],
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 4
     },
     {
       "id": "purple-prairie-clover",
@@ -1673,7 +1661,8 @@
         "roundstone-src",
         "ernst-src"
       ],
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 5
     },
     {
       "id": "illinois-bundleflower",
@@ -1721,7 +1710,8 @@
         "nrcs-plants",
         "ernst-src"
       ],
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 5
     },
     {
       "id": "showy-ticktrefoil",
@@ -1771,7 +1761,8 @@
         "nrcs-plants",
         "ernst-src"
       ],
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 4
     },
     {
       "id": "slender-lespedeza",
@@ -1820,7 +1811,8 @@
         "nrcs-plants",
         "pb1752"
       ],
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 4
     },
     {
       "id": "partridge-pea",
@@ -1868,7 +1860,8 @@
         "nrcs-plants",
         "roundstone-src"
       ],
-      "longevity": 1
+      "longevity": 1,
+      "rootDepth": 3
     },
     {
       "id": "sainfoin",
@@ -1912,7 +1905,8 @@
       "sources": [
         "nrcs-plants"
       ],
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 5
     },
     {
       "id": "kura-clover",
@@ -1957,7 +1951,8 @@
         "uky-kura",
         "nrcs-plants"
       ],
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 4
     },
     {
       "id": "balansa-clover",
@@ -2005,7 +2000,8 @@
       "sources": [
         "nrcs-plants"
       ],
-      "longevity": 1
+      "longevity": 1,
+      "rootDepth": 3
     },
     {
       "id": "strawberry-clover",
@@ -2052,7 +2048,8 @@
         "usda-strawberry",
         "nrcs-plants"
       ],
-      "longevity": 5
+      "longevity": 5,
+      "rootDepth": 3
     },
     {
       "id": "white-sweetclover",
@@ -2096,7 +2093,8 @@
       "sources": [
         "nrcs-plants"
       ],
-      "longevity": 2
+      "longevity": 2,
+      "rootDepth": 5
     },
     {
       "id": "yellow-sweetclover",
@@ -2142,7 +2140,8 @@
       "sources": [
         "nrcs-plants"
       ],
-      "longevity": 2
+      "longevity": 2,
+      "rootDepth": 5
     }
   ]
 }

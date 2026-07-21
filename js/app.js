@@ -18,18 +18,15 @@ const GOAL_FACTORS = [
   { id: 'erosion', label: 'Erosion control' },
   { id: 'hay', label: 'Hay / stored feed' },
   { id: 'quick-establish', label: 'Quick establishment' },
+  { id: 'weeds', label: 'Out-compete weeds' },
   { id: 'low-input', label: 'Low input / low cost' }
 ];
 
-// Site-challenge factors — 0-7 slider for how relevant/pressing each is.
-const CHALLENGE_FACTORS = [
-  { id: 'acidic', label: 'Acidic / sour soil' },
-  { id: 'low-fertility', label: 'Low fertility' },
-  { id: 'droughty', label: 'Droughty / shallow soils' },
-  { id: 'wet', label: 'Wet spots / poor drainage' },
-  { id: 'slopes', label: 'Steep slopes' },
-  { id: 'toxic-fescue', label: 'Existing toxic (KY-31) fescue' },
-  { id: 'weeds', label: 'Weed pressure' }
+// Soil structure — rendered as a single 0-7 slider in the fertility section.
+// (Acidity, wetness, droughtiness and slope are derived from the pH, drainage
+// and mapped-terrain answers instead of being asked again.)
+const COMPACTION_FACTOR = [
+  { id: 'compaction', label: 'Compaction (0 = loose and friable, 7 = hard pan / heavy traffic)' }
 ];
 
 const PH_OPTIONS = [
@@ -71,9 +68,9 @@ const ELEVATION_OPTIONS = [
 ];
 
 const SEASON_OPTIONS = [
-  { id: 'cool', label: '❄️ Cool-season (spring & fall)', hint: 'Strong spring/fall growth; slumps in summer heat' },
-  { id: 'warm', label: '☀️ Warm-season (summer pasture)', hint: 'Beats the summer slump; dormant in cool months' },
-  { id: 'both', label: '🔄 Year-round mix', hint: 'Moderate growth all season — no big flushes' }
+  { id: 'cool', label: 'Cool-season (spring & fall)', hint: 'Strong spring/fall growth; slumps in summer heat' },
+  { id: 'warm', label: 'Warm-season (summer pasture)', hint: 'Beats the summer slump; dormant in cool months' },
+  { id: 'both', label: 'Year-round mix', hint: 'Moderate growth all season — no big flushes' }
 ];
 
 const TYPE_LABEL = {
@@ -179,7 +176,7 @@ function buildForm() {
   renderChips(document.getElementById('q-ph'), PH_OPTIONS, 'ph', false);
   renderChips(document.getElementById('q-drainage'), DRAINAGE_OPTIONS, 'drainage', false);
   renderSliders(document.getElementById('q-goals'), GOAL_FACTORS);
-  renderSliders(document.getElementById('q-challenges'), CHALLENGE_FACTORS);
+  renderSliders(document.getElementById('q-compaction'), COMPACTION_FACTOR);
   renderChips(document.getElementById('q-method'), METHOD_OPTIONS, 'method', true);
   renderChips(document.getElementById('q-grazing'), GRAZING_OPTIONS, 'grazing', false);
 
@@ -195,10 +192,18 @@ function buildForm() {
 function readPriorities() {
   const p = {};
   document.querySelectorAll('.pri-slider').forEach(function (s) {
+    if (s.dataset.factor === 'compaction') return; // handled separately
     const v = parseInt(s.value, 10);
     if (v > 0) p[s.dataset.factor] = v;
   });
   return p;
+}
+
+function numOrNull(id) {
+  const el2 = document.getElementById(id);
+  if (!el2 || el2.value === '') return null;
+  const v = parseFloat(el2.value);
+  return isNaN(v) ? null : v;
 }
 
 function selectDefault(group, value) {
@@ -229,6 +234,11 @@ function readAnswers() {
     canLime: document.getElementById('can-lime').checked,
     drainage: readSingle('drainage'),
     priorities: readPriorities(),
+    soilP: numOrNull('soil-p'),
+    soilK: numOrNull('soil-k'),
+    soilOM: numOrNull('soil-om'),
+    fertilityUnknown: document.getElementById('fert-unknown').checked,
+    compaction: parseInt((document.getElementById('pri-compaction') || {}).value || 0, 10),
     methods: readMulti('method'),
     grazing: readSingle('grazing'),
     season: readSingle('season') || 'both',
@@ -277,13 +287,13 @@ function speciesCard(result, sourcesData) {
   }
 
   if (result.limeNote) {
-    card.appendChild(el('div', 'sc-note lime', '🪨 Lime this ground up to ~pH 6.5 before seeding.'));
+    card.appendChild(el('div', 'sc-note lime', 'Lime this ground up to ~pH 6.5 before seeding.'));
   }
   if (result.separatePaddock) {
-    card.appendChild(el('div', 'sc-note paddock', '🚧 Establish and graze this in its own paddock, separate from cool-season pasture.'));
+    card.appendChild(el('div', 'sc-note paddock', 'Establish and graze this in its own paddock, separate from cool-season pasture.'));
   }
   if (sp.cautions) {
-    card.appendChild(el('div', 'sc-caution', '⚠️ ' + sp.cautions));
+    card.appendChild(el('div', 'sc-caution', 'Caution: ' + sp.cautions));
   }
 
   // per-species sources
@@ -320,8 +330,8 @@ function speciesDetailHtml(result, data) {
       return '<li class="' + (r.indexOf('WV trial') === 0 ? 'reason local' : 'reason') + '">' + r + '</li>';
     }).join('') + '</ul>';
   }
-  if (result.limeNote) h += '<div class="sc-note lime">🪨 Lime this ground up to ~pH 6.5 before seeding.</div>';
-  if (sp.cautions) h += '<div class="sc-caution">⚠️ ' + sp.cautions + '</div>';
+  if (result.limeNote) h += '<div class="sc-note lime">Lime this ground up to ~pH 6.5 before seeding.</div>';
+  if (sp.cautions) h += '<div class="sc-caution"><strong>Caution:</strong> ' + sp.cautions + '</div>';
   if (sp.sources && sp.sources.length) {
     const ss = sp.sources.map(function (id) {
       const s = data.sources.sources[id]; if (!s) return '';
@@ -374,7 +384,7 @@ function renderSeedTable() {
 
   const byBox = {};
   plan.rows.forEach(function (r) { const b = (r.prep && r.prep.seedBox) || 'Other'; (byBox[b] = byBox[b] || []).push(r); });
-  let bh = '<h4>📦 Filling your drill boxes</h4><div class="box-list">';
+  let bh = '<h4>Filling your drill boxes</h4><div class="box-list">';
   Object.keys(byBox).forEach(function (b) {
     const rows = byBox[b]; const tot = rows.reduce(function (a, r) { return a + r.bulkRate; }, 0);
     bh += '<div class="box-item"><div class="box-name">' + b + ' — ' + tot.toFixed(1) + ' bulk lb/ac</div>' +
@@ -423,7 +433,7 @@ function buildSeedTableSection(mix, data, scored) {
   const section = el('section', 'seed-table-section');
   section.innerHTML =
     '<h3 class="section-h">Your seed-mix plan — what to buy &amp; how to plant it</h3>' +
-    '<p class="seed-intro">Click a species name for details, ✕ to remove it, or add more below — rates and groundcover update automatically.</p>' +
+    '<p class="seed-intro">Click a species name for its details, use the remove button to drop it, or add more below — rates and groundcover update automatically.</p>' +
     '<div class="seed-ctrl no-print">Total seeding rate: <input type="number" id="total-pls" value="12" min="4" max="30" step="1"> lb PLS/acre ' +
     '<span class="ctrl-hint">(drilled; add ~50% if broadcasting)</span></div>' +
     '<div id="comp-summary" class="comp-summary"></div>' +
@@ -431,7 +441,7 @@ function buildSeedTableSection(mix, data, scored) {
     '<div class="add-control no-print"><button type="button" class="btn btn-secondary" data-act="add-open">+ Add a species</button>' +
     '<div id="add-panel" class="add-panel" hidden><input type="text" id="add-search" placeholder="Search species…" autocomplete="off"><div id="add-list" class="add-list"></div></div></div>' +
     '<div id="box-summary" class="box-summary"></div>' +
-    '<p class="seed-note">💲 Costs and varieties are planning estimates ($ per pound of pure live seed) — confirm current quotes and regional ecotypes with the sources listed. ' +
+    '<p class="seed-note">Costs and varieties are planning estimates ($ per pound of pure live seed) — confirm current quotes and regional ecotypes with the sources listed. ' +
     '<strong>Groundcover %</strong> is estimated from each species\' rate vs. a pure stand. <strong>Bulk lb</strong> is what you weigh out and buy. Inoculate all legumes before planting.</p>';
 
   section.addEventListener('click', function (e) {
@@ -467,39 +477,32 @@ function renderResults(rec, data) {
 
   if (rec.usedLocal) {
     out.appendChild(el('div', 'local-banner',
-      '📍 <strong>Informed by West Virginia trial data.</strong> Species adjusted using local establishment results.'));
+      '<strong>Informed by West Virginia trial data.</strong> Species adjusted using local establishment results.'));
   }
 
   // Interactive seed-mix table (species details on click; add/remove; groundcover).
   const mainMix = rec.mix;
   out.appendChild(buildSeedTableSection(mainMix, data, rec.scored));
 
-  // Management recommendations
-  if (rec.resources.length) {
-    out.appendChild(el('h3', 'section-h', 'Management & establishment guidance'));
-    const mgmt = el('div', 'mgmt-list');
-    rec.resources.forEach(function (r) {
-      const item = el('details', 'mgmt-item');
-      const sum = el('summary', null, r.title);
-      item.appendChild(sum);
-      const body = el('div', 'mgmt-body');
-      body.appendChild(el('p', null, r.body));
-      if (r.sources && r.sources.length) {
-        const sw = el('div', 'mgmt-sources', 'More: ');
-        r.sources.forEach(function (id, i) {
-          const s = data.sources.sources[id];
-          if (!s) return;
-          const a = el('a', null, s.title);
-          a.href = s.url; a.target = '_blank'; a.rel = 'noopener';
-          sw.appendChild(a);
-          if (i < r.sources.length - 1) sw.appendChild(document.createTextNode(' · '));
-        });
-        body.appendChild(sw);
+  // Custom establishment plan written for this mix, soil and seeding methods.
+  if (window.APP_RECOMMENDER.buildEstablishmentPlan) {
+    const steps = window.APP_RECOMMENDER.buildEstablishmentPlan(rec.ctx, mainMix, data.prep);
+    out.appendChild(el('h3', 'section-h', 'How to plant this mix and get it established'));
+    out.appendChild(el('p', 'plan-intro',
+      'Written for this mix, your soil, and the seeding methods you chose — in the order you should do them.'));
+    const ol = el('ol', 'plan-list');
+    steps.forEach(function (st) {
+      const li = el('li', 'plan-step');
+      li.appendChild(el('h4', 'plan-title', st.title));
+      if (st.body) li.appendChild(el('p', 'plan-body', st.body));
+      if (st.bullets && st.bullets.length) {
+        const ul = el('ul', 'plan-bullets');
+        st.bullets.forEach(function (b) { ul.appendChild(el('li', null, b)); });
+        li.appendChild(ul);
       }
-      item.appendChild(body);
-      mgmt.appendChild(item);
+      ol.appendChild(li);
     });
-    out.appendChild(mgmt);
+    out.appendChild(ol);
   }
 
   // Sources / bibliography
@@ -520,9 +523,9 @@ function renderResults(rec, data) {
 
   // Actions
   const actions = el('div', 'results-actions no-print');
-  const printBtn = el('button', 'btn btn-secondary', '🖨️ Print / Save PDF');
+  const printBtn = el('button', 'btn btn-secondary', 'Print / Save PDF');
   printBtn.addEventListener('click', function () { window.print(); });
-  const againBtn = el('button', 'btn btn-secondary', '↺ Start over');
+  const againBtn = el('button', 'btn btn-secondary', 'Start over');
   againBtn.addEventListener('click', function () {
     out.classList.remove('visible');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -546,7 +549,7 @@ function pastureBanner(profile) {
   }).join(', ');
   const b = el('div', 'pasture-banner');
   const nSoils = (profile._soils || []).length;
-  b.innerHTML = '🗺️ <strong>Your pasture spans ' + nSoils + ' soil type' + (nSoils > 1 ? 's' : '') + '.</strong> ' +
+  b.innerHTML = '<strong>Your pasture spans ' + nSoils + ' soil type' + (nSoils > 1 ? 's' : '') + '.</strong> ' +
     'The base mix below is tuned to the dominant, area-weighted conditions' +
     (profile.weightedPh != null ? ' (about pH ' + (Math.round(profile.weightedPh * 10) / 10) + ', ' +
       (profile.pluralityDrainage === 'wet' ? 'poorly drained' : profile.pluralityDrainage + '-drained') + ')' : '') +
@@ -560,10 +563,10 @@ function problemSection(problems, data) {
   wrap.appendChild(el('p', 'problem-intro',
     'Parts of your field differ enough from the rest that they\'re worth spot-seeding separately. ' +
     'Add these to the base mix only where the conditions call for them.'));
-  const icons = { wet: '💧', acid: '🧪', dry: '🏜️' };
+  const icons = { wet: '', acid: '', dry: '' };
   problems.forEach(function (p) {
     const card = el('div', 'problem-area');
-    card.appendChild(el('div', 'pa-head', (icons[p.area.key] || '📍') + ' <strong>' + p.area.label +
+    card.appendChild(el('div', 'pa-head', (icons[p.area.key] || '') + '<strong>' + p.area.label +
       '</strong> <span class="pa-pct">~' + p.area.weightPct + '% of the field</span>'));
     if (p.area.soils && p.area.soils.length) {
       card.appendChild(el('p', 'pa-soils', 'Soils: ' + p.area.soils.filter(Boolean).join(', ')));
@@ -640,8 +643,17 @@ function applyPastureFindings(pasture, terrain, climate) {
     aspectDeg: terrain ? terrain.aspectDeg : null,
     slopePct: (prof && prof.dominant && prof.dominant.slope != null) ? prof.dominant.slope
       : (terrain && terrain.slopeDegDEM != null ? Math.round(Math.tan(terrain.slopeDegDEM * Math.PI / 180) * 100) : null),
+    organicMatter: prof ? prof.organicMatter : null,
     recentDroughtStress: climate ? climate.droughtStress : 0
   };
+
+  // Offer the mapped organic matter as a starting value if the farmer hasn't
+  // entered their own soil test.
+  const omField = document.getElementById('soil-om');
+  if (omField && !omField.value && prof && prof.organicMatter != null) {
+    omField.value = Math.round(prof.organicMatter * 10) / 10;
+    omField.classList.add('from-map');
+  }
 }
 
 function setLookupStatus(html, kind) {
@@ -680,7 +692,7 @@ function renderPastureSummary(pasture, terrain, climate, place) {
   const box = document.getElementById('lookup-summary');
   box.hidden = false;
   box.innerHTML = '';
-  box.appendChild(el('div', 'sum-head', '✓ Here\'s what we found for <strong>' +
+  box.appendChild(el('div', 'sum-head', 'Here\'s what we found for <strong>' +
     (place ? place.replace(/</g, '') : 'your pasture') + '</strong>'));
 
   if (pasture && pasture.soils && pasture.soils.length) {
@@ -694,7 +706,7 @@ function renderPastureSummary(pasture, terrain, climate, place) {
     pasture.soils.forEach(function (s) { soilsWrap.appendChild(soilItem(s)); });
     box.appendChild(soilsWrap);
     if (p.problemAreas && p.problemAreas.length) {
-      box.appendChild(el('p', 'soils-note', '📍 We spotted ' + p.problemAreas.length +
+      box.appendChild(el('p', 'soils-note', 'We spotted ' + p.problemAreas.length +
         ' distinct problem area' + (p.problemAreas.length > 1 ? 's' : '') +
         ' — your results include targeted species for ' +
         p.problemAreas.map(function (a) { return a.label.toLowerCase(); }).join(' and ') + '.'));
@@ -723,7 +735,7 @@ function renderPastureSummary(pasture, terrain, climate, place) {
   }
   box.appendChild(grid);
   box.appendChild(el('p', 'sum-note',
-    '📝 These are <strong>map estimates</strong> for your field — we\'ve pre-filled the questions below from them. ' +
+    'These are <strong>map estimates</strong> for your field — we\'ve pre-filled the questions below from them. ' +
     'Review and change anything that doesn\'t match, and confirm pH with a real soil test before buying seed.'));
 }
 
@@ -745,7 +757,7 @@ function showMap(coords, label) {
   if (MARKER) MARKER.setLatLng([coords.lat, coords.lon]);
   else MARKER = L.marker([coords.lat, coords.lon], { draggable: true }).addTo(MAP);
   setTimeout(function () { MAP.invalidateSize(); }, 120);
-  setLookupStatus('📌 Positioned at <strong>' + (label ? label.replace(/</g, '') : 'your location') +
+  setLookupStatus('Positioned at <strong>' + (label ? label.replace(/</g, '') : 'your location') +
     '</strong>. Drag the pin onto your pasture, then scan.', '');
 }
 
@@ -764,12 +776,12 @@ function toggleDraw() {
     DRAW.on = true; DRAW.pts = [];
     if (DRAW.layer) { MAP.removeLayer(DRAW.layer); DRAW.layer = null; }
     if (MARKER) MARKER.setOpacity(0.35);
-    drawBtn.textContent = '✓ Done drawing';
+    drawBtn.textContent = 'Done drawing';
     clearBtn.hidden = false;
-    setLookupStatus('✏️ Click around your field\'s edge to trace it, then press “Done drawing”.', '');
+    setLookupStatus('Click around your field\'s edge to trace it, then press “Done drawing”.', '');
   } else {
     DRAW.on = false;
-    drawBtn.textContent = '✏️ Draw field boundary';
+    drawBtn.textContent = 'Draw field boundary';
     if (DRAW.pts.length >= 3) setLookupStatus('Boundary set (' + DRAW.pts.length +
       ' points). Now press “Find the soils in this pasture”.', '');
     else setLookupStatus('Need at least 3 points to make a field — keep clicking, or clear.', 'error');
@@ -780,7 +792,7 @@ function clearDraw() {
   DRAW.on = false; DRAW.pts = [];
   if (DRAW.layer) { MAP.removeLayer(DRAW.layer); DRAW.layer = null; }
   if (MARKER) MARKER.setOpacity(1);
-  document.getElementById('draw-btn').textContent = '✏️ Draw field boundary';
+  document.getElementById('draw-btn').textContent = 'Draw field boundary';
   document.getElementById('clear-draw-btn').hidden = true;
   setLookupStatus('Boundary cleared — we\'ll scan the area around the pin instead.', '');
 }
@@ -792,7 +804,7 @@ async function locate(getCoords, place) {
     const coords = await getCoords();
     showMap(coords, place || coords.label);
   } catch (e) {
-    setLookupStatus('⚠️ ' + e.message, 'error');
+    setLookupStatus('Problem: ' + e.message, 'error');
   }
 }
 
@@ -822,7 +834,7 @@ async function scanPasture() {
   const climate = settled[2].status === 'fulfilled' ? settled[2].value : null;
 
   if (!pasture && !terrain && !climate) {
-    setLookupStatus('⚠️ Couldn\'t reach the map services. Please fill in the questions below by hand.', 'error');
+    setLookupStatus('Couldn\'t reach the map services. Please fill in the questions below by hand.', 'error');
     return;
   }
   PASTURE = pasture;

@@ -418,8 +418,12 @@
         phBand: phBand(weightedPh(dry)), drainage: 'well', challenges: ['droughty'], soils: dry.map(function (s) { return s.component || s.muname; }) });
     }
 
+    const omList = soils.filter(function (s2) { return s2.organicMatter != null; });
+    const omW = omList.reduce(function (a, s2) { return a + s2.weight; }, 0);
+    const wOm = omW ? omList.reduce(function (a, s2) { return a + s2.organicMatter * s2.weight; }, 0) / omW : null;
     return {
       dominant: soils[0] || null,
+      organicMatter: wOm,
       weightedPh: wPh,
       weightedPhBand: phBand(wPh),
       pluralityDrainage: pluralityDrainage,
@@ -445,7 +449,7 @@
 
     const wkt = 'polygon((' + poly.map(function (p) { return p[0] + ' ' + p[1]; }).join(', ') + '))';
     const propRows = await sdaPost(
-      "SELECT mu.mukey, mu.muname, c.compname, c.comppct_r, c.drainagecl, c.slope_r, ch.ph1to1h2o_r " +
+      "SELECT mu.mukey, mu.muname, c.compname, c.comppct_r, c.drainagecl, c.slope_r, ch.ph1to1h2o_r, ch.om_r " +
       "FROM mapunit mu INNER JOIN component c ON c.mukey=mu.mukey " +
       "LEFT JOIN chorizon ch ON ch.cokey=c.cokey AND ch.hzdept_r=0 " +
       "WHERE mu.mukey IN (SELECT mukey FROM SDA_Get_Mukey_from_intersection_with_WktWgs84('" + wkt + "')) " +
@@ -458,8 +462,10 @@
       const p = byMukey[mukey] || {};
       const ph = p.ph1to1h2o_r != null && p.ph1to1h2o_r !== '' ? parseFloat(p.ph1to1h2o_r) : null;
       const slope = p.slope_r != null && p.slope_r !== '' ? parseFloat(p.slope_r) : null;
+      const om = p.om_r != null && p.om_r !== '' ? parseFloat(p.om_r) : null;
       const drain = mapDrainage(p.drainagecl);
       return {
+        organicMatter: om,
         mukey: mukey, muname: p.muname || ('Map unit ' + mukey), component: p.compname || null,
         weightPct: Math.round(w * 100), weight: w,
         ph: ph, phBand: phBand(ph),

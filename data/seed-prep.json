@@ -157,32 +157,6 @@
     "hancock"
    ]
   },
-  "reed-canarygrass": {
-   "seedsPerLb": 530000,
-   "purity": 97,
-   "germ": 88,
-   "depth": "1/4 in",
-   "seedBox": "Small-seed / legume box",
-   "method": "No-till drill or prepared seedbed + cultipack",
-   "seasonWindow": "late summer (Aug-Sep) or early spring",
-   "pricePerPlsLb": [
-    6,
-    11
-   ],
-   "varieties": [
-    {
-     "name": "Low-alkaloid: Palaton, Venture, Rival",
-     "note": "plant ONLY low-alkaloid types"
-    }
-   ],
-   "sources": [
-    "barenbrug",
-    "dlf-seedway",
-    "kings",
-    "southern-states",
-    "hancock"
-   ]
-  },
   "white-clover": {
    "seedsPerLb": 800000,
    "purity": 97,

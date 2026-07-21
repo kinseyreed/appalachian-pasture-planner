@@ -137,6 +137,12 @@ function scoreConditions(sp, ctx, reasons) {
     if (sp.nitrogenFixer) pts += fertEmph * 1.5;
   }
 
+  // Compaction: deep-rooted species help break up a compacted profile.
+  if (ctx.compaction > 0) {
+    pts += (ctx.compaction / 7) * ((sp.rootDepth || 3) - 3) * 1.6;
+    if (ctx.compaction >= 4 && (sp.rootDepth || 3) >= 4) reasons.push('Deep roots help break up compacted soil');
+  }
+
   // Grazing pressure vs. grazing tolerance.
   const pressure = GRAZING_PRESSURE[ctx.grazing] != null ? GRAZING_PRESSURE[ctx.grazing] : 3;
   pts += (pressure - 3) * (sp.grazingTolerance - 3) * 0.4;
@@ -377,6 +383,25 @@ function gatherSources(mix, resources, sourcesData, local) {
 
 /* ---- public entry point ------------------------------------------------ */
 
+// Turn a soil test (or "I don't know") into a 0-7 low-fertility emphasis.
+// Thresholds reflect typical extractable levels for Appalachian pasture.
+function fertilityEmphasis(answers, af) {
+  const p = parseFloat(answers.soilP), k = parseFloat(answers.soilK), om = parseFloat(answers.soilOM);
+  const haveAny = !isNaN(p) || !isNaN(k) || !isNaN(om);
+  if (answers.fertilityUnknown || !haveAny) {
+    // Fall back to the mapped organic matter if the soil lookup gave us one,
+    // else assume the low-to-moderate fertility typical of Appalachian hill pasture.
+    const mappedOm = af.organicMatter;
+    if (mappedOm != null) return mappedOm < 2 ? 5 : (mappedOm < 3.5 ? 4 : 3);
+    return 4;
+  }
+  let pts = 0, n = 0;
+  if (!isNaN(p)) { pts += p < 15 ? 2 : (p <= 30 ? 1 : 0); n++; }
+  if (!isNaN(k)) { pts += k < 100 ? 2 : (k <= 175 ? 1 : 0); n++; }
+  if (!isNaN(om)) { pts += om < 2 ? 2 : (om <= 4 ? 1 : 0); n++; }
+  return n ? Math.round((pts / (n * 2)) * 7) : 4;
+}
+
 function buildContext(answers) {
   const af = answers.autofill || {};
 
@@ -389,12 +414,31 @@ function buildContext(answers) {
     aspectDryness = dry * steep;
   }
 
-  const priorities = answers.priorities || {};
+  // Site-condition factors are DERIVED from questions already asked (pH,
+  // drainage, slope, soil test) rather than asked again as "challenges".
+  const derived = {};
+  if (answers.ph === 'lt55') derived.acidic = 6;
+  else if (answers.ph === '55-60') derived.acidic = 4;
+  if (answers.drainage === 'wet') derived.wet = 6;
+  else if (answers.drainage === 'well') derived.droughty = 2;
+  const slopePct = af.slopePct;
+  if (slopePct != null && slopePct >= 15) derived.slopes = 5;
+  else if (slopePct != null && slopePct >= 8) derived.slopes = 3;
+  const fert = fertilityEmphasis(answers, af);
+  if (fert > 0) derived['low-fertility'] = fert;
+
+  // The farmer's own sliders take precedence where they are higher.
+  const stated = answers.priorities || {};
+  const priorities = Object.assign({}, derived);
+  Object.keys(stated).forEach(function (k) { priorities[k] = Math.max(priorities[k] || 0, stated[k]); });
+
   return {
     phValue: PH_BAND_VALUE[answers.ph],
     canLime: !!answers.canLime,
     drainage: answers.drainage,
     priorities: priorities,
+    fertilityEmphasis: fert,
+    compaction: Math.max(0, Math.min(7, answers.compaction || 0)),
     imp: function (id) { return priorities[id] || 0; },
     methods: answers.methods || [],
     grazing: answers.grazing || 'rot-managed',
@@ -463,10 +507,132 @@ function recommendPasture(farmer, profile, data) {
   return { base: base, problems: problems, profile: profile };
 }
 
+/* ---- custom establishment plan ----------------------------------------- */
+
+const GRAZE_ADVICE = {
+  'continuous-heavy': 'This stand is grazed continuously and short. Be straight with yourself: a diverse mix will not persist under that. If you change one thing, add rest — even splitting the field in two and alternating will hold legumes and forbs far longer. Otherwise the mix will drift toward the toughest grasses.',
+  'continuous-light': 'Light continuous grazing will hold a simple stand, but legumes and forbs still thin out without recovery time. Splitting into 2–3 paddocks to give 20–30 days of rest would pay for itself.',
+  'rot-overgrazed': 'You already have the paddocks — the gap is rest and residual, and this is the most common way good mixes are lost in West Virginia. More paddocks will not fix it; longer rest will. Stop grazing at a 3–4 inch residual and do not return until regrowth reaches 8–10 inches.',
+  'rot-managed': 'Keep doing what you are doing: graze to a 3–4 inch residual and rest each paddock until it regrows to 8–10 inches. That residual is exactly what keeps legumes and forbs in the stand.',
+  'mob': 'High-density grazing with long rest suits this mix well. Just watch that rest periods do not stretch so long that the grasses go rank and shade out the legumes and forbs.'
+};
+
+// Builds a step-by-step establishment plan written for THIS mix, THIS soil and
+// THESE seeding methods, rather than a set of generic guidance cards.
+function buildEstablishmentPlan(ctx, mix, prepData) {
+  const prep = (prepData && prepData.species) || {};
+  const sp = mix.map(function (m) { return m.species; });
+  const names = function (a) { return a.map(function (s) { return s.commonName; }).join(', '); };
+  const legumes = sp.filter(function (s) { return s.nitrogenFixer; });
+  const nativeWarm = sp.filter(function (s) { return s.native && s.season === 'warm' && s.type === 'grass'; });
+  const coolSp = sp.filter(function (s) { return s.season === 'cool'; });
+  const warmSp = sp.filter(function (s) { return s.season === 'warm'; });
+  const methods = ctx.methods || [];
+  const has = function (m) { return methods.indexOf(m) !== -1; };
+  const steps = [];
+
+  // 1 — pH / lime
+  const needsHighPh = sp.some(function (s) { return s.phMin >= 6.4; });
+  const targetPh = needsHighPh ? '6.5–6.8' : '6.0–6.5';
+  let limeBody;
+  if (ctx.phValue == null) {
+    limeBody = 'Pull a soil test before you buy any seed — it is the cheapest decision in this whole plan. Aim for pH ' + targetPh + ' for this mix.';
+  } else if (ctx.phValue < 5.8) {
+    limeBody = 'Your pH is low for this mix. Lime as far ahead of seeding as you can — 6–12 months is ideal, because lime reacts slowly. Target pH ' + targetPh + '.' +
+      (ctx.canLime ? '' : ' You indicated liming is not an option, so this mix leans on the acid-tolerant species; expect lower yield than a limed field.');
+  } else {
+    limeBody = 'Your pH is workable for this mix. Hold it at ' + targetPh + ' and re-test every 2–3 years.';
+  }
+  if (needsHighPh) limeBody += ' Note that ' + names(sp.filter(function (s) { return s.phMin >= 6.4; })) + ' in this mix needs the higher end of that range.';
+  steps.push({ title: 'Soil test and lime first', body: limeBody });
+
+  // 2 — fertility
+  let fertBody;
+  if (ctx.fertilityEmphasis >= 5) fertBody = 'Fertility reads low. Correct phosphorus and potassium to soil-test recommendation before seeding — seedlings, and especially legumes, cannot fix nitrogen without adequate P and K.';
+  else if (ctx.fertilityEmphasis >= 3) fertBody = 'Fertility reads moderate. Apply P and K to soil-test recommendation at seeding.';
+  else fertBody = 'Fertility looks adequate. Maintain P and K on a regular soil-test cycle.';
+  if (legumes.length) {
+    fertBody += ' Skip the nitrogen fertilizer: with ' + legumes.length + ' legume' + (legumes.length > 1 ? 's' : '') +
+      ' in this mix (' + names(legumes) + '), applied N mostly feeds grass and weeds and shuts down nodulation.';
+  }
+  steps.push({ title: 'Fertility', body: fertBody });
+
+  // 3 — compaction (only when flagged)
+  if (ctx.compaction >= 3) {
+    const deep = sp.filter(function (s) { return (s.rootDepth || 3) >= 4; });
+    steps.push({
+      title: 'Compaction', body: 'You rated compaction ' + ctx.compaction + '/7. The deep-rooted species here — ' +
+        (deep.length ? names(deep) : 'none currently') + ' — will open the profile over a few seasons. Just as important: keep stock off saturated ground and avoid driving or working the field wet, or you will rebuild the pan faster than roots can break it.'
+    });
+  }
+
+  // 4 — seedbed
+  steps.push({
+    title: 'Prepare the seedbed', body: has('tillage')
+      ? 'Work a fine, firm seedbed and cultipack before and after seeding. Your boot should sink no more than about a quarter inch — a loose, fluffy seedbed is the number one cause of failed forage seedings.'
+      : 'Suppress the existing sod so new seedlings get light: graze or clip hard down to 2–3 inches, and/or use a burndown ahead of drilling. Move or graze off heavy residue so the drill can reach soil.'
+  });
+
+  // 5 — when and how to seed (built from the selected methods)
+  const seedBullets = [];
+  if (has('drill-fall') || has('broadcast-fall') || has('tillage')) {
+    seedBullets.push('<strong>Late summer / early fall (mid-Aug – mid-Sep):</strong> ' +
+      (has('drill-fall') ? 'drill' : 'broadcast and cultipack') + ' the cool-season species — ' +
+      (coolSp.length ? names(coolSp) : names(sp)) + '. Fall beats spring for cool-season stands: less weed pressure and warm soil with cooling air.');
+  }
+  if (warmSp.length && (has('drill-spring') || has('broadcast-spring') || has('tillage'))) {
+    seedBullets.push('<strong>Mid-April – May, soil above 60 °F:</strong> seed the warm-season species — ' + names(warmSp) +
+      '. These are slow out of the gate; judge the stand at the end of year two, not year one.');
+  }
+  if (has('frost-seed')) {
+    const fsl = legumes.filter(function (s) { return s.season === 'cool'; });
+    seedBullets.push('<strong>Late winter (Feb – early Mar):</strong> frost-seed ' + (fsl.length ? names(fsl) : 'the legumes') +
+      ' onto short sod. Freeze–thaw cycles work seed into the surface. Graze or clip hard first so seed reaches bare soil.');
+  }
+  if (!seedBullets.length) seedBullets.push('Seed each species inside the planting window shown in its row of the table above.');
+  steps.push({ title: 'When and how to seed', bullets: seedBullets });
+
+  // 6 — depth & calibration
+  const gama = sp.some(function (s) { return s.id === 'eastern-gamagrass'; });
+  steps.push({
+    title: 'Depth and drill calibration', body: 'Set the drill shallow. Everything in this mix goes no deeper than about ¼ inch' +
+      (gama ? ', except eastern gamagrass, which wants roughly 1 inch' : '') +
+      '. On fluffy native seed, about 30% of the seed should still be visible on the surface after planting — if you cannot see any, you are too deep. Calibrate using the <strong>bulk</strong> pounds from the table, never the PLS pounds.'
+  });
+
+  // 7 — boxes and inoculation
+  const boxes = {};
+  mix.forEach(function (m) { const b = (prep[m.species.id] || {}).seedBox || 'Other'; (boxes[b] = boxes[b] || []).push(m.species.commonName); });
+  let boxBody = Object.keys(boxes).map(function (b) { return '<strong>' + b + ':</strong> ' + boxes[b].join(', '); }).join('. ') + '.';
+  if (legumes.length) boxBody += ' Inoculate every legume with the correct rhizobium strain immediately before planting and keep treated seed out of direct sun — kura clover needs its own specific inoculant.';
+  steps.push({ title: 'Splitting the mix and inoculating', body: boxBody });
+
+  // 8 — native seed handling
+  if (nativeWarm.length) {
+    steps.push({
+      title: 'Handling native warm-season seed', body: 'Native grass seed (' + names(nativeWarm) +
+        ') is light and chaffy. Use a native-seed box or a drill with picker wheels, or ask your supplier for debearded seed. Expect most of year one to go into roots rather than top growth — that is normal, not failure.'
+    });
+  }
+
+  // 9 — first year
+  steps.push({
+    title: 'First-year management', body: nativeWarm.length
+      ? 'Do not graze the native warm-season component at all in the establishment year — clip weeds high, above the seedlings, instead. Start light grazing in year two once plants are firmly anchored.'
+      : 'Hold off grazing until seedlings pass the pull test (they should not uproot in your fingers) and stand 6–8 inches tall. Then graze light and brief. Control weeds by clipping or flash-grazing rather than spraying over young legumes.'
+  });
+
+  // 10 — grazing that keeps the mix
+  steps.push({ title: 'Grazing to keep the mix diverse', body: GRAZE_ADVICE[ctx.grazing] || GRAZE_ADVICE['rot-managed'] });
+
+  return steps;
+}
+
 window.APP_RECOMMENDER = {
   recommend: recommend,
   recommendPasture: recommendPasture,
   buildSeedPlan: buildSeedPlan,
+  buildEstablishmentPlan: buildEstablishmentPlan,
   scoreSpecies: scoreSpecies,
   buildContext: buildContext
 };
