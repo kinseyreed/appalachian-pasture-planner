@@ -111,9 +111,11 @@ The grant references downscaled climate from **ClimateNA**. ClimateNA is a deskt
 
 Before building a mix, the farmer picks a **growth pattern** — cool-season (spring/fall), warm-season (summer), or a **year-round mix** (a cool + warm blend for moderate growth with no big flushes). This filters which species are eligible and, for the year-round option, pairs a cool-season and a warm-season grass.
 
-Every result includes a **live seed-mix table** ([`buildSeedTableSection`](js/app.js) + [`buildSeedPlan`](js/recommender.js)) that turns the chosen species into a buy-and-plant plan:
+**Priorities are 0–7 importance sliders.** Instead of on/off goal and challenge checkboxes, the farmer slides each factor (including **stand longevity**) from 0 (not a priority) to 7 (top priority), and species are ranked in proportion ([`scorePriorities`](js/recommender.js)). Grazing management has **five levels** (continuous heavy/light, rotational-but-overgrazed, well-managed rotational, mob) that set a grazing-pressure weight, and **seeding method is multi-select** (e.g. drill in fall *and* frost-seed clover in late winter).
 
-- **Composition targeting** — PLS pounds are allocated so the mix lands at ~**50% grasses / 35% legumes / 15% forbs** (midpoints of the 45–55 / 30–40 / 10–20% goals), measured as a share of total PLS weight. The actual percentages are shown.
+Every result includes an **interactive seed-mix table** ([`buildSeedTableSection`](js/app.js) + [`buildSeedPlan`](js/recommender.js)) that turns the chosen species into a buy-and-plant plan. Click a species name for its full details (summary, strengths, cautions, why-it-was-picked, sources); click ✕ to remove it; or **+ Add a species** from the full lookup list — rates and composition recompute automatically.
+
+- **Composition by estimated groundcover** — the mix targets ~**50% grass / 35% legume / 15% forb groundcover**, back-calculated from each species' seeding rate relative to a pure (monoculture) stand (`cover ∝ rate ÷ mono-rate`). It updates whenever you add, remove, or re-rate species.
 - **PLS math** — from `seed-prep.json` each species carries typical purity and germination; the table shows **PLS lb/ac** (what you're targeting), **bulk lb/ac** (`PLS ÷ (purity×germ)` — what you actually weigh out and buy), computed with the UT PB1752 formula.
 - **Total rate control** — a live input (default 12 lb PLS/ac drilled) rescales the whole table instantly.
 - **Variety, seed box, depth, planting window** — suggested cultivars (e.g. novel-endophyte fescue, low-alkaloid reed canarygrass, upland switchgrass), which drill box each species goes in, seeding depth, and the planting date window.

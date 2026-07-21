@@ -5,27 +5,31 @@
 
 /* ---- option definitions (also drive the rendered form) ----------------- */
 
-const GOALS = [
-  { id: 'extend-grazing', label: 'Extend the grazing season', icon: '🌱' },
-  { id: 'summer-forage', label: 'Beat the summer slump', icon: '☀️' },
-  { id: 'drought', label: 'Drought resilience', icon: '🌾' },
-  { id: 'soil-health', label: 'Improve soil health', icon: '🪱' },
-  { id: 'nitrogen', label: 'Fix nitrogen / cut fertilizer', icon: '⚡' },
-  { id: 'reduce-fescue-tox', label: 'Reduce toxic-fescue problems', icon: '🐄' },
-  { id: 'pollinators', label: 'Pollinators & wildlife', icon: '🐝' },
-  { id: 'erosion', label: 'Erosion control', icon: '⛰️' },
-  { id: 'hay', label: 'Hay / stored feed', icon: '🌿' },
-  { id: 'quick-establish', label: 'Get a stand fast', icon: '⏱️' }
+// Goal factors — each rendered as a 0-7 importance slider.
+const GOAL_FACTORS = [
+  { id: 'extend-grazing', label: 'Extend the grazing season' },
+  { id: 'summer-forage', label: 'Summer production (beat the slump)' },
+  { id: 'drought', label: 'Drought resilience' },
+  { id: 'stand-longevity', label: 'Stand longevity (persistence)' },
+  { id: 'soil-health', label: 'Improve soil health' },
+  { id: 'nitrogen', label: 'Fix nitrogen / cut fertilizer' },
+  { id: 'reduce-fescue-tox', label: 'Reduce toxic-fescue problems' },
+  { id: 'pollinators', label: 'Pollinators & wildlife' },
+  { id: 'erosion', label: 'Erosion control' },
+  { id: 'hay', label: 'Hay / stored feed' },
+  { id: 'quick-establish', label: 'Quick establishment' },
+  { id: 'low-input', label: 'Low input / low cost' }
 ];
 
-const CHALLENGES = [
-  { id: 'acidic', label: 'Acidic / sour soil', icon: '🧪' },
-  { id: 'low-fertility', label: 'Low fertility', icon: '📉' },
-  { id: 'droughty', label: 'Droughty / shallow soils', icon: '🏜️' },
-  { id: 'wet', label: 'Wet spots / poor drainage', icon: '💧' },
-  { id: 'slopes', label: 'Steep slopes', icon: '🗻' },
-  { id: 'toxic-fescue', label: 'Existing toxic (KY-31) fescue', icon: '⚠️' },
-  { id: 'weeds', label: 'Weed pressure', icon: '🌼' }
+// Site-challenge factors — 0-7 slider for how relevant/pressing each is.
+const CHALLENGE_FACTORS = [
+  { id: 'acidic', label: 'Acidic / sour soil' },
+  { id: 'low-fertility', label: 'Low fertility' },
+  { id: 'droughty', label: 'Droughty / shallow soils' },
+  { id: 'wet', label: 'Wet spots / poor drainage' },
+  { id: 'slopes', label: 'Steep slopes' },
+  { id: 'toxic-fescue', label: 'Existing toxic (KY-31) fescue' },
+  { id: 'weeds', label: 'Weed pressure' }
 ];
 
 const PH_OPTIONS = [
@@ -42,15 +46,23 @@ const DRAINAGE_OPTIONS = [
   { id: 'wet', label: 'Poorly drained / wet', hint: 'Stays wet, low spots' }
 ];
 
+// Seeding methods — multi-select; a farmer can combine several (e.g. drill in
+// fall, then frost-seed legumes in late winter).
 const METHOD_OPTIONS = [
-  { id: 'no-till', label: 'No-till drill', hint: 'Best establishment' },
-  { id: 'broadcast', label: 'Broadcast / frost seed', hint: 'Cheapest, favors small seed' },
-  { id: 'tillage', label: 'Conventional tillage', hint: 'Full seedbed prep' }
+  { id: 'drill-fall', label: 'No-till drill — late summer/fall', hint: '' },
+  { id: 'drill-spring', label: 'No-till drill — spring', hint: '' },
+  { id: 'frost-seed', label: 'Frost-seed legumes — late winter', hint: 'Broadcast onto short sod' },
+  { id: 'broadcast-fall', label: 'Broadcast + cultipack — fall', hint: '' },
+  { id: 'broadcast-spring', label: 'Broadcast + cultipack — spring', hint: '' },
+  { id: 'tillage', label: 'Conventional tillage seedbed', hint: 'Full prep + cultipack' }
 ];
 
 const GRAZING_OPTIONS = [
-  { id: 'rotational', label: 'Rotational / managed', hint: 'Move animals, rest paddocks' },
-  { id: 'continuous', label: 'Continuous', hint: 'Set-stocked' }
+  { id: 'continuous-heavy', label: 'Continuous, heavily stocked', hint: 'Set-stocked, grazed short' },
+  { id: 'continuous-light', label: 'Continuous, lightly stocked', hint: 'Set-stocked, low density' },
+  { id: 'rot-overgrazed', label: 'Rotational but overgrazed', hint: 'Paddocks, short rest, grazed low' },
+  { id: 'rot-managed', label: 'Well-managed rotational', hint: 'Adequate rest & residual' },
+  { id: 'mob', label: 'Management-intensive / mob', hint: 'Frequent moves, long rest' }
 ];
 
 const ELEVATION_OPTIONS = [
@@ -144,14 +156,31 @@ function renderChips(container, options, name, multi) {
   });
 }
 
+function renderSliders(container, factors) {
+  factors.forEach(function (f) {
+    const row = el('div', 'slider-row');
+    row.innerHTML =
+      '<label class="slider-label" for="pri-' + f.id + '">' + f.label + '</label>' +
+      '<input type="range" id="pri-' + f.id + '" class="pri-slider" data-factor="' + f.id + '" min="0" max="7" step="1" value="0">' +
+      '<output class="slider-val" for="pri-' + f.id + '">0</output>';
+    const input = row.querySelector('input');
+    const out = row.querySelector('output');
+    input.addEventListener('input', function () {
+      out.textContent = input.value;
+      row.classList.toggle('active', parseInt(input.value, 10) > 0);
+    });
+    container.appendChild(row);
+  });
+}
+
 function buildForm() {
   renderChips(document.getElementById('q-season'), SEASON_OPTIONS, 'season', false);
   renderChips(document.getElementById('q-elevation'), ELEVATION_OPTIONS, 'elevation', false);
   renderChips(document.getElementById('q-ph'), PH_OPTIONS, 'ph', false);
   renderChips(document.getElementById('q-drainage'), DRAINAGE_OPTIONS, 'drainage', false);
-  renderChips(document.getElementById('q-goals'), GOALS, 'goals', true);
-  renderChips(document.getElementById('q-challenges'), CHALLENGES, 'challenges', true);
-  renderChips(document.getElementById('q-method'), METHOD_OPTIONS, 'method', false);
+  renderSliders(document.getElementById('q-goals'), GOAL_FACTORS);
+  renderSliders(document.getElementById('q-challenges'), CHALLENGE_FACTORS);
+  renderChips(document.getElementById('q-method'), METHOD_OPTIONS, 'method', true);
   renderChips(document.getElementById('q-grazing'), GRAZING_OPTIONS, 'grazing', false);
 
   // sensible defaults
@@ -159,8 +188,17 @@ function buildForm() {
   selectDefault('elevation', 'low');
   selectDefault('drainage', 'moderate');
   selectDefault('ph', 'unknown');
-  selectDefault('method', 'no-till');
-  selectDefault('grazing', 'rotational');
+  selectDefault('method', 'drill-fall');
+  selectDefault('grazing', 'rot-managed');
+}
+
+function readPriorities() {
+  const p = {};
+  document.querySelectorAll('.pri-slider').forEach(function (s) {
+    const v = parseInt(s.value, 10);
+    if (v > 0) p[s.dataset.factor] = v;
+  });
+  return p;
 }
 
 function selectDefault(group, value) {
@@ -190,9 +228,8 @@ function readAnswers() {
     ph: readSingle('ph'),
     canLime: document.getElementById('can-lime').checked,
     drainage: readSingle('drainage'),
-    goals: readMulti('goals'),
-    challenges: readMulti('challenges'),
-    method: readSingle('method'),
+    priorities: readPriorities(),
+    methods: readMulti('method'),
     grazing: readSingle('grazing'),
     season: readSingle('season') || 'both',
     autofill: AUTOFILL
@@ -269,92 +306,148 @@ function speciesCard(result, sourcesData) {
 
 function money(a, b) { return '$' + Math.round(a) + '–' + Math.round(b); }
 
-// The live seed-mix table: composition targeting, PLS math, suggested varieties,
-// reputable sources, and estimated cost. Recomputes when the total rate changes.
-function buildSeedTableSection(mix, data) {
-  const section = el('section', 'seed-table-section');
-  section.appendChild(el('h3', 'section-h', 'Seed mix table — what to buy & how to plant it'));
+// The interactive seed-mix table. CURRENT holds the editable mix so delete/add
+// and the total-rate control all recompute the plan and groundcover live.
+let CURRENT = null;
 
-  const ctrl = el('div', 'seed-ctrl no-print');
-  ctrl.innerHTML = 'Total seeding rate: <input type="number" id="total-pls" value="12" min="4" max="30" step="1"> lb PLS/acre ' +
-    '<span class="ctrl-hint">(drilled; add ~50% if broadcasting)</span>';
-  section.appendChild(ctrl);
-
-  const comp = el('div', 'comp-summary');
-  section.appendChild(comp);
-
-  const scroll = el('div', 'table-scroll');
-  const table = el('table', 'seed-table');
-  scroll.appendChild(table);
-  section.appendChild(scroll);
-
-  const boxes = el('div', 'box-summary');
-  section.appendChild(boxes);
-
-  section.appendChild(el('p', 'seed-note',
-    '💲 Costs and varieties are planning estimates (dollars per pound of pure live seed) — confirm current quotes and regional ' +
-    'ecotypes with the sources listed. <strong>PLS</strong> = Pure Live Seed (purity × germination); <strong>Bulk lb</strong> is what you weigh out and buy. ' +
-    'Inoculate all legumes with the correct rhizobium before planting.'));
-
-  const V = (data.vendors && data.vendors.vendors) || {};
-
-  function update() {
-    const inp = document.getElementById('total-pls');
-    const total = inp ? (parseFloat(inp.value) || 12) : 12;
-    const plan = window.APP_RECOMMENDER.buildSeedPlan(mix, data.prep, total);
-    const c = plan.composition;
-    comp.innerHTML = 'Actual composition (by PLS weight): ' +
-      '<span class="comp-chip grass">Grasses ' + (c.grass || 0) + '%</span>' +
-      '<span class="comp-chip legume">Legumes ' + (c.legume || 0) + '%</span>' +
-      '<span class="comp-chip forb">Forbs ' + (c.forb || 0) + '%</span>';
-
-    let html = '<thead><tr><th>Species</th><th>Suggested variety</th><th>Seed box</th><th>Depth</th><th>When to plant</th>' +
-      '<th class="num">PLS<br>lb/ac</th><th class="num">Bulk<br>lb/ac</th><th class="num">Est.<br>$/ac</th><th>Sources</th></tr></thead><tbody>';
-    plan.rows.forEach(function (r) {
-      const p = r.prep || {};
-      const v = (p.varieties && p.varieties[0]) || { name: '—', note: '' };
-      const srcs = (p.sources || []).map(function (id) {
-        const x = V[id]; if (!x) return '';
-        return '<a href="' + x.url + '" target="_blank" rel="noopener" title="' + x.name + ' — ' + (x.region || '') + '">' + x.name.split(' ')[0] + '</a>';
-      }).filter(Boolean).join(', ');
-      html += '<tr class="grp-' + r.group + '">' +
-        '<td><strong>' + r.species.commonName + '</strong><br><span class="tsci">' + r.species.scientificName + '</span></td>' +
-        '<td title="' + (v.note || '') + '">' + v.name + '</td>' +
-        '<td>' + (p.seedBox || '—') + '</td>' +
-        '<td>' + (p.depth || '—') + '</td>' +
-        '<td>' + (p.seasonWindow || '—') + '</td>' +
-        '<td class="num">' + r.plsRate.toFixed(1) + '</td>' +
-        '<td class="num">' + r.bulkRate.toFixed(1) + '</td>' +
-        '<td class="num">' + money(r.costLow, r.costHigh) + '</td>' +
-        '<td class="src">' + srcs + '</td></tr>';
-    });
-    html += '</tbody><tfoot><tr><td colspan="5">TOTAL per acre</td>' +
-      '<td class="num">' + plan.totals.pls.toFixed(1) + '</td>' +
-      '<td class="num">' + plan.totals.bulk.toFixed(1) + '</td>' +
-      '<td class="num">' + money(plan.totals.costLow, plan.totals.costHigh) + '</td><td></td></tr></tfoot>';
-    table.innerHTML = html;
-
-    // Drill-box / mixing summary — groups species by which box they go in.
-    const byBox = {};
-    plan.rows.forEach(function (r) { const b = (r.prep && r.prep.seedBox) || 'Other'; (byBox[b] = byBox[b] || []).push(r); });
-    let bh = '<h4>📦 Filling your drill boxes</h4><div class="box-list">';
-    Object.keys(byBox).forEach(function (b) {
-      const rows = byBox[b];
-      const tot = rows.reduce(function (a, r) { return a + r.bulkRate; }, 0);
-      bh += '<div class="box-item"><div class="box-name">' + b + ' — ' + tot.toFixed(1) + ' bulk lb/ac</div>' +
-        '<div class="box-species">' + rows.map(function (r) { return r.species.commonName + ' (' + r.bulkRate.toFixed(1) + ')'; }).join(', ') + '</div></div>';
-    });
-    bh += '</div>';
-    boxes.innerHTML = bh;
+function speciesDetailHtml(result, data) {
+  const sp = result.species;
+  let h = '<div class="detail-inner">';
+  h += '<p class="d-summary">' + sp.summary + '</p>';
+  if (sp.strengths) h += '<p class="d-line"><strong>Strengths:</strong> ' + sp.strengths + '</p>';
+  if (result.reasons && result.reasons.length) {
+    h += '<ul class="sc-reasons">' + result.reasons.map(function (r) {
+      return '<li class="' + (r.indexOf('WV trial') === 0 ? 'reason local' : 'reason') + '">' + r + '</li>';
+    }).join('') + '</ul>';
   }
+  if (result.limeNote) h += '<div class="sc-note lime">🪨 Lime this ground up to ~pH 6.5 before seeding.</div>';
+  if (sp.cautions) h += '<div class="sc-caution">⚠️ ' + sp.cautions + '</div>';
+  if (sp.sources && sp.sources.length) {
+    const ss = sp.sources.map(function (id) {
+      const s = data.sources.sources[id]; if (!s) return '';
+      return '<a href="' + s.url + '" target="_blank" rel="noopener">' + (s.org || s.title) + '</a>';
+    }).filter(Boolean).join(', ');
+    if (ss) h += '<div class="d-sources">Sources: ' + ss + '</div>';
+  }
+  return h + '</div>';
+}
 
-  // Attach the live listener once the section is in the DOM.
-  setTimeout(function () {
-    const inp = document.getElementById('total-pls');
-    if (inp) inp.addEventListener('input', update);
-    update();
-  }, 0);
+function renderSeedTable() {
+  if (!CURRENT) return;
+  const data = CURRENT.data, mix = CURRENT.mix, total = CURRENT.total;
+  const plan = window.APP_RECOMMENDER.buildSeedPlan(mix, data.prep, total);
+  const V = (data.vendors && data.vendors.vendors) || {};
+  const c = plan.composition;
 
+  document.getElementById('comp-summary').innerHTML = 'Estimated groundcover: ' +
+    '<span class="comp-chip grass">Grasses ' + (c.grass || 0) + '%</span>' +
+    '<span class="comp-chip legume">Legumes ' + (c.legume || 0) + '%</span>' +
+    '<span class="comp-chip forb">Forbs ' + (c.forb || 0) + '%</span>' +
+    '<span class="comp-target">aim ~50 / 35 / 15</span>';
+
+  let html = '<thead><tr><th></th><th>Species</th><th class="num">Cover</th><th>Suggested variety</th><th>Seed box</th>' +
+    '<th>Depth</th><th>When to plant</th><th class="num">PLS<br>lb/ac</th><th class="num">Bulk<br>lb/ac</th><th class="num">Est.<br>$/ac</th><th>Sources</th></tr></thead><tbody>';
+  plan.rows.forEach(function (r) {
+    const p = r.prep || {};
+    const v = (p.varieties && p.varieties[0]) || { name: '—', note: '' };
+    const srcs = (p.sources || []).map(function (id) {
+      const x = V[id]; if (!x) return '';
+      return '<a href="' + x.url + '" target="_blank" rel="noopener" title="' + x.name + ' — ' + (x.region || '') + '">' + x.name.split(' ')[0] + '</a>';
+    }).filter(Boolean).join(', ');
+    html += '<tr class="grp-' + r.group + '" data-row="' + r.species.id + '">' +
+      '<td><button type="button" class="row-del" data-act="del" data-id="' + r.species.id + '" title="Remove from mix">×</button></td>' +
+      '<td><button type="button" class="row-name" data-act="detail" data-id="' + r.species.id + '"><strong>' + r.species.commonName + '</strong><br><span class="tsci">' + r.species.scientificName + '</span></button></td>' +
+      '<td class="num">' + r.coverPct.toFixed(0) + '%</td>' +
+      '<td title="' + (v.note || '') + '">' + v.name + '</td>' +
+      '<td>' + (p.seedBox || '—') + '</td>' +
+      '<td>' + (p.depth || '—') + '</td>' +
+      '<td>' + (p.seasonWindow || '—') + '</td>' +
+      '<td class="num">' + r.plsRate.toFixed(1) + '</td>' +
+      '<td class="num">' + r.bulkRate.toFixed(1) + '</td>' +
+      '<td class="num">' + money(r.costLow, r.costHigh) + '</td>' +
+      '<td class="src">' + srcs + '</td></tr>';
+  });
+  html += '</tbody><tfoot><tr><td></td><td>TOTAL per acre</td><td class="num">100%</td><td colspan="4"></td>' +
+    '<td class="num">' + plan.totals.pls.toFixed(1) + '</td><td class="num">' + plan.totals.bulk.toFixed(1) + '</td>' +
+    '<td class="num">' + money(plan.totals.costLow, plan.totals.costHigh) + '</td><td></td></tr></tfoot>';
+  document.getElementById('seed-table-el').innerHTML = html;
+
+  const byBox = {};
+  plan.rows.forEach(function (r) { const b = (r.prep && r.prep.seedBox) || 'Other'; (byBox[b] = byBox[b] || []).push(r); });
+  let bh = '<h4>📦 Filling your drill boxes</h4><div class="box-list">';
+  Object.keys(byBox).forEach(function (b) {
+    const rows = byBox[b]; const tot = rows.reduce(function (a, r) { return a + r.bulkRate; }, 0);
+    bh += '<div class="box-item"><div class="box-name">' + b + ' — ' + tot.toFixed(1) + ' bulk lb/ac</div>' +
+      '<div class="box-species">' + rows.map(function (r) { return r.species.commonName + ' (' + r.bulkRate.toFixed(1) + ')'; }).join(', ') + '</div></div>';
+  });
+  document.getElementById('box-summary').innerHTML = bh + '</div>';
+}
+
+function toggleDetailRow(id) {
+  const tr = document.querySelector('#seed-table-el tr[data-row="' + id + '"]');
+  if (!tr) return;
+  const next = tr.nextElementSibling;
+  if (next && next.classList.contains('detail-row')) { next.remove(); return; }
+  const result = CURRENT.mix.find(function (m) { return m.species.id === id; });
+  if (!result) return;
+  const dr = document.createElement('tr');
+  dr.className = 'detail-row grp-' + result.species.type;
+  dr.innerHTML = '<td></td><td colspan="10">' + speciesDetailHtml(result, CURRENT.data) + '</td>';
+  tr.parentNode.insertBefore(dr, tr.nextSibling);
+}
+
+function findScored(id) {
+  if (CURRENT.scored) { const r = CURRENT.scored.find(function (x) { return x.species.id === id; }); if (r) return r; }
+  const sp = CURRENT.data.species.find(function (s) { return s.id === id; });
+  return sp ? { species: sp, reasons: [], score: 0 } : null;
+}
+
+function renderAddPanel(filter) {
+  const list = document.getElementById('add-list');
+  const inMix = {}; CURRENT.mix.forEach(function (m) { inMix[m.species.id] = 1; });
+  const q = (filter || '').toLowerCase();
+  const items = CURRENT.data.species.filter(function (s) {
+    return !inMix[s.id] && (!q || (s.commonName + ' ' + s.scientificName).toLowerCase().indexOf(q) !== -1);
+  });
+  const order = { grass: 0, legume: 1, forb: 2 };
+  items.sort(function (a, b) { return order[a.type] - order[b.type] || a.commonName.localeCompare(b.commonName); });
+  list.innerHTML = items.map(function (s) {
+    return '<div class="add-item"><button type="button" class="add-btn" data-act="add" data-id="' + s.id + '">+ Add</button>' +
+      '<span class="add-name"><strong>' + s.commonName + '</strong> <span class="add-tag ' + s.type + '">' + s.type + (s.native ? ' · native' : '') + '</span>' +
+      '<br><span class="add-sum">' + s.summary + '</span></span></div>';
+  }).join('') || '<p class="add-empty">No matching species.</p>';
+}
+
+function buildSeedTableSection(mix, data, scored) {
+  CURRENT = { mix: mix.slice(), data: data, total: 12, scored: scored || [] };
+  const section = el('section', 'seed-table-section');
+  section.innerHTML =
+    '<h3 class="section-h">Your seed-mix plan — what to buy &amp; how to plant it</h3>' +
+    '<p class="seed-intro">Click a species name for details, ✕ to remove it, or add more below — rates and groundcover update automatically.</p>' +
+    '<div class="seed-ctrl no-print">Total seeding rate: <input type="number" id="total-pls" value="12" min="4" max="30" step="1"> lb PLS/acre ' +
+    '<span class="ctrl-hint">(drilled; add ~50% if broadcasting)</span></div>' +
+    '<div id="comp-summary" class="comp-summary"></div>' +
+    '<div class="table-scroll"><table class="seed-table" id="seed-table-el"></table></div>' +
+    '<div class="add-control no-print"><button type="button" class="btn btn-secondary" data-act="add-open">+ Add a species</button>' +
+    '<div id="add-panel" class="add-panel" hidden><input type="text" id="add-search" placeholder="Search species…" autocomplete="off"><div id="add-list" class="add-list"></div></div></div>' +
+    '<div id="box-summary" class="box-summary"></div>' +
+    '<p class="seed-note">💲 Costs and varieties are planning estimates ($ per pound of pure live seed) — confirm current quotes and regional ecotypes with the sources listed. ' +
+    '<strong>Groundcover %</strong> is estimated from each species\' rate vs. a pure stand. <strong>Bulk lb</strong> is what you weigh out and buy. Inoculate all legumes before planting.</p>';
+
+  section.addEventListener('click', function (e) {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const act = b.getAttribute('data-act'), id = b.getAttribute('data-id');
+    if (act === 'del') { CURRENT.mix = CURRENT.mix.filter(function (m) { return m.species.id !== id; }); renderSeedTable(); }
+    else if (act === 'detail') { toggleDetailRow(id); }
+    else if (act === 'add-open') { const p = document.getElementById('add-panel'); p.hidden = !p.hidden; if (!p.hidden) { renderAddPanel(''); document.getElementById('add-search').focus(); } }
+    else if (act === 'add') { const r = findScored(id); if (r && !CURRENT.mix.some(function (m) { return m.species.id === id; })) CURRENT.mix.push(r); renderSeedTable(); renderAddPanel(document.getElementById('add-search').value); }
+  });
+  section.addEventListener('input', function (e) {
+    if (e.target.id === 'total-pls') { CURRENT.total = parseFloat(e.target.value) || 12; renderSeedTable(); }
+    else if (e.target.id === 'add-search') { renderAddPanel(e.target.value); }
+  });
+
+  setTimeout(renderSeedTable, 0);
   return section;
 }
 
@@ -372,37 +465,14 @@ function renderResults(rec, data) {
     return;
   }
 
-  // Header
-  const header = el('div', 'results-header');
-  header.appendChild(el('h2', null, 'Your suggested pasture mix'));
-  header.appendChild(el('p', 'results-sub',
-    'A diverse blend chosen for your conditions and goals. Rates assume these species are seeded together — tune them for your drill and site.'));
-  out.appendChild(header);
-
   if (rec.usedLocal) {
     out.appendChild(el('div', 'local-banner',
-      '📍 <strong>Informed by West Virginia trial data.</strong> Species marked with a trial badge were adjusted using local establishment results.'));
+      '📍 <strong>Informed by West Virginia trial data.</strong> Species adjusted using local establishment results.'));
   }
 
-  // Mix grid
-  const grid = el('div', 'species-grid');
-  const mainMix = rec.mix.filter(function (r) { return !r.separatePaddock; });
-  const paddock = rec.mix.filter(function (r) { return r.separatePaddock; });
-
-  mainMix.forEach(function (r) { grid.appendChild(speciesCard(r, data.sources)); });
-  out.appendChild(grid);
-
-  // Seed mix table (composition targeting + PLS + varieties + sources + cost)
-  if (data.prep && window.APP_RECOMMENDER.buildSeedPlan) {
-    out.appendChild(buildSeedTableSection(mainMix, data));
-  }
-
-  if (paddock.length) {
-    out.appendChild(el('h3', 'section-h', 'For a separate summer / warm-season paddock'));
-    const pgrid = el('div', 'species-grid');
-    paddock.forEach(function (r) { pgrid.appendChild(speciesCard(r, data.sources)); });
-    out.appendChild(pgrid);
-  }
+  // Interactive seed-mix table (species details on click; add/remove; groundcover).
+  const mainMix = rec.mix;
+  out.appendChild(buildSeedTableSection(mainMix, data, rec.scored));
 
   // Management recommendations
   if (rec.resources.length) {

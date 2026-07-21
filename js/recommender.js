@@ -77,62 +77,80 @@ const CHALLENGE_REASON = {
   'weeds': 'Competes against weeds once established'
 };
 
-function scoreGoalsAndChallenges(sp, ctx, reasons) {
+// Grazing pressure by management category (1 = gentle, 5 = severe). Higher
+// pressure rewards grazing-tolerant species and penalizes sensitive ones.
+const GRAZING_PRESSURE = {
+  'continuous-heavy': 5,
+  'rot-overgrazed': 4.5,
+  'continuous-light': 3.5,
+  'rot-managed': 2,
+  'mob': 1
+};
+
+// Importance-weighted matching: each goal/challenge the farmer cares about is a
+// 0-7 slider; a species that serves it scores in proportion to that importance.
+function scorePriorities(sp, ctx, reasons) {
   let pts = 0;
-  ctx.goals.forEach(function (g) {
-    if (sp.goalsServed.indexOf(g) !== -1) { pts += 2; if (GOAL_REASON[g]) reasons.push(GOAL_REASON[g]); }
+  const imp = ctx.imp;
+  sp.goalsServed.forEach(function (g) {
+    const w = imp(g); if (w > 0) { pts += w * 0.5; if (w >= 4 && GOAL_REASON[g]) reasons.push(GOAL_REASON[g]); }
   });
-  ctx.challenges.forEach(function (c) {
-    if (sp.challengesFit.indexOf(c) !== -1) { pts += 2; if (CHALLENGE_REASON[c]) reasons.push(CHALLENGE_REASON[c]); }
+  sp.challengesFit.forEach(function (c) {
+    const w = imp(c); if (w > 0) { pts += w * 0.5; if (w >= 4 && CHALLENGE_REASON[c]) reasons.push(CHALLENGE_REASON[c]); }
   });
+  // Stand longevity slider vs. the species' persistence (1 short-lived, 5 long-lived).
+  const li = imp('stand-longevity');
+  if (li > 0) {
+    pts += (li / 7) * ((sp.longevity || 4) - 3) * 1.5;
+    if (li >= 4 && (sp.longevity || 4) >= 4) reasons.push('Long-lived and persistent');
+    else if (li >= 4 && (sp.longevity || 4) <= 2) reasons.push('Short-lived — plan to reseed');
+  }
   return pts;
 }
 
 function scoreConditions(sp, ctx, reasons) {
   let pts = 0;
-  const has = function (arr, v) { return arr.indexOf(v) !== -1; };
+  const imp = ctx.imp;
 
-  const droughtConcern = has(ctx.challenges, 'droughty') || has(ctx.goals, 'drought') || has(ctx.goals, 'summer-forage');
-  if (droughtConcern) pts += (sp.droughtTolerance - 3) * 1.2;
+  // Drought emphasis: the strongest of the droughty/drought/summer sliders (0-1),
+  // plus aspect and recent drought.
+  const droughtEmph = Math.max(imp('droughty'), imp('drought'), imp('summer-forage')) / 7;
+  if (droughtEmph > 0) pts += droughtEmph * (sp.droughtTolerance - 3) * 1.6;
 
-  // Aspect: south/southwest-facing ground is warmer and drier, north/northeast
-  // cooler and moister. The effect scales with slope steepness (negligible on
-  // flat ground, strong on a steep hillside). aspectDryness runs -1 (cool/moist)
-  // to +1 (hot/dry). Positive rewards drought-tolerant species; negative rewards
-  // moisture-loving ones (because (droughtTolerance-3) flips sign for them).
+  // Aspect: SW-facing ground is warmer/drier, NE cooler/moister; scaled by slope.
   if (ctx.aspectDryness) {
     pts += ctx.aspectDryness * (sp.droughtTolerance - 3) * 1.4;
     if (ctx.aspectDryness > 0.35 && sp.droughtTolerance >= 4) reasons.push('Good fit for your warm, dry south/west-facing slope');
     else if (ctx.aspectDryness < -0.35 && sp.droughtTolerance <= 2) reasons.push('Suited to your cool, moist north-facing slope');
   }
-
-  // Recent drought (current conditions vs. normal), 0 (none) to 1 (severe).
   if (ctx.recentDroughtStress > 0.15) {
     pts += ctx.recentDroughtStress * (sp.droughtTolerance - 3) * 1.1;
     if (ctx.recentDroughtStress > 0.4 && sp.droughtTolerance >= 4) reasons.push('Extra resilient for the recent dry spell in your area');
   }
 
-  if (has(ctx.challenges, 'wet')) pts += (sp.floodTolerance - 3) * 1.0;
+  const wetEmph = imp('wet') / 7;
+  if (wetEmph > 0) pts += wetEmph * (sp.floodTolerance - 3) * 1.3;
 
-  if (has(ctx.challenges, 'low-fertility')) {
-    pts += sp.fertilityNeed === 'low' ? 2 : (sp.fertilityNeed === 'high' ? -2 : 0);
-    if (sp.nitrogenFixer) pts += 1.5;
+  const fertEmph = imp('low-fertility') / 7;
+  if (fertEmph > 0) {
+    pts += fertEmph * (sp.fertilityNeed === 'low' ? 2.5 : (sp.fertilityNeed === 'high' ? -2.5 : 0));
+    if (sp.nitrogenFixer) pts += fertEmph * 1.5;
   }
 
-  // Grazing system
-  if (ctx.grazing === 'continuous') pts += (sp.grazingTolerance - 3) * 0.9;
-  else pts += (sp.grazingTolerance - 3) * 0.25;
+  // Grazing pressure vs. grazing tolerance.
+  const pressure = GRAZING_PRESSURE[ctx.grazing] != null ? GRAZING_PRESSURE[ctx.grazing] : 3;
+  pts += (pressure - 3) * (sp.grazingTolerance - 3) * 0.4;
+  if (pressure >= 4.5 && sp.grazingTolerance <= 2) reasons.push('Watch grazing — sensitive to your pressure; rest it');
+  else if (pressure >= 4.5 && sp.grazingTolerance >= 5) reasons.push('Tough enough for hard / continuous grazing');
 
-  // Establishment method
-  if (ctx.method === 'broadcast') pts += (sp.establishmentEase - 3) * 1.1;
-  else if (ctx.method === 'no-till') pts += (sp.establishmentEase - 3) * 0.4;
-  else pts += (sp.establishmentEase - 3) * 0.25;
+  // Establishment: is a reliable method (drill/tillage) available, or broadcast only?
+  const methods = ctx.methods || [];
+  const hasReliable = methods.some(function (m) { return /drill|notill|no-till|tillage/.test(m); });
+  const estFactor = methods.length ? (hasReliable ? 0.4 : 1.1) : 0.6;
+  pts += estFactor * (sp.establishmentEase - 3);
+  if (!hasReliable && methods.length && sp.establishmentEase <= 2) reasons.push('Hard to broadcast — a drill would help establishment');
 
-  // Elevation / winter cold
   if (ctx.cold) pts += (sp.winterHardiness - 3) * 0.9;
-
-  // Nitrogen goal extra nudge for fixers (beyond goalsServed tag)
-  if (has(ctx.goals, 'nitrogen') && sp.nitrogenFixer) pts += 1;
 
   return pts;
 }
@@ -170,10 +188,10 @@ function scoreSpecies(sp, ctx, local) {
   if (ph.reason) reasons.push(ph.reason);
   if (drain.reason) reasons.push(drain.reason);
 
-  score += scoreGoalsAndChallenges(sp, ctx, reasons);
+  score += scorePriorities(sp, ctx, reasons);
   score += scoreConditions(sp, ctx, reasons);
 
-  if (sp.nitrogenFixer && ctx.goals.indexOf('nitrogen') === -1 && reasons.indexOf('Fixes nitrogen, cutting fertilizer need') === -1) {
+  if (sp.nitrogenFixer && ctx.imp('nitrogen') < 4 && reasons.indexOf('Fixes nitrogen, cutting fertilizer need') === -1) {
     // note N-fixation as a passive plus even when not a stated goal
     reasons.push('Adds nitrogen to the stand');
   }
@@ -252,13 +270,20 @@ function composeMix(scored, ctx) {
 
 /* ---- seed plan: composition targeting + PLS math ----------------------- */
 
-// Target functional-group composition, as a fraction of total PLS lbs/acre.
+// Target functional-group composition, as a fraction of estimated GROUND COVER.
 // Midpoints of 45-55% grass, 30-40% legume, 10-20% forb.
 var COMPOSITION_TARGET = { grass: 0.50, legume: 0.35, forb: 0.15 };
 
-// Given the chosen mix, a seed-prep dataset, and a total PLS seeding rate,
-// allocate PLS lbs to each species to hit the group composition, then compute
-// PLS%, bulk lbs, and estimated cost. All the numbers behind the mix table.
+// Estimated ground cover is back-calculated from seeding rate relative to a pure
+// (monoculture) stand: a species seeded at X% of its full rate contributes ~X of
+// a "stand". Cover share_i ∝ plsRate_i / monoRate_i. To hit a target cover split,
+// allocate PLS so each species' rate = totalPls · coverFrac_i · monoRate_i / Σ(...).
+function monoMid(sp) {
+  const lo = sp.seedingRateMonoLow, hi = sp.seedingRateMonoHigh;
+  const m = (lo != null && hi != null) ? (lo + hi) / 2 : (sp.seedingRateMixLow + sp.seedingRateMixHigh);
+  return m > 0 ? m : 1;
+}
+
 function buildSeedPlan(mix, prepData, totalPls) {
   totalPls = totalPls || 12;
   const prep = (prepData && prepData.species) || {};
@@ -268,34 +293,45 @@ function buildSeedPlan(mix, prepData, totalPls) {
   const present = Object.keys(groups).filter(function (g) { return groups[g].length; });
   const tsum = present.reduce(function (a, g) { return a + COMPOSITION_TARGET[g]; }, 0) || 1;
 
-  const rows = [];
-  const groupPls = {};
+  // Desired ground-cover fraction per species: split each group's (normalized)
+  // target cover equally among its members.
+  const coverFrac = {};
   present.forEach(function (g) {
-    const gTarget = totalPls * (COMPOSITION_TARGET[g] / tsum);
-    groupPls[g] = gTarget;
-    const members = groups[g];
-    const mids = members.map(function (m) { return (m.species.seedingRateMixLow + m.species.seedingRateMixHigh) / 2; });
-    const midSum = mids.reduce(function (a, b) { return a + b; }, 0) || members.length;
-    members.forEach(function (m, i) {
-      const pls = gTarget * (mids[i] / midSum);
-      const p = prep[m.species.id];
-      const plsFrac = p && p.purity && p.germ ? (p.purity * p.germ / 10000) : 0.85;
-      const price = (p && p.pricePerPlsLb) || [6, 12];
-      rows.push({
-        species: m.species, group: g, prep: p || null,
-        plsRate: pls, plsPct: plsFrac * 100, bulkRate: pls / plsFrac,
-        costLow: pls * price[0], costHigh: pls * price[1]
-      });
+    const share = (COMPOSITION_TARGET[g] / tsum) / groups[g].length;
+    groups[g].forEach(function (m) { coverFrac[m.species.id] = share; });
+  });
+
+  // Denominator Σ(coverFrac · monoMid) sets the scaling so rates sum to totalPls.
+  let denom = 0;
+  mix.forEach(function (m) { denom += coverFrac[m.species.id] * monoMid(m.species); });
+  denom = denom || 1;
+
+  const rows = [];
+  mix.forEach(function (m) {
+    const sp = m.species;
+    const cover = coverFrac[sp.id];
+    const pls = totalPls * cover * monoMid(sp) / denom;
+    const p = prep[sp.id];
+    const plsFrac = p && p.purity && p.germ ? (p.purity * p.germ / 10000) : 0.85;
+    const price = (p && p.pricePerPlsLb) || [6, 12];
+    rows.push({
+      species: sp, group: sp.type, prep: p || null,
+      coverPct: cover * 100,
+      plsRate: pls, plsPct: plsFrac * 100, bulkRate: pls / plsFrac,
+      costLow: pls * price[0], costHigh: pls * price[1]
     });
   });
 
   const order = { grass: 0, legume: 1, forb: 2 };
-  rows.sort(function (a, b) { return order[a.group] - order[b.group] || b.plsRate - a.plsRate; });
+  rows.sort(function (a, b) { return order[a.group] - order[b.group] || b.coverPct - a.coverPct; });
 
   const totals = { pls: 0, bulk: 0, costLow: 0, costHigh: 0 };
-  rows.forEach(function (r) { totals.pls += r.plsRate; totals.bulk += r.bulkRate; totals.costLow += r.costLow; totals.costHigh += r.costHigh; });
-  const composition = {};
-  present.forEach(function (g) { composition[g] = Math.round(groupPls[g] / totalPls * 100); });
+  const composition = { grass: 0, legume: 0, forb: 0 };
+  rows.forEach(function (r) {
+    totals.pls += r.plsRate; totals.bulk += r.bulkRate; totals.costLow += r.costLow; totals.costHigh += r.costHigh;
+    composition[r.group] += r.coverPct;
+  });
+  Object.keys(composition).forEach(function (g) { composition[g] = Math.round(composition[g]); });
 
   return { rows: rows, totals: totals, composition: composition, totalPls: totalPls };
 }
@@ -304,8 +340,15 @@ function buildSeedPlan(mix, prepData, totalPls) {
 
 function gatherResources(ctx, resourcesData) {
   const active = {};
-  const triggers = ctx.goals.concat(ctx.challenges);
-  triggers.push(ctx.method, 'always');
+  const triggers = [];
+  Object.keys(ctx.priorities || {}).forEach(function (id) { if (ctx.priorities[id] >= 3) triggers.push(id); });
+  (ctx.methods || []).forEach(function (m) {
+    triggers.push(m);
+    if (/drill|notill|no-till/.test(m)) triggers.push('no-till');
+    if (/broadcast/.test(m)) triggers.push('broadcast');
+    if (/frost/.test(m)) triggers.push('frost-seed', 'broadcast');
+  });
+  triggers.push('always');
   return resourcesData.resources.filter(function (r) {
     return r.triggers.some(function (t) {
       if (active[r.id]) return false;
@@ -346,14 +389,15 @@ function buildContext(answers) {
     aspectDryness = dry * steep;
   }
 
+  const priorities = answers.priorities || {};
   return {
     phValue: PH_BAND_VALUE[answers.ph],
     canLime: !!answers.canLime,
     drainage: answers.drainage,
-    goals: answers.goals || [],
-    challenges: answers.challenges || [],
-    method: answers.method || 'no-till',
-    grazing: answers.grazing || 'rotational',
+    priorities: priorities,
+    imp: function (id) { return priorities[id] || 0; },
+    methods: answers.methods || [],
+    grazing: answers.grazing || 'rot-managed',
     cold: answers.elevation === 'high',
     season: answers.season || 'both',
     aspectDryness: aspectDryness,
@@ -368,7 +412,7 @@ function recommend(answers, data) {
   const resources = gatherResources(ctx, data.resources);
   const sources = gatherSources(composed.mix, resources, data.sources, data.local);
   const usedLocal = composed.mix.some(function (r) { return r.local; });
-  return { ctx: ctx, mix: composed.mix, alternates: composed.alternates, resources: resources, sources: sources, usedLocal: usedLocal };
+  return { ctx: ctx, mix: composed.mix, scored: scored, alternates: composed.alternates, resources: resources, sources: sources, usedLocal: usedLocal };
 }
 
 /* ---- pasture-wide (multi-soil) recommendation -------------------------- */
@@ -379,14 +423,17 @@ function uniq(arr) { const seen = {}; return arr.filter(function (x) { if (seen[
 // farmer's stated goals/method/grazing/aspect but swapping in the zone's pH,
 // drainage, and extra challenges.
 function zoneAnswers(farmer, phBand, drainage, extraChallenges) {
+  // Copy the farmer's priority sliders, then raise any extra challenge factors
+  // (e.g. 'wet' for a wet sub-area) so the zone's picks reflect that condition.
+  const priorities = Object.assign({}, farmer.priorities || {});
+  (extraChallenges || []).forEach(function (c) { priorities[c] = Math.max(priorities[c] || 0, 6); });
   return {
     elevation: farmer.elevation,
     ph: phBand || 'unknown',
     canLime: farmer.canLime,
     drainage: drainage || farmer.drainage,
-    goals: farmer.goals || [],
-    challenges: uniq((farmer.challenges || []).concat(extraChallenges || [])),
-    method: farmer.method,
+    priorities: priorities,
+    methods: farmer.methods,
     grazing: farmer.grazing,
     season: farmer.season,
     autofill: farmer.autofill

@@ -13,6 +13,25 @@ vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync(path.join(root, 'js/recommender.js'), 'utf8'), sandbox);
 const REC = sandbox.window.APP_RECOMMENDER;
 
+// Shim: translate the harness's legacy {goals,challenges,method,grazing} answers
+// into the current {priorities,methods,grazing,season} model.
+function normalize(a) {
+  if (!a || a.priorities) return a;
+  const pri = {};
+  (a.goals || []).forEach((g) => { pri[g] = 5; });
+  (a.challenges || []).forEach((c) => { pri[c] = 5; });
+  const mMap = { 'no-till': 'drill-fall', 'broadcast': 'frost-seed', 'tillage': 'tillage' };
+  const gMap = { 'rotational': 'rot-managed', 'continuous': 'continuous-heavy' };
+  return Object.assign({}, a, {
+    priorities: pri,
+    methods: a.method ? [mMap[a.method] || a.method] : ['drill-fall'],
+    grazing: gMap[a.grazing] || a.grazing || 'rot-managed',
+    season: a.season || 'both'
+  });
+}
+const _recommend = REC.recommend;
+REC.recommend = function (a, d) { return _recommend(normalize(a), d); };
+
 // --- replicate app.js applyLocal ---
 function applyLocal(speciesFile, local) {
   const list = speciesFile.species.slice();
@@ -88,10 +107,19 @@ check('alfalfa excluded on wet ground', !wet.mix.some((m) => m.species.id === 'a
 const acid = REC.recommend({ elevation: 'low', ph: 'lt55', canLime: false, drainage: 'well', goals: ['hay'], challenges: ['acidic'], method: 'no-till', grazing: 'rotational' }, data);
 check('alfalfa excluded when strongly acidic & cannot lime', !acid.mix.some((m) => m.species.id === 'alfalfa'));
 
-// Bermudagrass should not be picked at high elevation summer paddock (low winterHardiness) - prefer natives
-const cold = REC.recommend({ elevation: 'high', ph: '60-65', canLime: true, drainage: 'well', goals: ['summer-forage', 'drought'], challenges: ['droughty'], method: 'no-till', grazing: 'rotational' }, data);
-const warmPick = cold.mix.find((m) => m.separatePaddock);
-check('cold-climate summer grass is winter-hardy (not bermuda/crabgrass)', !warmPick || warmPick.species.winterHardiness >= 4);
+// Cold-climate warm-season grass should be winter-hardy (not bermuda/crabgrass).
+const cold = REC.recommend({ elevation: 'high', ph: '60-65', canLime: true, drainage: 'well', goals: ['summer-forage', 'drought'], challenges: ['droughty'], method: 'no-till', grazing: 'rotational', season: 'warm' }, data);
+const warmPick = cold.mix.find((m) => m.species.type === 'grass' && m.species.season === 'warm');
+check('cold-climate warm grass is winter-hardy (not bermuda/crabgrass)', !warmPick || warmPick.species.winterHardiness >= 4);
+
+// Grazing pressure: continuous-heavy should favor grazing-tolerant species overall.
+const gp = REC.recommend({ elevation: 'low', ph: '60-65', canLime: true, drainage: 'well', priorities: {}, methods: ['drill-fall'], grazing: 'continuous-heavy', season: 'cool' }, data);
+check('mix produced under heavy continuous grazing', gp.mix.length > 0);
+
+// Groundcover composition targets ~50/35/15 among present groups.
+const prep = readJson('data/seed-prep.json');
+const planChk = REC.buildSeedPlan(gp.mix, prep, 12);
+check('groundcover composition sums to ~100%', Math.abs((planChk.composition.grass + planChk.composition.legume + planChk.composition.forb) - 100) <= 2);
 
 // Local data merge: enable example observation and confirm badge/flag
 const local2 = JSON.parse(JSON.stringify(local));

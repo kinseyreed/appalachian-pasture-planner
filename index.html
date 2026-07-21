@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Appalachian Pasture Planner</title>
   <meta name="description" content="A free tool that helps Appalachian producers design diverse, research-based seed mixes for permanent pastures based on their soil, conditions, goals, and resources." />
-  <link rel="stylesheet" href="css/styles.css?v=20260717" />
+  <link rel="stylesheet" href="css/styles.css?v=20260718" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌾%3C/text%3E%3C/svg%3E" />
@@ -99,17 +99,17 @@
       <section class="q-block">
         <div class="q-head"><span class="q-num">4</span><div>
           <h2>What are your goals?</h2>
-          <p class="q-desc">Choose all that apply.</p>
+          <p class="q-desc">Slide up the ones that matter to you — 0 (not important) to 7 (top priority). Leave the rest at 0.</p>
         </div></div>
-        <div class="chip-row wrap-chips" id="q-goals"></div>
+        <div class="slider-grid" id="q-goals"></div>
       </section>
 
       <section class="q-block">
         <div class="q-head"><span class="q-num">5</span><div>
           <h2>Any challenges to work around?</h2>
-          <p class="q-desc">Choose all that apply — or none.</p>
+          <p class="q-desc">Rate how relevant/pressing each is — 0 (not an issue) to 7 (major concern).</p>
         </div></div>
-        <div class="chip-row wrap-chips" id="q-challenges"></div>
+        <div class="slider-grid" id="q-challenges"></div>
       </section>
 
       <section class="q-block">
@@ -117,9 +117,9 @@
           <h2>How will you seed and graze it?</h2>
           <p class="q-desc">This shapes species choice and management tips.</p>
         </div></div>
-        <p class="sub-label">Seeding method</p>
-        <div class="chip-row" id="q-method"></div>
-        <p class="sub-label">Grazing management</p>
+        <p class="sub-label">Seeding method — pick all you'll use (you can combine, e.g. drill in fall + frost-seed clover in winter)</p>
+        <div class="chip-row wrap-chips" id="q-method"></div>
+        <p class="sub-label">Grazing management — be honest about how it's actually grazed</p>
         <div class="chip-row" id="q-grazing"></div>
       </section>
 
@@ -149,8 +149,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script src="js/geo.js?v=20260717"></script>
-  <script src="js/recommender.js?v=20260717"></script>
-  <script src="js/app.js?v=20260717"></script>
+  <script src="js/geo.js?v=20260718"></script>
+  <script src="js/recommender.js?v=20260718"></script>
+  <script src="js/app.js?v=20260718"></script>
 </body>
 </html>
