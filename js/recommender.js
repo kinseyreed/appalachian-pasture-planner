@@ -317,8 +317,10 @@ function monoMid(sp) {
 // `evenness` (0-1) shapes how each group's cover is split between its species:
 // 1 = every species gets an equal share (maximum Simpson diversity), lower
 // values concentrate cover in the best-scoring species.
-function buildSeedPlan(mix, prepData, totalPls, overrides, evenness) {
-  totalPls = totalPls || 12;
+// `rateOverrides` lets a producer pin an actual PLS rate for a species
+// ({ speciesId: lbsPerAcre }); groundcover is then back-calculated from the
+// rates actually in the table rather than from the target split.
+function buildSeedPlan(mix, prepData, totalPls, overrides, evenness, rateOverrides) {
   const prep = (prepData && prepData.species) || {};
   const ov = overrides || {};
   const ev = evenness == null ? 1 : Math.max(0, Math.min(1, evenness));
@@ -340,16 +342,43 @@ function buildSeedPlan(mix, prepData, totalPls, overrides, evenness) {
     members.forEach(function (m, i) { coverFrac[m.species.id] = gTarget * w[i] / wSum; });
   });
 
-  // Denominator Σ(coverFrac · monoMid) sets the scaling so rates sum to totalPls.
-  let denom = 0;
-  mix.forEach(function (m) { denom += coverFrac[m.species.id] * monoMid(m.species); });
-  denom = denom || 1;
+  // Σ(coverFrac · monoRate) is the seed needed to deliver ONE FULL STAND with
+  // each species contributing its target share of the ground — i.e. the
+  // agronomically recommended total rate for this particular mix.
+  let recommendedTotal = 0;
+  mix.forEach(function (m) { recommendedTotal += coverFrac[m.species.id] * monoMid(m.species); });
+  recommendedTotal = recommendedTotal || 1;
+  totalPls = totalPls || recommendedTotal;
+
+  // Rates: the target allocation, unless the producer pinned a rate themselves.
+  // Pinned rates are honoured exactly; the unpinned species share whatever is
+  // left of the total, so the table always adds up to the stated total rate.
+  const ratesOv = rateOverrides || {};
+  let pinnedSum = 0, unpinnedDenom = 0;
+  mix.forEach(function (m) {
+    const sp = m.species;
+    if (ratesOv[sp.id] != null) pinnedSum += ratesOv[sp.id];
+    else unpinnedDenom += coverFrac[sp.id] * monoMid(sp);
+  });
+  const remaining = Math.max(0, totalPls - pinnedSum);
+  const rates = {};
+  mix.forEach(function (m) {
+    const sp = m.species;
+    if (ratesOv[sp.id] != null) { rates[sp.id] = ratesOv[sp.id]; return; }
+    rates[sp.id] = unpinnedDenom > 0 ? remaining * coverFrac[sp.id] * monoMid(sp) / unpinnedDenom : 0;
+  });
+  if (pinnedSum > totalPls) totalPls = pinnedSum; // pins alone exceed the target
+
+  // Groundcover is ALWAYS back-calculated from the rates actually in the table
+  // (rate ÷ pure-stand rate), so edits move the composition immediately.
+  let standTotal = 0;
+  mix.forEach(function (m) { standTotal += rates[m.species.id] / monoMid(m.species); });
 
   const rows = [];
   mix.forEach(function (m) {
     const sp = m.species;
-    const cover = coverFrac[sp.id];
-    const pls = totalPls * cover * monoMid(sp) / denom;
+    const pls = rates[sp.id];
+    const cover = standTotal > 0 ? (pls / monoMid(sp)) / standTotal : 0;
     const p = prep[sp.id];
     const o = ov[sp.id] || {};
     const purity = o.purity != null ? o.purity : (p && p.purity);
@@ -359,6 +388,7 @@ function buildSeedPlan(mix, prepData, totalPls, overrides, evenness) {
     rows.push({
       species: sp, group: sp.type, prep: p || null,
       purity: purity, germ: germ, fromTag: !!(o.purity != null || o.germ != null),
+      pinnedRate: ratesOv[sp.id] != null,
       coverPct: cover * 100,
       plsRate: pls, plsPct: plsFrac * 100, bulkRate: pls / plsFrac,
       costLow: pls * price[0], costHigh: pls * price[1]
@@ -387,6 +417,7 @@ function buildSeedPlan(mix, prepData, totalPls, overrides, evenness) {
 
   return {
     rows: rows, totals: totals, composition: composition, totalPls: totalPls,
+    recommendedTotal: recommendedTotal,
     richness: rows.length, simpson: simpson, effectiveSpecies: effective, evenness: ev
   };
 }

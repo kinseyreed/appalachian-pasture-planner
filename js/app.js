@@ -338,6 +338,7 @@ function money(a, b) { return '$' + Math.round(a) + '–' + Math.round(b); }
 // The interactive seed-mix table. CURRENT holds the editable mix so delete/add
 // and the total-rate control all recompute the plan and groundcover live.
 let CURRENT = null;
+let LAST_ANSWERS = null;
 
 function speciesDetailHtml(result, data) {
   const sp = result.species;
@@ -377,7 +378,13 @@ function speciesDetailHtml(result, data) {
 function renderSeedTable() {
   if (!CURRENT) return;
   const data = CURRENT.data, mix = CURRENT.mix, total = CURRENT.total;
-  const plan = window.APP_RECOMMENDER.buildSeedPlan(mix, data.prep, total, CURRENT.tags, CURRENT.evenness);
+  const plan = window.APP_RECOMMENDER.buildSeedPlan(
+    mix, data.prep, CURRENT.totalUserSet ? total : null, CURRENT.tags, CURRENT.evenness, CURRENT.rates);
+  if (!CURRENT.totalUserSet) CURRENT.total = plan.recommendedTotal;
+  const totalInput = document.getElementById('total-pls');
+  if (totalInput && document.activeElement !== totalInput) totalInput.value = Math.round(plan.totalPls * 10) / 10;
+  const recEl = document.getElementById('rec-total');
+  if (recEl) recEl.textContent = (Math.round(plan.recommendedTotal * 10) / 10) + ' lb';
   CURRENT.planRows = {};
   plan.rows.forEach(function (r) { CURRENT.planRows[r.species.id] = r; });
   const V = (data.vendors && data.vendors.vendors) || {};
@@ -406,7 +413,8 @@ function renderSeedTable() {
       '<td>' + (p.seedBox || '—') + '</td>' +
       '<td>' + (p.depth || '—') + '</td>' +
       '<td>' + (p.seasonWindow || '—') + '</td>' +
-      '<td class="num">' + r.plsRate.toFixed(1) + '<br><span class="pls-pct' + (r.fromTag ? ' tagged' : '') + '">' + Math.round(r.plsPct) + '% PLS</span></td>' +
+      '<td class="num"><input type="number" class="rate-input' + (r.pinnedRate ? ' pinned' : '') + '" data-id="' + r.species.id + '" value="' + r.plsRate.toFixed(1) + '" min="0" step="0.1" title="Edit to set this species&#39; rate yourself">' +
+      '<br><span class="pls-pct' + (r.fromTag ? ' tagged' : '') + '">' + Math.round(r.plsPct) + '% PLS</span></td>' +
       '<td class="num">' + r.bulkRate.toFixed(1) + '</td>' +
       '<td class="num">' + money(r.costLow, r.costHigh) + '</td>' +
       '<td class="src">' + srcs + '</td></tr>';
@@ -482,6 +490,87 @@ function adjustRichness(delta) {
   renderSeedTable();
 }
 
+function downloadFile(name, mime, content) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+}
+
+function csvCell(v) {
+  const t = String(v == null ? '' : v);
+  return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t;
+}
+
+function exportCsv() {
+  const plan = window.APP_RECOMMENDER.buildSeedPlan(
+    CURRENT.mix, CURRENT.data.prep, CURRENT.totalUserSet ? CURRENT.total : null,
+    CURRENT.tags, CURRENT.evenness, CURRENT.rates);
+  const V = (CURRENT.data.vendors && CURRENT.data.vendors.vendors) || {};
+  const c = plan.composition;
+  const lines = [];
+  lines.push(['Appalachian Pasture Planner - seed mix plan'].map(csvCell).join(','));
+  lines.push(['Saved', new Date().toLocaleString()].map(csvCell).join(','));
+  lines.push(['Total seeding rate (lb PLS/acre)', (Math.round(plan.totalPls * 10) / 10)].map(csvCell).join(','));
+  lines.push(['Recommended total (lb PLS/acre)', (Math.round(plan.recommendedTotal * 10) / 10)].map(csvCell).join(','));
+  lines.push(['Estimated groundcover', 'Grasses ' + (c.grass || 0) + '%', 'Legumes ' + (c.legume || 0) + '%', 'Forbs ' + (c.forb || 0) + '%'].map(csvCell).join(','));
+  lines.push(['Species richness', plan.richness, 'Simpson diversity', plan.simpson.toFixed(2), 'Effective species', plan.effectiveSpecies.toFixed(1)].map(csvCell).join(','));
+  lines.push('');
+  lines.push(['Species', 'Scientific name', 'Group', 'Cover %', 'Suggested variety', 'Seed box', 'Depth',
+    'When to plant', 'PLS lb/ac', 'Purity % (from tag)', 'Germination % (from tag)', 'PLS %', 'Bulk lb/ac',
+    'Est $/ac low', 'Est $/ac high', 'Seed sources'].map(csvCell).join(','));
+  plan.rows.forEach(function (r) {
+    const p = r.prep || {};
+    const v = (p.varieties && p.varieties[0]) || { name: '' };
+    const srcs = (p.sources || []).map(function (id) { return V[id] ? V[id].name : ''; }).filter(Boolean).join('; ');
+    lines.push([r.species.commonName, r.species.scientificName, r.group, Math.round(r.coverPct),
+      v.name, p.seedBox || '', p.depth || '', p.seasonWindow || '',
+      r.plsRate.toFixed(1), r.purity != null ? r.purity : '', r.germ != null ? r.germ : '',
+      Math.round(r.plsPct), r.bulkRate.toFixed(1), Math.round(r.costLow), Math.round(r.costHigh), srcs].map(csvCell).join(','));
+  });
+  lines.push(['TOTAL', '', '', 100, '', '', '', '', plan.totals.pls.toFixed(1), '', '', '',
+    plan.totals.bulk.toFixed(1), Math.round(plan.totals.costLow), Math.round(plan.totals.costHigh), ''].map(csvCell).join(','));
+  downloadFile('pasture-seed-mix.csv', 'text/csv;charset=utf-8', lines.join('\n'));
+}
+
+function savePlan() {
+  const plan = {
+    app: 'appalachian-pasture-planner', version: 1, savedAt: new Date().toISOString(),
+    answers: CURRENT.answers || LAST_ANSWERS,
+    speciesIds: CURRENT.mix.map(function (m) { return m.species.id; }),
+    total: CURRENT.total, totalUserSet: CURRENT.totalUserSet,
+    evenness: CURRENT.evenness, tags: CURRENT.tags, rates: CURRENT.rates
+  };
+  downloadFile('pasture-plan.json', 'application/json', JSON.stringify(plan, null, 2));
+}
+
+async function openPlan(file) {
+  let p;
+  try { p = JSON.parse(await file.text()); }
+  catch (e) { alert('That file could not be read as a saved plan.'); return; }
+  if (!p || p.app !== 'appalachian-pasture-planner') { alert('That does not look like a saved pasture plan.'); return; }
+  if (!DATA) DATA = await loadData();
+  const rec = window.APP_RECOMMENDER.recommend(p.answers || {}, DATA);
+  const byId = {};
+  rec.scored.forEach(function (r) { byId[r.species.id] = r; });
+  const mix = (p.speciesIds || []).map(function (id) { return byId[id]; }).filter(Boolean);
+  if (mix.length) rec.mix = mix;
+  LAST_ANSWERS = p.answers || null;
+  renderResults(rec, DATA);
+  setTimeout(function () {
+    CURRENT.tags = p.tags || {};
+    CURRENT.rates = p.rates || {};
+    CURRENT.evenness = p.evenness == null ? 1 : p.evenness;
+    CURRENT.total = p.total;
+    CURRENT.totalUserSet = !!p.totalUserSet;
+    const ev = document.getElementById('evenness');
+    if (ev) ev.value = Math.round(CURRENT.evenness * 100);
+    renderSeedTable();
+  }, 30);
+}
+
 function findScored(id) {
   if (CURRENT.scored) { const r = CURRENT.scored.find(function (x) { return x.species.id === id; }); if (r) return r; }
   const sp = CURRENT.data.species.find(function (s) { return s.id === id; });
@@ -505,13 +594,20 @@ function renderAddPanel(filter) {
 }
 
 function buildSeedTableSection(mix, data, scored, ctx) {
-  CURRENT = { mix: mix.slice(), data: data, total: 12, scored: scored || [], tags: {}, planRows: {}, openDetail: null, evenness: 1, ctx: ctx || null };
+  CURRENT = { mix: mix.slice(), data: data, total: null, totalUserSet: false, scored: scored || [], tags: {}, rates: {}, planRows: {}, openDetail: null, evenness: 1, ctx: ctx || null, answers: LAST_ANSWERS };
   const section = el('section', 'seed-table-section');
   section.innerHTML =
     '<h3 class="section-h">Your seed-mix plan — what to buy &amp; how to plant it</h3>' +
     '<p class="seed-intro"><strong>Click a species name</strong> to see its details and to enter the purity and germination from your own seed tag (this recalculates its PLS and bulk pounds). Use the remove button to drop a species, or add more below — rates, groundcover and diversity update automatically.</p>' +
-    '<div class="seed-ctrl no-print">Total seeding rate: <input type="number" id="total-pls" value="12" min="4" max="30" step="1"> lb PLS/acre ' +
-    '<span class="ctrl-hint">(drilled; add ~50% if broadcasting)</span></div>' +
+    '<div class="seed-ctrl no-print">' +
+      '<div class="rate-row"><label for="total-pls"><strong>Total seeding rate</strong></label>' +
+      '<input type="number" id="total-pls" min="1" max="80" step="0.5"> <span class="ctrl-hint">lb PLS/acre</span>' +
+      '<button type="button" class="rate-reset" data-act="rate-reset">reset to recommended (<span id="rec-total">—</span>)</button></div>' +
+      '<p class="rate-why"><strong>Where this number comes from:</strong> each species is seeded at its share of what a <em>pure stand</em> of that species would need, ' +
+      'so the mix as a whole delivers about one full stand\'s worth of seed spread across the species. That total is recalculated whenever you add, remove or re-weight species.<br>' +
+      '<strong>Why it matters:</strong> seed much lighter and the stand comes in thin, leaving gaps that weeds fill in the establishment year; seed much heavier and you pay for seed that mostly competes with itself and thins out anyway. ' +
+      'Add roughly <strong>50% more if broadcasting</strong> rather than drilling, since less of the seed reaches soil.</p>' +
+    '</div>' +
     '<div class="diversity-panel no-print">' +
     '<div class="div-controls">' +
       '<div class="div-ctl"><span class="div-label">Species richness</span>' +
@@ -534,6 +630,13 @@ function buildSeedTableSection(mix, data, scored, ctx) {
   '</div>' +
   '<div id="comp-summary" class="comp-summary"></div>' +
     '<div class="table-scroll"><table class="seed-table" id="seed-table-el"></table></div>' +
+    '<div class="plan-io no-print">' +
+      '<button type="button" class="btn btn-secondary" data-act="csv">Download for Excel (CSV)</button>' +
+      '<button type="button" class="btn btn-secondary" data-act="save">Save plan</button>' +
+      '<button type="button" class="btn btn-secondary" data-act="load">Open saved plan</button>' +
+      '<input type="file" id="plan-file" accept="application/json,.json" hidden>' +
+      '<p class="io-hint">Save your plan now, then reopen it once the seed arrives to enter the purity and germination from each tag. Files stay on your computer — nothing is uploaded.</p>' +
+    '</div>' +
     '<div class="add-control no-print"><button type="button" class="btn btn-secondary" data-act="add-open">+ Add a species</button>' +
     '<div id="add-panel" class="add-panel" hidden><input type="text" id="add-search" placeholder="Search species…" autocomplete="off"><div id="add-list" class="add-list"></div></div></div>' +
     '<div id="box-summary" class="box-summary"></div>' +
@@ -546,6 +649,12 @@ function buildSeedTableSection(mix, data, scored, ctx) {
     if (act === 'del') { CURRENT.mix = CURRENT.mix.filter(function (m) { return m.species.id !== id; }); renderSeedTable(); }
     else if (act === 'detail') { toggleDetailRow(id); }
     else if (act === 'add-open') { const p = document.getElementById('add-panel'); p.hidden = !p.hidden; if (!p.hidden) { renderAddPanel(''); document.getElementById('add-search').focus(); } }
+    else if (act === 'csv') { exportCsv(); }
+    else if (act === 'save') { savePlan(); }
+    else if (act === 'load') { document.getElementById('plan-file').click(); }
+    else if (act === 'rate-reset') {
+      CURRENT.rates = {}; CURRENT.totalUserSet = false; CURRENT.openDetail = null; renderSeedTable();
+    }
     else if (act === 'rich-up') { adjustRichness(1); }
     else if (act === 'rich-down') { adjustRichness(-1); }
     else if (act === 'tag-reset') {
@@ -556,6 +665,18 @@ function buildSeedTableSection(mix, data, scored, ctx) {
     else if (act === 'add') { const r = findScored(id); if (r && !CURRENT.mix.some(function (m) { return m.species.id === id; })) CURRENT.mix.push(r); renderSeedTable(); renderAddPanel(document.getElementById('add-search').value); }
   });
   section.addEventListener('change', function (e) {
+    if (e.target.id === 'plan-file') {
+      if (e.target.files && e.target.files[0]) openPlan(e.target.files[0]);
+      e.target.value = '';
+      return;
+    }
+    if (e.target.classList.contains('rate-input')) {
+      const rid = e.target.getAttribute('data-id');
+      const rv = parseFloat(e.target.value);
+      if (isNaN(rv) || rv < 0) delete CURRENT.rates[rid]; else CURRENT.rates[rid] = rv;
+      renderSeedTable();
+      return;
+    }
     if (!e.target.classList.contains('tag-input')) return;
     const id = e.target.getAttribute('data-id');
     const which = e.target.getAttribute('data-tag');
@@ -567,7 +688,7 @@ function buildSeedTableSection(mix, data, scored, ctx) {
     if (CURRENT.openDetail === id) { CURRENT.openDetail = null; toggleDetailRow(id); }
   });
   section.addEventListener('input', function (e) {
-    if (e.target.id === 'total-pls') { CURRENT.total = parseFloat(e.target.value) || 12; renderSeedTable(); }
+    if (e.target.id === 'total-pls') { CURRENT.total = parseFloat(e.target.value) || null; CURRENT.totalUserSet = true; renderSeedTable(); }
     else if (e.target.id === 'evenness') { CURRENT.evenness = parseInt(e.target.value, 10) / 100; renderSeedTable(); }
     else if (e.target.id === 'add-search') { renderAddPanel(e.target.value); }
   });
@@ -1015,6 +1136,7 @@ async function init() {
       btn.textContent = 'Build my seed mix →';
     }
     const answers = readAnswers();
+    LAST_ANSWERS = answers;
     if (PASTURE && PASTURE.profile && PASTURE.soils && PASTURE.soils.length) {
       const prec = window.APP_RECOMMENDER.recommendPasture(answers, PASTURE.profile, DATA);
       renderPastureResults(prec, DATA);

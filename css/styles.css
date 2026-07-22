@@ -381,8 +381,23 @@ main { padding-bottom: 60px; }
 /* ---- seed mix table ---- */
 .seed-table-section { margin-top: 8px; }
 .seed-ctrl { background: #f7f5ec; border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; margin-bottom: 12px; font-weight: 600; color: var(--forest-dark); }
-.seed-ctrl input { width: 64px; font-family: inherit; font-size: 1rem; padding: 6px 8px; border: 1.5px solid var(--line); border-radius: 8px; margin: 0 4px; }
+.seed-ctrl input { width: 72px; font-family: inherit; font-size: 1rem; padding: 6px 8px; border: 1.5px solid var(--line); border-radius: 8px; margin: 0 4px; }
 .seed-ctrl .ctrl-hint { font-weight: 400; font-size: .82rem; color: var(--ink-soft); }
+.rate-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rate-reset { border: none; background: none; color: var(--moss); font-size: .82rem; cursor: pointer; text-decoration: underline; font-family: inherit; padding: 0; }
+.rate-reset:hover { color: var(--forest); }
+.rate-why { font-weight: 400; font-size: .84rem; color: var(--ink-soft); margin: 10px 0 0; line-height: 1.6; }
+
+/* editable per-species rate */
+.rate-input { width: 62px; font-family: inherit; font-size: .84rem; padding: 3px 6px; text-align: right;
+  border: 1.5px solid var(--line); border-radius: 7px; background: #fff; }
+.rate-input:focus { outline: none; border-color: var(--moss); }
+.rate-input.pinned { border-color: var(--amber); background: #fdf6ec; font-weight: 700; }
+
+/* save / export */
+.plan-io { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.plan-io .btn { padding: 9px 15px; font-size: .9rem; }
+.io-hint { flex: 1 1 100%; font-size: .8rem; color: var(--ink-soft); margin: 2px 0 0; }
 /* diversity panel */
 .diversity-panel { background: #f4f6ee; border: 1px solid #dde5d2; border-radius: 11px; padding: 13px 16px; margin-bottom: 12px; }
 .div-controls { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; }
