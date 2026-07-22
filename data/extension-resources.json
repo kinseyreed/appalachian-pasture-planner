@@ -6,7 +6,7 @@
       "title": "Soil test and lime before you seed",
       "body": "Pull a soil test 6-12 months ahead. Lime takes months to react, so correcting pH before seeding is the single highest-return step. Aim for pH 6.0-6.5 for most grass-legume mixes (6.5+ if alfalfa is in the mix), and apply recommended phosphorus and potassium to feed the seedlings and the nitrogen-fixing legumes.",
       "triggers": ["acidic", "low-fertility", "nitrogen", "always"],
-      "sources": ["wvu-fertility", "psu-establishment"]
+      "sources": ["wvu-fertility", "wvu-lime-tool", "wvu-blend-calc", "wvu-soil-report", "wvu-pelleted-lime", "psu-forage-maintenance", "psu-establishment"]
     },
     {
       "id": "frost-seeding",

@@ -29,7 +29,37 @@
       "title": "Soil Fertility & Fertilizers",
       "org": "West Virginia University Extension",
       "url": "https://extension.wvu.edu/agriculture/pasture-hay-forage/soil-fertility",
-      "note": "Soil testing, liming, and fertility management."
+      "note": "Soil testing, liming, and fertility management; links to the WVU Fertility Recommend Tool and Forage Fertilization Worksheet (downloadable spreadsheets)."
+    },
+    "wvu-lime-tool": {
+      "title": "Value of Ag Limestone Tool (calculator)",
+      "org": "West Virginia University Extension",
+      "url": "https://go.wvu.edu/AgLimestoneTool",
+      "note": "Interactive calculator: compares lime products by Effective Neutralizing Value (ENV) so you can price them on an apples-to-apples basis and find the tons/acre needed."
+    },
+    "wvu-blend-calc": {
+      "title": "Blended Fertilizer Calculator",
+      "org": "West Virginia University Extension / Soil Testing Lab",
+      "url": "https://extapps.wvu.edu/soiltesting/blended_fertilizer_calculator.cfm",
+      "note": "Interactive calculator: enter your soil test's N-P-K recommendation and it works out how to blend basic fertilizers (urea, DAP, potash, etc.) to hit it."
+    },
+    "wvu-soil-report": {
+      "title": "Using the WVU Soil Testing Report",
+      "org": "West Virginia University Extension",
+      "url": "https://extension.wvu.edu/natural-resources/soil-water/using-the-wvu-soil-testing-report",
+      "note": "How to read a soil test report and translate it into a lime and fertilizer plan."
+    },
+    "wvu-pelleted-lime": {
+      "title": "Low-rate Application of Pelleted Lime",
+      "org": "West Virginia University Extension",
+      "url": "https://extension.wvu.edu/natural-resources/soil-water/low-rate-application-of-pelleted-lime",
+      "note": "Using pelleted (fines) lime at low rates via a fertilizer spreader when bulk ag lime spreading isn't practical — common on steep or small Appalachian fields."
+    },
+    "psu-forage-maintenance": {
+      "title": "Soil Fertility Management for Forage Crops: Maintenance",
+      "org": "Penn State Extension",
+      "url": "https://extension.psu.edu/soil-fertility-management-for-forage-crops-maintenance",
+      "note": "Maintaining P and K by replacing what forage removes; interpreting optimum/high soil-test categories."
     },
     "vt-steep-pastures": {
       "title": "Managing Virginia's Steep Pastures (VCE 418-005)",

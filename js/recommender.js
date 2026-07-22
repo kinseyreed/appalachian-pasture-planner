@@ -642,28 +642,33 @@ function buildEstablishmentPlan(ctx, mix, prepData) {
   // 1 — pH / lime
   const needsHighPh = sp.some(function (s) { return s.phMin >= 6.4; });
   const targetPh = needsHighPh ? '6.5–6.8' : '6.0–6.5';
-  let limeBody;
+  const limeBullets = [];
   if (ctx.phValue == null) {
-    limeBody = 'Pull a soil test before you buy any seed — it is the cheapest decision in this whole plan. Aim for pH ' + targetPh + ' for this mix.';
+    limeBullets.push('Pull a soil test before you buy any seed — it is the cheapest decision in this whole plan. Aim for pH ' + targetPh + ' for this mix.');
   } else if (ctx.phValue < 5.8) {
-    limeBody = 'Your pH is low for this mix. Lime as far ahead of seeding as you can — 6–12 months is ideal, because lime reacts slowly. Target pH ' + targetPh + '.' +
-      (ctx.canLime ? '' : ' You indicated liming is not an option, so this mix leans on the acid-tolerant species; expect lower yield than a limed field.');
+    limeBullets.push('Your pH is low for this mix. Lime as far ahead of seeding as you can — 6–12 months is ideal, because lime reacts slowly. Target pH ' + targetPh + '.' +
+      (ctx.canLime ? '' : ' You indicated liming is not an option, so this mix leans on the acid-tolerant species; expect lower yield than a limed field.'));
   } else {
-    limeBody = 'Your pH is workable for this mix. Hold it at ' + targetPh + ' and re-test every 2–3 years.';
+    limeBullets.push('Your pH is workable for this mix. Hold it at ' + targetPh + ' and re-test every 2–3 years.');
   }
-  if (needsHighPh) limeBody += ' Note that ' + names(sp.filter(function (s) { return s.phMin >= 6.4; })) + ' in this mix needs the higher end of that range.';
-  steps.push({ title: 'Soil test and lime first', body: limeBody });
+  if (needsHighPh) limeBullets.push('Note that ' + names(sp.filter(function (s) { return s.phMin >= 6.4; })) + ' in this mix needs the higher end of that range.');
+  limeBullets.push('For an established sod (pasture you are frost-seeding or overseeding rather than tilling), lime only reaches about 2 inches deep over time, so West Virginia\'s pasture/hayland guidance targets pH 6.0+ at that shallow depth rather than the deeper target used for tilled ground — pull your soil sample from just the top 2 inches on permanent sod.');
+  limeBullets.push('Not all lime is equal: <a href="https://go.wvu.edu/AgLimestoneTool" target="_blank" rel="noopener">WVU\'s Ag Limestone Tool</a> lets you compare products by Effective Neutralizing Value (ENV) so you can price tons of actual neutralizing power, not just tons of rock — useful since pelleted and bulk ag lime differ a lot in ENV per dollar.');
+  limeBullets.push('If bulk ag lime spreading isn\'t practical on a steep or small field, <a href="https://extension.wvu.edu/natural-resources/soil-water/low-rate-application-of-pelleted-lime" target="_blank" rel="noopener">pelleted lime applied through a fertilizer spreader</a> is a workable low-rate alternative — see WVU\'s guidance on rates and limitations.');
+  steps.push({ title: 'Soil test and lime first', bullets: limeBullets });
 
   // 2 — fertility
-  let fertBody;
-  if (ctx.fertilityEmphasis >= 5) fertBody = 'Fertility reads low. Correct phosphorus and potassium to soil-test recommendation before seeding — seedlings, and especially legumes, cannot fix nitrogen without adequate P and K.';
-  else if (ctx.fertilityEmphasis >= 3) fertBody = 'Fertility reads moderate. Apply P and K to soil-test recommendation at seeding.';
-  else fertBody = 'Fertility looks adequate. Maintain P and K on a regular soil-test cycle.';
+  const fertBullets = [];
+  if (ctx.fertilityEmphasis >= 5) fertBullets.push('Fertility reads low. Correct phosphorus and potassium to soil-test recommendation before seeding — seedlings, and especially legumes, cannot fix nitrogen without adequate P and K.');
+  else if (ctx.fertilityEmphasis >= 3) fertBullets.push('Fertility reads moderate. Apply P and K to soil-test recommendation at seeding.');
+  else fertBullets.push('Fertility looks adequate. Maintain P and K on a regular soil-test cycle, replacing roughly what the forage removes each year.');
   if (legumes.length) {
-    fertBody += ' Skip the nitrogen fertilizer: with ' + legumes.length + ' legume' + (legumes.length > 1 ? 's' : '') +
-      ' in this mix (' + names(legumes) + '), applied N mostly feeds grass and weeds and shuts down nodulation.';
+    fertBullets.push('Skip the nitrogen fertilizer: with ' + legumes.length + ' legume' + (legumes.length > 1 ? 's' : '') +
+      ' in this mix (' + names(legumes) + '), applied N mostly feeds grass and weeds and shuts down nodulation.');
   }
-  steps.push({ title: 'Fertility', body: fertBody });
+  fertBullets.push('<a href="https://extension.wvu.edu/natural-resources/soil-water/using-the-wvu-soil-testing-report" target="_blank" rel="noopener">Using the WVU Soil Testing Report</a> walks through translating your actual report into lime and fertilizer amounts, and the <a href="https://extension.wvu.edu/agriculture/pasture-hay-forage/soil-fertility" target="_blank" rel="noopener">WVU Soil Fertility &amp; Fertilizers page</a> links to two downloadable calculators: the <strong>Fertility Recommend Tool</strong> (recommendations by your dominant soil\'s productivity potential) and the <strong>Forage Fertilization Worksheet</strong> (rates by yield goal).');
+  fertBullets.push('If you\'re blending your own fertilizer from straight materials (urea, DAP, potash) rather than buying a custom blend, <a href="https://extapps.wvu.edu/soiltesting/blended_fertilizer_calculator.cfm" target="_blank" rel="noopener">WVU\'s Blended Fertilizer Calculator</a> works out the mix to hit your soil test\'s N-P-K recommendation.');
+  steps.push({ title: 'Fertility', bullets: fertBullets });
 
   // 3 — compaction (only when flagged)
   if (ctx.compaction >= 3) {

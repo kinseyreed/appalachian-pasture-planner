@@ -740,15 +740,15 @@ function renderResults(rec, data) {
     });
     out.appendChild(ol);
 
-    const planSrc = ['umd-seeding', 'msu-pasture-est', 'ut-planting', 'ifas-calibration', 'psu-spreader-calib', 'umd-summer-grazing', 'uky-rest', 'pb1752'];
+    const planSrc = ['wvu-fertility', 'wvu-lime-tool', 'wvu-blend-calc', 'wvu-soil-report', 'wvu-pelleted-lime', 'psu-forage-maintenance',
+      'umd-seeding', 'msu-pasture-est', 'ut-planting', 'ifas-calibration', 'psu-spreader-calib', 'umd-summer-grazing', 'uky-rest', 'pb1752'];
     const sw = el('p', 'plan-sources', 'Establishment guidance follows: ');
-    planSrc.forEach(function (id, i) {
-      const s = data.sources.sources[id];
-      if (!s) return;
-      const a = el('a', null, s.org);
-      a.href = s.url; a.target = '_blank'; a.rel = 'noopener'; a.title = s.title;
+    const planSources = planSrc.map(function (id) { return data.sources.sources[id]; }).filter(Boolean);
+    planSources.forEach(function (s, i) {
+      const a = el('a', null, s.title);
+      a.href = s.url; a.target = '_blank'; a.rel = 'noopener'; a.title = s.org;
       sw.appendChild(a);
-      if (i < planSrc.length - 1) sw.appendChild(document.createTextNode(' · '));
+      if (i < planSources.length - 1) sw.appendChild(document.createTextNode(' · '));
     });
     out.appendChild(sw);
   }
