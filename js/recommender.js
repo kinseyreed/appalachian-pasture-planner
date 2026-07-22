@@ -137,6 +137,17 @@ function scoreConditions(sp, ctx, reasons) {
     if (sp.nitrogenFixer) pts += fertEmph * 1.5;
   }
 
+  // Some species are only the right answer on genuinely difficult ground —
+  // tall fescue will out-tough anything, but on decent soil it crowds out the
+  // more palatable, more diverse options a producer would rather have.
+  if (sp.onlyWhenChallenging) {
+    if (ctx.soilDifficulty >= 2) {
+      reasons.push('Worth it here — few other grasses hold ground this challenging');
+    } else {
+      pts -= 8;
+    }
+  }
+
   // Soil texture. Heavy clay (common on WV uplands) suits some species far
   // better than others; light/coarse ground dries out and rewards deep roots.
   if (ctx.texture === 'heavy') {
@@ -162,7 +173,7 @@ function scoreConditions(sp, ctx, reasons) {
 
   // Establishment: is a reliable method (drill/tillage) available, or broadcast only?
   const methods = ctx.methods || [];
-  const hasReliable = methods.some(function (m) { return /drill|notill|no-till|tillage/.test(m); });
+  const hasReliable = !methods.length || methods.some(function (m) { return /auto|drill|notill|no-till|tillage/.test(m); });
   const estFactor = methods.length ? (hasReliable ? 0.4 : 1.1) : 0.6;
   pts += estFactor * (sp.establishmentEase - 3);
   if (!hasReliable && methods.length && sp.establishmentEase <= 2) reasons.push('Hard to broadcast — a drill would help establishment');
@@ -303,10 +314,14 @@ function monoMid(sp) {
 
 // `overrides` lets a producer type the purity/germination printed on the seed
 // tag they actually bought, per species: { speciesId: {purity, germ} }.
-function buildSeedPlan(mix, prepData, totalPls, overrides) {
+// `evenness` (0-1) shapes how each group's cover is split between its species:
+// 1 = every species gets an equal share (maximum Simpson diversity), lower
+// values concentrate cover in the best-scoring species.
+function buildSeedPlan(mix, prepData, totalPls, overrides, evenness) {
   totalPls = totalPls || 12;
   const prep = (prepData && prepData.species) || {};
   const ov = overrides || {};
+  const ev = evenness == null ? 1 : Math.max(0, Math.min(1, evenness));
   const groups = { grass: [], legume: [], forb: [] };
   mix.forEach(function (m) { if (groups[m.species.type]) groups[m.species.type].push(m); });
 
@@ -316,9 +331,13 @@ function buildSeedPlan(mix, prepData, totalPls, overrides) {
   // Desired ground-cover fraction per species: split each group's (normalized)
   // target cover equally among its members.
   const coverFrac = {};
+  const decay = 0.4 + 0.6 * ev; // 1.0 = equal shares; 0.4 = strongly top-weighted
   present.forEach(function (g) {
-    const share = (COMPOSITION_TARGET[g] / tsum) / groups[g].length;
-    groups[g].forEach(function (m) { coverFrac[m.species.id] = share; });
+    const members = groups[g].slice().sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
+    const w = members.map(function (_, i) { return Math.pow(decay, i); });
+    const wSum = w.reduce(function (a, b) { return a + b; }, 0) || 1;
+    const gTarget = COMPOSITION_TARGET[g] / tsum;
+    members.forEach(function (m, i) { coverFrac[m.species.id] = gTarget * w[i] / wSum; });
   });
 
   // Denominator Σ(coverFrac · monoMid) sets the scaling so rates sum to totalPls.
@@ -357,7 +376,19 @@ function buildSeedPlan(mix, prepData, totalPls, overrides) {
   });
   Object.keys(composition).forEach(function (g) { composition[g] = Math.round(composition[g]); });
 
-  return { rows: rows, totals: totals, composition: composition, totalPls: totalPls };
+  // Diversity of the planted mix, from the estimated groundcover proportions.
+  // Simpson's index of diversity D = 1 - sum(p^2); 1/sum(p^2) is the
+  // "effective number of species" (how many equally-abundant species this
+  // mix behaves like).
+  let sumSq = 0;
+  rows.forEach(function (r) { const p = r.coverPct / 100; sumSq += p * p; });
+  const simpson = rows.length ? 1 - sumSq : 0;
+  const effective = sumSq > 0 ? 1 / sumSq : 0;
+
+  return {
+    rows: rows, totals: totals, composition: composition, totalPls: totalPls,
+    richness: rows.length, simpson: simpson, effectiveSpecies: effective, evenness: ev
+  };
 }
 
 /* ---- management resources + sources ------------------------------------ */
@@ -368,7 +399,8 @@ function gatherResources(ctx, resourcesData) {
   Object.keys(ctx.priorities || {}).forEach(function (id) { if (ctx.priorities[id] >= 3) triggers.push(id); });
   (ctx.methods || []).forEach(function (m) {
     triggers.push(m);
-    if (/drill|notill|no-till/.test(m)) triggers.push('no-till');
+    if (/auto|drill|notill|no-till/.test(m)) triggers.push('no-till');
+    if (m === 'auto') triggers.push('frost-seed', 'broadcast');
     if (/broadcast/.test(m)) triggers.push('broadcast');
     if (/frost/.test(m)) triggers.push('frost-seed', 'broadcast');
   });
@@ -450,15 +482,30 @@ function buildContext(answers) {
   const priorities = Object.assign({}, derived);
   Object.keys(stated).forEach(function (k) { priorities[k] = Math.max(priorities[k] || 0, stated[k]); });
 
+  const texture = answers.texture && answers.texture !== 'unknown' ? answers.texture : (af.texture || null);
+  const compaction = Math.max(0, Math.min(7, answers.compaction || 0));
+
+  // How genuinely difficult is this ground? Counts severe SOIL constraints and
+  // gates species that are only the right answer on hard sites (tall fescue).
+  let soilDifficulty = 0;
+  const phv = PH_BAND_VALUE[answers.ph];
+  if (phv != null && phv < 5.5) soilDifficulty++;
+  if (answers.drainage === 'wet') soilDifficulty++;
+  if (fert >= 6) soilDifficulty++;
+  if (compaction >= 5) soilDifficulty++;
+  if (texture === 'heavy') soilDifficulty++;
+  if ((derived.slopes || 0) >= 5) soilDifficulty++;
+
   return {
-    phValue: PH_BAND_VALUE[answers.ph],
+    phValue: phv,
     canLime: !!answers.canLime,
     drainage: answers.drainage,
     priorities: priorities,
     fertilityEmphasis: fert,
-    texture: answers.texture && answers.texture !== 'unknown' ? answers.texture : (af.texture || null),
+    texture: texture,
+    soilDifficulty: soilDifficulty,
     clayPct: af.clayPct != null ? af.clayPct : null,
-    compaction: Math.max(0, Math.min(7, answers.compaction || 0)),
+    compaction: compaction,
     imp: function (id) { return priorities[id] || 0; },
     methods: answers.methods || [],
     grazing: answers.grazing || 'rot-managed',
@@ -547,7 +594,17 @@ function buildEstablishmentPlan(ctx, mix, prepData) {
   const nativeWarm = sp.filter(function (s) { return s.native && s.season === 'warm' && s.type === 'grass'; });
   const coolSp = sp.filter(function (s) { return s.season === 'cool'; });
   const warmSp = sp.filter(function (s) { return s.season === 'warm'; });
-  const methods = ctx.methods || [];
+  const stated = ctx.methods || [];
+  // "Recommend the best method(s) for me" (or no choice at all): synthesize the
+  // combination that gives this particular mix the best shot.
+  const auto = stated.indexOf('auto') !== -1 || !stated.length;
+  const methods = auto ? (function () {
+    const m = [];
+    if (coolSp.length) m.push('drill-fall');
+    if (warmSp.length) m.push('drill-spring');
+    if (legumes.some(function (s) { return s.season === 'cool'; })) m.push('frost-seed');
+    return m.length ? m : ['drill-fall'];
+  })() : stated;
   const has = function (m) { return methods.indexOf(m) !== -1; };
   const steps = [];
 
@@ -616,7 +673,9 @@ function buildEstablishmentPlan(ctx, mix, prepData) {
       ' onto short sod. Freeze–thaw cycles work seed into the surface. Graze or clip hard first so seed reaches bare soil.');
   }
   if (!seedBullets.length) seedBullets.push('Seed each species inside the planting window shown in its row of the table above.');
-  steps.push({ title: 'When and how to seed', bullets: seedBullets });
+  if (auto) seedBullets.unshift('<em>You asked us to pick the method — this is the combination that gives this mix the best chance. ' +
+    'If you can only do one pass, make it the drilled one.</em>');
+  steps.push({ title: auto ? 'When and how to seed (our recommended approach)' : 'When and how to seed', bullets: seedBullets });
 
   // 6 — depth & calibration (texture-aware)
   const gama = sp.some(function (s) { return s.id === 'eastern-gamagrass'; });

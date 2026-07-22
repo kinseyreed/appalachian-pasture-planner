@@ -45,7 +45,7 @@
       ],
       "summary": "The workhorse base grass of the region: tough, persistent, and productive on a wide range of soils, and outstanding for stockpiling for winter grazing.",
       "strengths": "Tolerates acid, wet, and droughty soils better than most grasses, holds up to close/continuous grazing and traffic, and stockpiles well for fall/winter grazing.",
-      "cautions": "Plant only NOVEL (friendly) endophyte or endophyte-free varieties. Common 'Kentucky-31' carries a toxic endophyte that causes fescue toxicosis (reduced gains, poor conception, heat stress). If your goal is to reduce fescue toxicity, pair with legumes and consider converting toxic stands.",
+      "cautions": "Plant only NOVEL (friendly) endophyte or endophyte-free varieties; common Kentucky-31 carries a toxic endophyte. Even so, tall fescue is aggressive and less palatable than the alternatives — this planner only suggests it where the ground is genuinely difficult, because on better soil it crowds out more palatable, more diverse species.",
       "sources": [
         "nrcs-appalachia",
         "psu-tall-fescue",
@@ -54,7 +54,8 @@
       "native": false,
       "longevity": 5,
       "rootDepth": 4,
-      "clayTolerance": 5
+      "clayTolerance": 5,
+      "onlyWhenChallenging": true
     },
     {
       "id": "orchardgrass",
@@ -925,100 +926,6 @@
       "longevity": 5,
       "rootDepth": 5,
       "clayTolerance": 5
-    },
-    {
-      "id": "crabgrass",
-      "commonName": "Forage Crabgrass",
-      "scientificName": "Digitaria sanguinalis",
-      "type": "grass",
-      "season": "warm",
-      "lifecycle": "annual",
-      "phMin": 5.5,
-      "phMax": 7.0,
-      "phTolerantLow": 5.2,
-      "drainage": [
-        "well",
-        "moderate"
-      ],
-      "droughtTolerance": 3,
-      "floodTolerance": 2,
-      "shadeTolerance": 2,
-      "fertilityNeed": "low",
-      "grazingTolerance": 5,
-      "establishmentEase": 5,
-      "winterHardiness": 1,
-      "nitrogenFixer": false,
-      "seedingRateMonoLow": 4,
-      "seedingRateMonoHigh": 6,
-      "seedingRateMixLow": 2,
-      "seedingRateMixHigh": 4,
-      "goalsServed": [
-        "summer-forage",
-        "quick-establish",
-        "low-input"
-      ],
-      "challengesFit": [
-        "droughty",
-        "low-fertility"
-      ],
-      "summary": "A reseeding summer annual grass that volunteers readily and provides surprisingly high-quality summer grazing when cool-season forage fades.",
-      "strengths": "Improved forage types are palatable, digestible, and productive in mid-summer heat, establish very fast, tolerate close grazing, and reseed reliably year to year with light disturbance.",
-      "cautions": "A warm-season annual that dies at frost and depends on reseeding, so leave it to set seed. Often grown as a companion in fields also used for cool-season forage.",
-      "sources": [
-        "nrcs-appalachia",
-        "nrcs-plants"
-      ],
-      "native": false,
-      "longevity": 1,
-      "rootDepth": 3,
-      "clayTolerance": 3
-    },
-    {
-      "id": "bermudagrass",
-      "commonName": "Bermudagrass",
-      "scientificName": "Cynodon dactylon",
-      "type": "grass",
-      "season": "warm",
-      "lifecycle": "perennial",
-      "phMin": 5.5,
-      "phMax": 7.0,
-      "phTolerantLow": 5.3,
-      "drainage": [
-        "well",
-        "moderate"
-      ],
-      "droughtTolerance": 4,
-      "floodTolerance": 2,
-      "shadeTolerance": 1,
-      "fertilityNeed": "medium",
-      "grazingTolerance": 5,
-      "establishmentEase": 3,
-      "winterHardiness": 2,
-      "nitrogenFixer": false,
-      "seedingRateMonoLow": 5,
-      "seedingRateMonoHigh": 10,
-      "seedingRateMixLow": 3,
-      "seedingRateMixHigh": 6,
-      "goalsServed": [
-        "summer-forage",
-        "drought",
-        "erosion"
-      ],
-      "challengesFit": [
-        "droughty",
-        "slopes"
-      ],
-      "summary": "A sod-forming warm-season perennial for summer grazing at lower elevations and warmer valleys of the southern Appalachians.",
-      "strengths": "Very tolerant of close grazing and traffic, drought-hardy, and productive in summer heat; forms a dense erosion-resistant sod on warm sites.",
-      "cautions": "Limited winter hardiness — reliable only at lower elevations and in the southern part of the region; can winterkill in colder mountain counties and can become weedy in cropland. Confirm cold-hardy varieties for your location.",
-      "sources": [
-        "nrcs-plants",
-        "nrcs-appalachia"
-      ],
-      "native": false,
-      "longevity": 5,
-      "rootDepth": 4,
-      "clayTolerance": 3
     },
     {
       "id": "little-bluestem",

@@ -53,6 +53,7 @@ const DRAINAGE_OPTIONS = [
 // Seeding methods — multi-select; a farmer can combine several (e.g. drill in
 // fall, then frost-seed legumes in late winter).
 const METHOD_OPTIONS = [
+  { id: 'auto', label: 'Recommend the best method(s) for me', hint: 'We pick the optimum combination for this mix' },
   { id: 'drill-fall', label: 'No-till drill — late summer/fall', hint: '' },
   { id: 'drill-spring', label: 'No-till drill — spring', hint: '' },
   { id: 'frost-seed', label: 'Frost-seed legumes — late winter', hint: 'Broadcast onto short sod' },
@@ -151,6 +152,14 @@ function renderChips(container, options, name, multi) {
     chip.addEventListener('click', function () {
       if (multi) {
         chip.classList.toggle('selected');
+        // "Recommend for me" is exclusive of the specific methods.
+        if (name === 'method' && chip.classList.contains('selected')) {
+          const isAuto = chip.dataset.value === 'auto';
+          container.querySelectorAll('.chip').forEach(function (c) {
+            if (c === chip) return;
+            if (isAuto || c.dataset.value === 'auto') c.classList.remove('selected');
+          });
+        }
       } else {
         container.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('selected'); });
         chip.classList.add('selected');
@@ -193,7 +202,7 @@ function buildForm() {
   selectDefault('elevation', 'low');
   selectDefault('drainage', 'moderate');
   selectDefault('ph', 'unknown');
-  selectDefault('method', 'drill-fall');
+  selectDefault('method', 'auto');
   selectDefault('grazing', 'rot-managed');
   selectDefault('texture', 'unknown');
 }
@@ -368,7 +377,7 @@ function speciesDetailHtml(result, data) {
 function renderSeedTable() {
   if (!CURRENT) return;
   const data = CURRENT.data, mix = CURRENT.mix, total = CURRENT.total;
-  const plan = window.APP_RECOMMENDER.buildSeedPlan(mix, data.prep, total, CURRENT.tags);
+  const plan = window.APP_RECOMMENDER.buildSeedPlan(mix, data.prep, total, CURRENT.tags, CURRENT.evenness);
   CURRENT.planRows = {};
   plan.rows.forEach(function (r) { CURRENT.planRows[r.species.id] = r; });
   const V = (data.vendors && data.vendors.vendors) || {};
@@ -407,6 +416,13 @@ function renderSeedTable() {
     '<td class="num">' + money(plan.totals.costLow, plan.totals.costHigh) + '</td><td></td></tr></tfoot>';
   document.getElementById('seed-table-el').innerHTML = html;
 
+  const setTxt = function (id, v) { const n = document.getElementById(id); if (n) n.textContent = v; };
+  setTxt('m-rich', plan.richness);
+  setTxt('rich-val', plan.richness);
+  setTxt('m-simpson', plan.simpson.toFixed(2));
+  setTxt('m-eff', plan.effectiveSpecies.toFixed(1));
+  setTxt('even-val', CURRENT.evenness >= 0.95 ? 'even' : (CURRENT.evenness <= 0.3 ? 'top-heavy' : 'mixed'));
+
   const byBox = {};
   plan.rows.forEach(function (r) { const b = (r.prep && r.prep.seedBox) || 'Other'; (byBox[b] = byBox[b] || []).push(r); });
   let bh = '<h4>Filling your drill boxes</h4><div class="box-list">';
@@ -432,6 +448,40 @@ function toggleDetailRow(id) {
   tr.parentNode.insertBefore(dr, tr.nextSibling);
 }
 
+// Add or drop a species, keeping the grass/legume/forb balance sensible.
+function adjustRichness(delta) {
+  const season = CURRENT.ctx && CURRENT.ctx.season ? CURRENT.ctx.season : 'both';
+  const seasonOk = function (sp) { return season === 'both' || sp.season === season; };
+  if (delta > 0) {
+    const counts = { grass: 0, legume: 0, forb: 0 };
+    CURRENT.mix.forEach(function (m) { counts[m.species.type]++; });
+    const inMix = {}; CURRENT.mix.forEach(function (m) { inMix[m.species.id] = 1; });
+    const total = CURRENT.mix.length || 1;
+    const targetShare = { grass: 0.4, legume: 0.35, forb: 0.25 };
+    let bestGroup = 'grass', worstGap = -Infinity;
+    Object.keys(counts).forEach(function (g) {
+      const gap = targetShare[g] - counts[g] / total;
+      if (gap > worstGap) { worstGap = gap; bestGroup = g; }
+    });
+    const avail = (CURRENT.scored || []).filter(function (r) {
+      return !r.disqualified && !inMix[r.species.id] && seasonOk(r.species);
+    }).sort(function (a, b) { return b.score - a.score; });
+    const pick = avail.filter(function (r) { return r.species.type === bestGroup; })[0] || avail[0];
+    if (pick) CURRENT.mix.push(pick);
+  } else {
+    if (CURRENT.mix.length <= 2) return;
+    const counts = {};
+    CURRENT.mix.forEach(function (m) { counts[m.species.type] = (counts[m.species.type] || 0) + 1; });
+    let biggest = null, n = 0;
+    Object.keys(counts).forEach(function (g) { if (counts[g] > n) { n = counts[g]; biggest = g; } });
+    const pool = CURRENT.mix.filter(function (m) { return m.species.type === biggest; });
+    const worst = pool.reduce(function (a, b) { return (a.score || 0) <= (b.score || 0) ? a : b; });
+    CURRENT.mix = CURRENT.mix.filter(function (m) { return m !== worst; });
+  }
+  CURRENT.openDetail = null;
+  renderSeedTable();
+}
+
 function findScored(id) {
   if (CURRENT.scored) { const r = CURRENT.scored.find(function (x) { return x.species.id === id; }); if (r) return r; }
   const sp = CURRENT.data.species.find(function (s) { return s.id === id; });
@@ -454,15 +504,35 @@ function renderAddPanel(filter) {
   }).join('') || '<p class="add-empty">No matching species.</p>';
 }
 
-function buildSeedTableSection(mix, data, scored) {
-  CURRENT = { mix: mix.slice(), data: data, total: 12, scored: scored || [], tags: {}, planRows: {}, openDetail: null };
+function buildSeedTableSection(mix, data, scored, ctx) {
+  CURRENT = { mix: mix.slice(), data: data, total: 12, scored: scored || [], tags: {}, planRows: {}, openDetail: null, evenness: 1, ctx: ctx || null };
   const section = el('section', 'seed-table-section');
   section.innerHTML =
     '<h3 class="section-h">Your seed-mix plan — what to buy &amp; how to plant it</h3>' +
-    '<p class="seed-intro">Click a species name for its details, use the remove button to drop it, or add more below — rates and groundcover update automatically.</p>' +
+    '<p class="seed-intro"><strong>Click a species name</strong> to see its details and to enter the purity and germination from your own seed tag (this recalculates its PLS and bulk pounds). Use the remove button to drop a species, or add more below — rates, groundcover and diversity update automatically.</p>' +
     '<div class="seed-ctrl no-print">Total seeding rate: <input type="number" id="total-pls" value="12" min="4" max="30" step="1"> lb PLS/acre ' +
     '<span class="ctrl-hint">(drilled; add ~50% if broadcasting)</span></div>' +
-    '<div id="comp-summary" class="comp-summary"></div>' +
+    '<div class="diversity-panel no-print">' +
+    '<div class="div-controls">' +
+      '<div class="div-ctl"><span class="div-label">Species richness</span>' +
+        '<button type="button" class="rich-btn" data-act="rich-down" title="Remove a species">&minus;</button>' +
+        '<output id="rich-val">0</output>' +
+        '<button type="button" class="rich-btn" data-act="rich-up" title="Add a species">+</button></div>' +
+      '<div class="div-ctl"><label class="div-label" for="evenness">Evenness</label>' +
+        '<input type="range" id="evenness" min="0" max="100" step="5" value="100">' +
+        '<output id="even-val">even</output></div>' +
+    '</div>' +
+    '<div class="div-metrics">' +
+      '<span class="metric"><strong id="m-rich">0</strong> species</span>' +
+      '<span class="metric"><strong id="m-simpson">0</strong> Simpson diversity</span>' +
+      '<span class="metric"><strong id="m-eff">0</strong> effective species</span>' +
+    '</div>' +
+    '<p class="div-def"><strong>Simpson\'s index of diversity</strong> (D = 1 &minus; &Sigma;p&sup2;, where p is each species\' share of groundcover) ' +
+    'runs from 0 to just under 1: <strong>0</strong> means one species owns the whole stand, and values near <strong>1</strong> mean cover is spread evenly across many species. ' +
+    'The <em>effective species</em> number (1 &divide; &Sigma;p&sup2;) says how many equally-abundant species this mix behaves like. ' +
+    'Raising richness adds the next best-suited species; raising evenness spreads cover more equally instead of concentrating it in the top performers.</p>' +
+  '</div>' +
+  '<div id="comp-summary" class="comp-summary"></div>' +
     '<div class="table-scroll"><table class="seed-table" id="seed-table-el"></table></div>' +
     '<div class="add-control no-print"><button type="button" class="btn btn-secondary" data-act="add-open">+ Add a species</button>' +
     '<div id="add-panel" class="add-panel" hidden><input type="text" id="add-search" placeholder="Search species…" autocomplete="off"><div id="add-list" class="add-list"></div></div></div>' +
@@ -476,6 +546,8 @@ function buildSeedTableSection(mix, data, scored) {
     if (act === 'del') { CURRENT.mix = CURRENT.mix.filter(function (m) { return m.species.id !== id; }); renderSeedTable(); }
     else if (act === 'detail') { toggleDetailRow(id); }
     else if (act === 'add-open') { const p = document.getElementById('add-panel'); p.hidden = !p.hidden; if (!p.hidden) { renderAddPanel(''); document.getElementById('add-search').focus(); } }
+    else if (act === 'rich-up') { adjustRichness(1); }
+    else if (act === 'rich-down') { adjustRichness(-1); }
     else if (act === 'tag-reset') {
       delete CURRENT.tags[id];
       renderSeedTable();
@@ -496,6 +568,7 @@ function buildSeedTableSection(mix, data, scored) {
   });
   section.addEventListener('input', function (e) {
     if (e.target.id === 'total-pls') { CURRENT.total = parseFloat(e.target.value) || 12; renderSeedTable(); }
+    else if (e.target.id === 'evenness') { CURRENT.evenness = parseInt(e.target.value, 10) / 100; renderSeedTable(); }
     else if (e.target.id === 'add-search') { renderAddPanel(e.target.value); }
   });
 
@@ -524,7 +597,7 @@ function renderResults(rec, data) {
 
   // Interactive seed-mix table (species details on click; add/remove; groundcover).
   const mainMix = rec.mix;
-  out.appendChild(buildSeedTableSection(mainMix, data, rec.scored));
+  out.appendChild(buildSeedTableSection(mainMix, data, rec.scored, rec.ctx));
 
   // Custom establishment plan written for this mix, soil and seeding methods.
   if (window.APP_RECOMMENDER.buildEstablishmentPlan) {

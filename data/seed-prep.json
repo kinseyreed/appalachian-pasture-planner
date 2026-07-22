@@ -491,58 +491,6 @@
     "prairie-moon"
    ]
   },
-  "crabgrass": {
-   "seedsPerLb": 825000,
-   "purity": 97,
-   "germ": 88,
-   "depth": "1/4 in",
-   "seedBox": "Small-seed / legume box",
-   "method": "No-till drill or prepared seedbed + cultipack",
-   "seasonWindow": "mid-Apr to May (soil >=60F)",
-   "pricePerPlsLb": [
-    6,
-    10
-   ],
-   "varieties": [
-    {
-     "name": "Red River, Quick-N-Big",
-     "note": "improved forage crabgrass"
-    }
-   ],
-   "sources": [
-    "barenbrug",
-    "dlf-seedway",
-    "kings",
-    "southern-states",
-    "hancock"
-   ]
-  },
-  "bermudagrass": {
-   "seedsPerLb": 2071000,
-   "purity": 97,
-   "germ": 88,
-   "depth": "1/4 in",
-   "seedBox": "Small-seed / legume box",
-   "method": "No-till drill or prepared seedbed + cultipack",
-   "seasonWindow": "mid-Apr to May (soil >=60F)",
-   "pricePerPlsLb": [
-    6,
-    12
-   ],
-   "varieties": [
-    {
-     "name": "Cold-hardy seeded: Wrangler, Ranchero Frio",
-     "note": "southern/low elevation only"
-    }
-   ],
-   "sources": [
-    "barenbrug",
-    "dlf-seedway",
-    "kings",
-    "southern-states",
-    "hancock"
-   ]
-  },
   "little-bluestem": {
    "seedsPerLb": 240000,
    "purity": 65,
