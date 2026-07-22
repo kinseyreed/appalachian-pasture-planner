@@ -109,6 +109,36 @@
       "url": "https://nominatim.org",
       "note": "Converts a typed address to coordinates in the browser. The address is used once and never stored."
     },
+    "umd-seeding": {
+      "title": "Guidelines for Seeding New Pastures and Renovating Old Pastures (Part III: Seeding and Establishment)",
+      "org": "Maryland Department of Agriculture / University of Maryland Extension",
+      "url": "https://mda.maryland.gov/resource_conservation/Documents/seedrenov3.pdf",
+      "note": "Seeding depth vs. soil texture, press wheels, first-year clipping and weed control, tug test, and first-grazing protocol."
+    },
+    "ut-planting": {
+      "title": "Forage: Planting",
+      "org": "University of Tennessee Beef & Forage Center",
+      "url": "https://utbeef.tennessee.edu/forages-planting/",
+      "note": "Forage planting dates, seedbed preparation, and establishment guidance."
+    },
+    "msu-pasture-est": {
+      "title": "Guidelines for Pasture Establishment",
+      "org": "Mississippi State University Extension",
+      "url": "https://extension.msstate.edu/publications/guidelines-for-pasture-establishment",
+      "note": "Firm-seedbed standard (footprint no deeper than ¼ inch), cultipacking, and no-till considerations."
+    },
+    "uky-rest": {
+      "title": "The Importance of Rest Periods Between Grazing",
+      "org": "University of Kentucky Master Grazer",
+      "url": "https://grazer.mgcafe.uky.edu/importance-rest-periods-between-grazing",
+      "note": "Why rest length varies with species and season, and how paddock count sets the rest period."
+    },
+    "umd-summer-grazing": {
+      "title": "Summer Grazing Management",
+      "org": "University of Maryland Extension",
+      "url": "https://extension.umd.edu/resource/summer-grazing-management",
+      "note": "Regrowth-based rest periods (graze again at 8–10 inches) and longer recovery in summer."
+    },
     "pb1752": {
       "title": "Native Warm-Season Grasses: Identification, Establishment and Management (PB1752)",
       "org": "University of Tennessee Extension (Harper, Bates, et al.)",

@@ -137,6 +137,17 @@ function scoreConditions(sp, ctx, reasons) {
     if (sp.nitrogenFixer) pts += fertEmph * 1.5;
   }
 
+  // Soil texture. Heavy clay (common on WV uplands) suits some species far
+  // better than others; light/coarse ground dries out and rewards deep roots.
+  if (ctx.texture === 'heavy') {
+    pts += ((sp.clayTolerance || 3) - 3) * 1.5;
+    if ((sp.clayTolerance || 3) >= 4) reasons.push('Handles heavy clay soils');
+    else if ((sp.clayTolerance || 3) <= 2) reasons.push('Wants better internal drainage than heavy clay gives');
+  } else if (ctx.texture === 'light') {
+    pts += (sp.droughtTolerance - 3) * 0.6 + ((sp.rootDepth || 3) - 3) * 0.4;
+    if (sp.droughtTolerance >= 4) reasons.push('Suited to light, quick-draining ground');
+  }
+
   // Compaction: deep-rooted species help break up a compacted profile.
   if (ctx.compaction > 0) {
     pts += (ctx.compaction / 7) * ((sp.rootDepth || 3) - 3) * 1.6;
@@ -290,9 +301,12 @@ function monoMid(sp) {
   return m > 0 ? m : 1;
 }
 
-function buildSeedPlan(mix, prepData, totalPls) {
+// `overrides` lets a producer type the purity/germination printed on the seed
+// tag they actually bought, per species: { speciesId: {purity, germ} }.
+function buildSeedPlan(mix, prepData, totalPls, overrides) {
   totalPls = totalPls || 12;
   const prep = (prepData && prepData.species) || {};
+  const ov = overrides || {};
   const groups = { grass: [], legume: [], forb: [] };
   mix.forEach(function (m) { if (groups[m.species.type]) groups[m.species.type].push(m); });
 
@@ -318,10 +332,14 @@ function buildSeedPlan(mix, prepData, totalPls) {
     const cover = coverFrac[sp.id];
     const pls = totalPls * cover * monoMid(sp) / denom;
     const p = prep[sp.id];
-    const plsFrac = p && p.purity && p.germ ? (p.purity * p.germ / 10000) : 0.85;
+    const o = ov[sp.id] || {};
+    const purity = o.purity != null ? o.purity : (p && p.purity);
+    const germ = o.germ != null ? o.germ : (p && p.germ);
+    const plsFrac = purity && germ ? (purity * germ / 10000) : 0.85;
     const price = (p && p.pricePerPlsLb) || [6, 12];
     rows.push({
       species: sp, group: sp.type, prep: p || null,
+      purity: purity, germ: germ, fromTag: !!(o.purity != null || o.germ != null),
       coverPct: cover * 100,
       plsRate: pls, plsPct: plsFrac * 100, bulkRate: pls / plsFrac,
       costLow: pls * price[0], costHigh: pls * price[1]
@@ -438,6 +456,8 @@ function buildContext(answers) {
     drainage: answers.drainage,
     priorities: priorities,
     fertilityEmphasis: fert,
+    texture: answers.texture && answers.texture !== 'unknown' ? answers.texture : (af.texture || null),
+    clayPct: af.clayPct != null ? af.clayPct : null,
     compaction: Math.max(0, Math.min(7, answers.compaction || 0)),
     imp: function (id) { return priorities[id] || 0; },
     methods: answers.methods || [],
@@ -566,12 +586,18 @@ function buildEstablishmentPlan(ctx, mix, prepData) {
     });
   }
 
-  // 4 — seedbed
-  steps.push({
-    title: 'Prepare the seedbed', body: has('tillage')
-      ? 'Work a fine, firm seedbed and cultipack before and after seeding. Your boot should sink no more than about a quarter inch — a loose, fluffy seedbed is the number one cause of failed forage seedings.'
-      : 'Suppress the existing sod so new seedlings get light: graze or clip hard down to 2–3 inches, and/or use a burndown ahead of drilling. Move or graze off heavy residue so the drill can reach soil.'
-  });
+  // 4 — seedbed (texture-aware, with the standard firmness test)
+  const heavy = ctx.texture === 'heavy';
+  const seedbedBullets = has('tillage') ? [
+    'Aim for a seedbed that is <strong>firm (not hard), fine (not powdered), and moist (not muddy)</strong>, and free of perennial weeds before you start.',
+    '<strong>The footprint test:</strong> walk across the worked ground — your boot should sink <strong>no more than about ¼ inch</strong>. If you sink deeper, it is too loose: cultipack again before seeding.',
+    'Cultipack <strong>before</strong> seeding to firm the bed, and <strong>again after</strong> to close the seed in. A firm bed pulls moisture up to the seed by capillary action, which is what carries seedlings through a dry spell.'
+  ] : [
+    'Suppress the existing sod so seedlings get light: graze or clip hard to 2–3 inches, and/or use a burndown ahead of drilling. Remove or graze off heavy residue so the openers can reach soil.',
+    'Check that the drill has working <strong>press wheels</strong> to firm soil around each seed. Press wheels matter more the heavier the soil and the drier the conditions' + (heavy ? ' — and your ground reads as heavy clay, so this is worth checking before you start.' : '.'),
+    'Make sure the drill is heavy enough to penetrate, and re-check depth every few passes as conditions change across the field.'
+  ];
+  steps.push({ title: 'Prepare the seedbed', bullets: seedbedBullets });
 
   // 5 — when and how to seed (built from the selected methods)
   const seedBullets = [];
@@ -592,13 +618,20 @@ function buildEstablishmentPlan(ctx, mix, prepData) {
   if (!seedBullets.length) seedBullets.push('Seed each species inside the planting window shown in its row of the table above.');
   steps.push({ title: 'When and how to seed', bullets: seedBullets });
 
-  // 6 — depth & calibration
+  // 6 — depth & calibration (texture-aware)
   const gama = sp.some(function (s) { return s.id === 'eastern-gamagrass'; });
-  steps.push({
-    title: 'Depth and drill calibration', body: 'Set the drill shallow. Everything in this mix goes no deeper than about ¼ inch' +
-      (gama ? ', except eastern gamagrass, which wants roughly 1 inch' : '') +
-      '. On fluffy native seed, about 30% of the seed should still be visible on the surface after planting — if you cannot see any, you are too deep. Calibrate using the <strong>bulk</strong> pounds from the table, never the PLS pounds.'
-  });
+  const depthBullets = [
+    'Where conditions are good, aim for <strong>less than ¼ inch</strong>' +
+      (gama ? ' — except eastern gamagrass, which wants roughly 1 inch' : '') +
+      '. Seeding too deep is the single most common cause of failure, especially with small seed and especially no-till.',
+    '<strong>Texture changes the target:</strong> the heavier and wetter the soil, the <em>shallower</em> you plant; the lighter and drier the soil, the deeper you can go.' +
+      (ctx.texture === 'heavy' ? ' Your ground reads as <strong>heavy clay</strong> — stay at the shallow end and do not chase moisture by going deeper.'
+        : ctx.texture === 'light' ? ' Your ground reads as <strong>lighter textured</strong>, so the deeper end of the range is safer against drying out.' : ''),
+    'No-till drills often place seed deeper than you think (½–¾ inch or more). Dig behind the drill and check before you plant the whole field.',
+    'On fluffy native seed, roughly 30% should still be visible on the surface after planting.',
+    'Calibrate using the <strong>bulk</strong> pounds in the table, never the PLS pounds.'
+  ];
+  steps.push({ title: 'Depth and drill calibration', bullets: depthBullets });
 
   // 7 — boxes and inoculation
   const boxes = {};
@@ -615,15 +648,44 @@ function buildEstablishmentPlan(ctx, mix, prepData) {
     });
   }
 
-  // 9 — first year
+  // 9 — first-year weed control (the step that usually decides the stand)
   steps.push({
-    title: 'First-year management', body: nativeWarm.length
-      ? 'Do not graze the native warm-season component at all in the establishment year — clip weeds high, above the seedlings, instead. Start light grazing in year two once plants are firmly anchored.'
-      : 'Hold off grazing until seedlings pass the pull test (they should not uproot in your fingers) and stand 6–8 inches tall. Then graze light and brief. Control weeds by clipping or flash-grazing rather than spraying over young legumes.'
+    title: 'Control weeds the first year — this decides the stand', bullets: [
+      'Weeds are the main reason new seedings fail. They grow faster than forage seedlings and <strong>shade them out</strong>; left alone they thin the stand, and it may never fully recover.',
+      '<strong>Clip — but not too early.</strong> Clipping while weeds are still short only takes the tips and leaves buds low on the stem, which branch out and compete harder. Let weeds grow enough that clipping removes most of those growing points.',
+      'Mow <strong>no lower than 3–4 inches</strong>, so you cut weeds off above the forage seedlings instead of scalping them.',
+      '<strong>Never let weeds set seed</strong> in the establishment year — you will fight that seedbank for years.',
+      'Clip only as often as you need to. Repeated clipping also sets seedlings back and cuts next year\'s yield.' +
+        (legumes.length ? ' Avoid broadleaf herbicides over new legume seedlings; clipping is the safer tool here.' : '')
+    ]
   });
 
-  // 10 — grazing that keeps the mix
-  steps.push({ title: 'Grazing to keep the mix diverse', body: GRAZE_ADVICE[ctx.grazing] || GRAZE_ADVICE['rot-managed'] });
+  // 10 — first grazing
+  const springSeed = has('drill-spring') || has('broadcast-spring');
+  steps.push({
+    title: 'First grazing — wait on roots, not height', bullets: [
+      '<strong>Tug test:</strong> grab a handful of plants and pull. If they come out of the ground, the roots cannot anchor against a grazing animal yet — mow again and wait.',
+      'A proven sequence: let the stand reach <strong>10–12 inches</strong> and mow to <strong>3–4 inches</strong>; let it regrow to 10–12 inches and mow to 3–4 inches a second time; when it reaches 10–12 inches again it is usually ready for a first, light grazing.',
+      'Graze <strong>no lower than 3–4 inches</strong>, and only when the soil surface is dry and firm. Never graze a new stand in wet conditions — especially on a tilled seedbed — or you will pug the field and pull plants out.',
+      springSeed ? 'For spring seedings, stop grazing or clipping <strong>4–6 weeks before your average killing frost</strong> so plants can build reserves for winter.' : '',
+      'Late-summer seedings should <strong>not</strong> be cut or grazed that fall — it weakens the plants and invites winterkill.'
+    ].filter(Boolean)
+  });
+
+  // 11 — year two
+  steps.push({
+    title: 'Year two — go light ("sleep, creep, leap")',
+    body: 'Perennials follow the old rule: they <strong>sleep</strong> the first year while they put down roots, <strong>creep</strong> the second as crowns and rhizomes fill in, and <strong>leap</strong> the third at full production. Graze year two lightly and briefly, with long rests and a high residual — the stand is still investing below ground. Pushing it hard in year two is the most common way a good establishment gets undone right before it would have paid off.' +
+      (nativeWarm.length ? ' Native warm-season grasses are the slowest of all — expect almost nothing in year one and only light use in year two.' : '')
+  });
+
+  // 12 — grazing that keeps the mix, with rest periods
+  const restBody = ' <strong>Rest is measured by regrowth, not the calendar:</strong> bring animals back only once cool-season pasture has regrown to <strong>8–10 inches</strong>' +
+    (warmSp.length ? ' (native warm-season stands to <strong>18–20 inches</strong>)' : '') +
+    '. In practice that is roughly <strong>21–30 days</strong> of rest during spring growth and <strong>35–45+ days</strong> in midsummer heat or drought, when regrowth slows right down. Stop grazing at a <strong>3–4 inch residual</strong>' +
+    (warmSp.length ? ' (leave 8 inches on native warm-season)' : '') +
+    ' — that leftover leaf area is the engine for regrowth and is what keeps legumes and forbs in the stand.';
+  steps.push({ title: 'Grazing to keep the mix diverse', body: (GRAZE_ADVICE[ctx.grazing] || GRAZE_ADVICE['rot-managed']) + restBody });
 
   return steps;
 }

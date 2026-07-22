@@ -85,6 +85,23 @@ body {
 .plan-body { margin: 0; font-size: .93rem; color: var(--ink); }
 .plan-bullets { margin: 8px 0 0; padding-left: 18px; }
 .plan-bullets li { font-size: .92rem; margin-bottom: 7px; color: var(--ink); }
+.plan-sources { font-size: .8rem; color: var(--ink-soft); margin: 6px 0 0; }
+.plan-sources a { color: var(--moss); text-decoration: none; }
+.plan-sources a:hover { text-decoration: underline; }
+.eyebrow-dot { opacity: .6; margin: 0 .3em; }
+
+/* seed-tag PLS editor */
+.pls-pct { font-size: .68rem; color: var(--ink-soft); font-weight: 600; }
+.pls-pct.tagged { color: var(--amber-dark); }
+.pls-pct.tagged::after { content: " (tag)"; }
+.tag-editor { margin-top: 12px; background: #f4f6ee; border: 1px solid #dde5d2; border-radius: 9px; padding: 11px 13px; }
+.tag-head { font-weight: 700; color: var(--forest-dark); font-size: .88rem; }
+.tag-help { font-size: .79rem; color: var(--ink-soft); margin: 3px 0 9px; }
+.tag-editor label { display: inline-flex; align-items: center; gap: 6px; font-size: .82rem; color: var(--ink); margin: 0 14px 6px 0; }
+.tag-input { width: 68px; font-family: inherit; font-size: .88rem; padding: 4px 7px; border: 1.5px solid var(--line); border-radius: 7px; }
+.tag-input:focus { outline: none; border-color: var(--moss); }
+.tag-result { font-size: .84rem; color: var(--forest-dark); margin-top: 4px; }
+.tag-reset { border: none; background: none; color: var(--moss); font-size: .78rem; cursor: pointer; text-decoration: underline; padding: 0 0 0 6px; font-family: inherit; }
 
 /* ---- location lookup card ---- */
 .lookup-card {

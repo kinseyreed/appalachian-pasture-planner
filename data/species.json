@@ -53,7 +53,8 @@
       ],
       "native": false,
       "longevity": 5,
-      "rootDepth": 4
+      "rootDepth": 4,
+      "clayTolerance": 5
     },
     {
       "id": "orchardgrass",
@@ -100,7 +101,8 @@
       ],
       "native": false,
       "longevity": 4,
-      "rootDepth": 3
+      "rootDepth": 3,
+      "clayTolerance": 3
     },
     {
       "id": "kentucky-bluegrass",
@@ -145,7 +147,8 @@
       ],
       "native": false,
       "longevity": 5,
-      "rootDepth": 1
+      "rootDepth": 1,
+      "clayTolerance": 4
     },
     {
       "id": "timothy",
@@ -188,7 +191,8 @@
       ],
       "native": false,
       "longevity": 3,
-      "rootDepth": 2
+      "rootDepth": 2,
+      "clayTolerance": 4
     },
     {
       "id": "perennial-ryegrass",
@@ -231,7 +235,8 @@
       ],
       "native": false,
       "longevity": 3,
-      "rootDepth": 2
+      "rootDepth": 2,
+      "clayTolerance": 3
     },
     {
       "id": "smooth-bromegrass",
@@ -277,7 +282,8 @@
       ],
       "native": false,
       "longevity": 5,
-      "rootDepth": 4
+      "rootDepth": 4,
+      "clayTolerance": 3
     },
     {
       "id": "white-clover",
@@ -327,7 +333,8 @@
       ],
       "native": false,
       "longevity": 5,
-      "rootDepth": 2
+      "rootDepth": 2,
+      "clayTolerance": 4
     },
     {
       "id": "red-clover",
@@ -380,7 +387,8 @@
       ],
       "native": false,
       "longevity": 3,
-      "rootDepth": 4
+      "rootDepth": 4,
+      "clayTolerance": 4
     },
     {
       "id": "alfalfa",
@@ -426,7 +434,8 @@
       ],
       "native": false,
       "longevity": 4,
-      "rootDepth": 5
+      "rootDepth": 5,
+      "clayTolerance": 1
     },
     {
       "id": "birdsfoot-trefoil",
@@ -478,7 +487,8 @@
       ],
       "native": false,
       "longevity": 5,
-      "rootDepth": 4
+      "rootDepth": 4,
+      "clayTolerance": 4
     },
     {
       "id": "alsike-clover",
@@ -526,7 +536,8 @@
       ],
       "native": false,
       "longevity": 2,
-      "rootDepth": 3
+      "rootDepth": 3,
+      "clayTolerance": 5
     },
     {
       "id": "annual-lespedeza",
@@ -574,7 +585,8 @@
       ],
       "native": false,
       "longevity": 1,
-      "rootDepth": 3
+      "rootDepth": 3,
+      "clayTolerance": 3
     },
     {
       "id": "crimson-clover",
@@ -620,7 +632,8 @@
       ],
       "native": false,
       "longevity": 1,
-      "rootDepth": 3
+      "rootDepth": 3,
+      "clayTolerance": 3
     },
     {
       "id": "chicory",
@@ -666,7 +679,8 @@
       ],
       "native": false,
       "longevity": 3,
-      "rootDepth": 5
+      "rootDepth": 5,
+      "clayTolerance": 3
     },
     {
       "id": "plantain",
@@ -711,7 +725,8 @@
       ],
       "native": false,
       "longevity": 3,
-      "rootDepth": 3
+      "rootDepth": 3,
+      "clayTolerance": 3
     },
     {
       "id": "switchgrass",
@@ -761,7 +776,8 @@
       ],
       "native": true,
       "longevity": 5,
-      "rootDepth": 5
+      "rootDepth": 5,
+      "clayTolerance": 4
     },
     {
       "id": "big-bluestem",
@@ -809,7 +825,8 @@
       ],
       "native": true,
       "longevity": 5,
-      "rootDepth": 5
+      "rootDepth": 5,
+      "clayTolerance": 3
     },
     {
       "id": "indiangrass",
@@ -858,7 +875,8 @@
       ],
       "native": true,
       "longevity": 5,
-      "rootDepth": 5
+      "rootDepth": 5,
+      "clayTolerance": 3
     },
     {
       "id": "eastern-gamagrass",
@@ -905,7 +923,8 @@
       ],
       "native": true,
       "longevity": 5,
-      "rootDepth": 5
+      "rootDepth": 5,
+      "clayTolerance": 5
     },
     {
       "id": "crabgrass",
@@ -951,7 +970,8 @@
       ],
       "native": false,
       "longevity": 1,
-      "rootDepth": 3
+      "rootDepth": 3,
+      "clayTolerance": 3
     },
     {
       "id": "bermudagrass",
@@ -997,7 +1017,8 @@
       ],
       "native": false,
       "longevity": 5,
-      "rootDepth": 4
+      "rootDepth": 4,
+      "clayTolerance": 3
     },
     {
       "id": "little-bluestem",
@@ -1047,7 +1068,8 @@
         "nrcs-plants"
       ],
       "longevity": 5,
-      "rootDepth": 5
+      "rootDepth": 5,
+      "clayTolerance": 2
     },
     {
       "id": "sideoats-grama",
@@ -1095,7 +1117,8 @@
         "nrcs-plants"
       ],
       "longevity": 5,
-      "rootDepth": 4
+      "rootDepth": 4,
+      "clayTolerance": 2
     },
     {
       "id": "virginia-wildrye",
@@ -1144,7 +1167,8 @@
         "ernst-src"
       ],
       "longevity": 5,
-      "rootDepth": 4
+      "rootDepth": 4,
+      "clayTolerance": 4
     },
     {
       "id": "canada-wildrye",
@@ -1191,7 +1215,8 @@
         "pb1752"
       ],
       "longevity": 3,
-      "rootDepth": 4
+      "rootDepth": 4,
+      "clayTolerance": 3
     },
     {
       "id": "bottlebrush-grass",
@@ -1236,7 +1261,8 @@
         "nrcs-plants"
       ],
       "longevity": 5,
-      "rootDepth": 4
+      "rootDepth": 4,
+      "clayTolerance": 3
     },
     {
       "id": "intermediate-wheatgrass",
@@ -1283,7 +1309,8 @@
         "nrcs-plants"
       ],
       "longevity": 5,
-      "rootDepth": 4
+      "rootDepth": 4,
+      "clayTolerance": 3
     },
     {
       "id": "ryegrass-blend",
@@ -1326,7 +1353,8 @@
         "nrcs-plants"
       ],
       "longevity": 3,
-      "rootDepth": 2
+      "rootDepth": 2,
+      "clayTolerance": 3
     },
     {
       "id": "meadow-fescue",
@@ -1374,7 +1402,8 @@
         "psu-establishment"
       ],
       "longevity": 5,
-      "rootDepth": 3
+      "rootDepth": 3,
+      "clayTolerance": 4
     },
     {
       "id": "maximilian-sunflower",
@@ -1423,7 +1452,8 @@
         "ernst-src"
       ],
       "longevity": 5,
-      "rootDepth": 5
+      "rootDepth": 5,
+      "clayTolerance": 3
     },
     {
       "id": "oxeye-sunflower",
@@ -1469,7 +1499,8 @@
         "ernst-src"
       ],
       "longevity": 3,
-      "rootDepth": 4
+      "rootDepth": 4,
+      "clayTolerance": 4
     },
     {
       "id": "grayhead-coneflower",
@@ -1516,7 +1547,8 @@
         "ernst-src"
       ],
       "longevity": 5,
-      "rootDepth": 4
+      "rootDepth": 4,
+      "clayTolerance": 3
     },
     {
       "id": "lanceleaf-coreopsis",
@@ -1565,7 +1597,8 @@
         "roundstone-src"
       ],
       "longevity": 3,
-      "rootDepth": 4
+      "rootDepth": 4,
+      "clayTolerance": 2
     },
     {
       "id": "small-burnet",
@@ -1611,7 +1644,8 @@
         "nrcs-plants"
       ],
       "longevity": 5,
-      "rootDepth": 4
+      "rootDepth": 4,
+      "clayTolerance": 2
     },
     {
       "id": "purple-prairie-clover",
@@ -1662,7 +1696,8 @@
         "ernst-src"
       ],
       "longevity": 5,
-      "rootDepth": 5
+      "rootDepth": 5,
+      "clayTolerance": 2
     },
     {
       "id": "illinois-bundleflower",
@@ -1711,7 +1746,8 @@
         "ernst-src"
       ],
       "longevity": 5,
-      "rootDepth": 5
+      "rootDepth": 5,
+      "clayTolerance": 3
     },
     {
       "id": "showy-ticktrefoil",
@@ -1762,7 +1798,8 @@
         "ernst-src"
       ],
       "longevity": 5,
-      "rootDepth": 4
+      "rootDepth": 4,
+      "clayTolerance": 3
     },
     {
       "id": "slender-lespedeza",
@@ -1812,7 +1849,8 @@
         "pb1752"
       ],
       "longevity": 5,
-      "rootDepth": 4
+      "rootDepth": 4,
+      "clayTolerance": 2
     },
     {
       "id": "partridge-pea",
@@ -1861,7 +1899,8 @@
         "roundstone-src"
       ],
       "longevity": 1,
-      "rootDepth": 3
+      "rootDepth": 3,
+      "clayTolerance": 2
     },
     {
       "id": "sainfoin",
@@ -1906,7 +1945,8 @@
         "nrcs-plants"
       ],
       "longevity": 5,
-      "rootDepth": 5
+      "rootDepth": 5,
+      "clayTolerance": 1
     },
     {
       "id": "kura-clover",
@@ -1952,7 +1992,8 @@
         "nrcs-plants"
       ],
       "longevity": 5,
-      "rootDepth": 4
+      "rootDepth": 4,
+      "clayTolerance": 3
     },
     {
       "id": "balansa-clover",
@@ -2001,7 +2042,8 @@
         "nrcs-plants"
       ],
       "longevity": 1,
-      "rootDepth": 3
+      "rootDepth": 3,
+      "clayTolerance": 4
     },
     {
       "id": "strawberry-clover",
@@ -2049,7 +2091,8 @@
         "nrcs-plants"
       ],
       "longevity": 5,
-      "rootDepth": 3
+      "rootDepth": 3,
+      "clayTolerance": 5
     },
     {
       "id": "white-sweetclover",
@@ -2094,7 +2137,8 @@
         "nrcs-plants"
       ],
       "longevity": 2,
-      "rootDepth": 5
+      "rootDepth": 5,
+      "clayTolerance": 2
     },
     {
       "id": "yellow-sweetclover",
@@ -2141,7 +2185,8 @@
         "nrcs-plants"
       ],
       "longevity": 2,
-      "rootDepth": 5
+      "rootDepth": 5,
+      "clayTolerance": 2
     }
   ]
 }

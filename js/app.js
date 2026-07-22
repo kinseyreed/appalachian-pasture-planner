@@ -22,6 +22,13 @@ const GOAL_FACTORS = [
   { id: 'low-input', label: 'Low input / low cost' }
 ];
 
+const TEXTURE_OPTIONS = [
+  { id: 'light', label: 'Sandy / light', hint: 'Gritty, drains fast' },
+  { id: 'medium', label: 'Loam / medium', hint: 'Typical pasture loam' },
+  { id: 'heavy', label: 'Clay / heavy', hint: 'Sticky wet, hard when dry' },
+  { id: 'unknown', label: 'Not sure', hint: "We'll use the soil map" }
+];
+
 // Soil structure — rendered as a single 0-7 slider in the fertility section.
 // (Acidity, wetness, droughtiness and slope are derived from the pH, drainage
 // and mapped-terrain answers instead of being asked again.)
@@ -176,6 +183,7 @@ function buildForm() {
   renderChips(document.getElementById('q-ph'), PH_OPTIONS, 'ph', false);
   renderChips(document.getElementById('q-drainage'), DRAINAGE_OPTIONS, 'drainage', false);
   renderSliders(document.getElementById('q-goals'), GOAL_FACTORS);
+  renderChips(document.getElementById('q-texture'), TEXTURE_OPTIONS, 'texture', false);
   renderSliders(document.getElementById('q-compaction'), COMPACTION_FACTOR);
   renderChips(document.getElementById('q-method'), METHOD_OPTIONS, 'method', true);
   renderChips(document.getElementById('q-grazing'), GRAZING_OPTIONS, 'grazing', false);
@@ -187,6 +195,7 @@ function buildForm() {
   selectDefault('ph', 'unknown');
   selectDefault('method', 'drill-fall');
   selectDefault('grazing', 'rot-managed');
+  selectDefault('texture', 'unknown');
 }
 
 function readPriorities() {
@@ -238,6 +247,7 @@ function readAnswers() {
     soilK: numOrNull('soil-k'),
     soilOM: numOrNull('soil-om'),
     fertilityUnknown: document.getElementById('fert-unknown').checked,
+    texture: readSingle('texture'),
     compaction: parseInt((document.getElementById('pri-compaction') || {}).value || 0, 10),
     methods: readMulti('method'),
     grazing: readSingle('grazing'),
@@ -332,6 +342,19 @@ function speciesDetailHtml(result, data) {
   }
   if (result.limeNote) h += '<div class="sc-note lime">Lime this ground up to ~pH 6.5 before seeding.</div>';
   if (sp.cautions) h += '<div class="sc-caution"><strong>Caution:</strong> ' + sp.cautions + '</div>';
+  const row = CURRENT && CURRENT.planRows ? CURRENT.planRows[sp.id] : null;
+  if (row) {
+    h += '<div class="tag-editor">' +
+      '<div class="tag-head">From your seed tag</div>' +
+      '<p class="tag-help">Type what the label on the bag you ordered says. Bulk pounds and cost update to match. ' +
+      'If the tag only lists germination, leave purity as is.</p>' +
+      '<label>Purity <input type="number" class="tag-input" data-tag="purity" data-id="' + sp.id + '" value="' + (row.purity != null ? row.purity : '') + '" min="1" max="100" step="0.1">%</label>' +
+      '<label>Germination (incl. hard/dormant) <input type="number" class="tag-input" data-tag="germ" data-id="' + sp.id + '" value="' + (row.germ != null ? row.germ : '') + '" min="1" max="100" step="0.1">%</label>' +
+      '<div class="tag-result">= <strong>' + (Math.round(row.plsPct * 10) / 10) + '% PLS</strong> &rarr; ' +
+      '<strong>' + row.bulkRate.toFixed(1) + ' bulk lb/ac</strong> to deliver ' + row.plsRate.toFixed(1) + ' lb PLS/ac' +
+      (row.fromTag ? ' <button type="button" class="tag-reset" data-act="tag-reset" data-id="' + sp.id + '">reset to default</button>' : '') +
+      '</div></div>';
+  }
   if (sp.sources && sp.sources.length) {
     const ss = sp.sources.map(function (id) {
       const s = data.sources.sources[id]; if (!s) return '';
@@ -345,7 +368,9 @@ function speciesDetailHtml(result, data) {
 function renderSeedTable() {
   if (!CURRENT) return;
   const data = CURRENT.data, mix = CURRENT.mix, total = CURRENT.total;
-  const plan = window.APP_RECOMMENDER.buildSeedPlan(mix, data.prep, total);
+  const plan = window.APP_RECOMMENDER.buildSeedPlan(mix, data.prep, total, CURRENT.tags);
+  CURRENT.planRows = {};
+  plan.rows.forEach(function (r) { CURRENT.planRows[r.species.id] = r; });
   const V = (data.vendors && data.vendors.vendors) || {};
   const c = plan.composition;
 
@@ -372,7 +397,7 @@ function renderSeedTable() {
       '<td>' + (p.seedBox || '—') + '</td>' +
       '<td>' + (p.depth || '—') + '</td>' +
       '<td>' + (p.seasonWindow || '—') + '</td>' +
-      '<td class="num">' + r.plsRate.toFixed(1) + '</td>' +
+      '<td class="num">' + r.plsRate.toFixed(1) + '<br><span class="pls-pct' + (r.fromTag ? ' tagged' : '') + '">' + Math.round(r.plsPct) + '% PLS</span></td>' +
       '<td class="num">' + r.bulkRate.toFixed(1) + '</td>' +
       '<td class="num">' + money(r.costLow, r.costHigh) + '</td>' +
       '<td class="src">' + srcs + '</td></tr>';
@@ -397,7 +422,8 @@ function toggleDetailRow(id) {
   const tr = document.querySelector('#seed-table-el tr[data-row="' + id + '"]');
   if (!tr) return;
   const next = tr.nextElementSibling;
-  if (next && next.classList.contains('detail-row')) { next.remove(); return; }
+  if (next && next.classList.contains('detail-row')) { next.remove(); CURRENT.openDetail = null; return; }
+  CURRENT.openDetail = id;
   const result = CURRENT.mix.find(function (m) { return m.species.id === id; });
   if (!result) return;
   const dr = document.createElement('tr');
@@ -429,7 +455,7 @@ function renderAddPanel(filter) {
 }
 
 function buildSeedTableSection(mix, data, scored) {
-  CURRENT = { mix: mix.slice(), data: data, total: 12, scored: scored || [] };
+  CURRENT = { mix: mix.slice(), data: data, total: 12, scored: scored || [], tags: {}, planRows: {}, openDetail: null };
   const section = el('section', 'seed-table-section');
   section.innerHTML =
     '<h3 class="section-h">Your seed-mix plan — what to buy &amp; how to plant it</h3>' +
@@ -450,7 +476,23 @@ function buildSeedTableSection(mix, data, scored) {
     if (act === 'del') { CURRENT.mix = CURRENT.mix.filter(function (m) { return m.species.id !== id; }); renderSeedTable(); }
     else if (act === 'detail') { toggleDetailRow(id); }
     else if (act === 'add-open') { const p = document.getElementById('add-panel'); p.hidden = !p.hidden; if (!p.hidden) { renderAddPanel(''); document.getElementById('add-search').focus(); } }
+    else if (act === 'tag-reset') {
+      delete CURRENT.tags[id];
+      renderSeedTable();
+      if (CURRENT.openDetail === id) { CURRENT.openDetail = null; toggleDetailRow(id); }
+    }
     else if (act === 'add') { const r = findScored(id); if (r && !CURRENT.mix.some(function (m) { return m.species.id === id; })) CURRENT.mix.push(r); renderSeedTable(); renderAddPanel(document.getElementById('add-search').value); }
+  });
+  section.addEventListener('change', function (e) {
+    if (!e.target.classList.contains('tag-input')) return;
+    const id = e.target.getAttribute('data-id');
+    const which = e.target.getAttribute('data-tag');
+    const v = parseFloat(e.target.value);
+    CURRENT.tags[id] = CURRENT.tags[id] || {};
+    if (isNaN(v) || v <= 0) delete CURRENT.tags[id][which]; else CURRENT.tags[id][which] = Math.min(100, v);
+    if (!Object.keys(CURRENT.tags[id]).length) delete CURRENT.tags[id];
+    renderSeedTable();
+    if (CURRENT.openDetail === id) { CURRENT.openDetail = null; toggleDetailRow(id); }
   });
   section.addEventListener('input', function (e) {
     if (e.target.id === 'total-pls') { CURRENT.total = parseFloat(e.target.value) || 12; renderSeedTable(); }
@@ -503,6 +545,18 @@ function renderResults(rec, data) {
       ol.appendChild(li);
     });
     out.appendChild(ol);
+
+    const planSrc = ['umd-seeding', 'msu-pasture-est', 'ut-planting', 'umd-summer-grazing', 'uky-rest', 'pb1752'];
+    const sw = el('p', 'plan-sources', 'Establishment guidance follows: ');
+    planSrc.forEach(function (id, i) {
+      const s = data.sources.sources[id];
+      if (!s) return;
+      const a = el('a', null, s.org);
+      a.href = s.url; a.target = '_blank'; a.rel = 'noopener'; a.title = s.title;
+      sw.appendChild(a);
+      if (i < planSrc.length - 1) sw.appendChild(document.createTextNode(' · '));
+    });
+    out.appendChild(sw);
   }
 
   // Sources / bibliography
@@ -635,6 +689,7 @@ function applyPastureFindings(pasture, terrain, climate) {
     if (prof.widespread.acidic) addChallenge('acidic', true);
     if (prof.widespread.steep) addChallenge('slopes', true);
   }
+  if (prof && prof.texture) selectValue('texture', prof.texture, true);
   const cold = (terrain && terrain.high) || (climate && climate.cold);
   if (terrain || climate) selectValue('elevation', cold ? 'high' : 'low', true);
   if (climate && climate.lowRainfall) addChallenge('droughty', true);
@@ -644,6 +699,8 @@ function applyPastureFindings(pasture, terrain, climate) {
     slopePct: (prof && prof.dominant && prof.dominant.slope != null) ? prof.dominant.slope
       : (terrain && terrain.slopeDegDEM != null ? Math.round(Math.tan(terrain.slopeDegDEM * Math.PI / 180) * 100) : null),
     organicMatter: prof ? prof.organicMatter : null,
+    texture: prof ? prof.texture : null,
+    clayPct: prof ? prof.clayPct : null,
     recentDroughtStress: climate ? climate.droughtStress : 0
   };
 

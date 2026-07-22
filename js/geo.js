@@ -97,6 +97,15 @@
     return { drainage: 'moderate', droughty: false };
   }
 
+  // USDA-style grouping by clay content: heavy (clay/clay loam), medium (loam),
+  // light (sandy/coarse). Drives seeding depth and species fit.
+  function textureClass(clayPct) {
+    if (clayPct == null) return null;
+    if (clayPct >= 35) return 'heavy';
+    if (clayPct >= 18) return 'medium';
+    return 'light';
+  }
+
   function phBand(ph) {
     if (ph == null) return null;
     if (ph < 5.5) return 'lt55';
@@ -418,12 +427,17 @@
         phBand: phBand(weightedPh(dry)), drainage: 'well', challenges: ['droughty'], soils: dry.map(function (s) { return s.component || s.muname; }) });
     }
 
+    const clayList = soils.filter(function (s3) { return s3.clayPct != null; });
+    const clayW = clayList.reduce(function (a, s3) { return a + s3.weight; }, 0);
+    const wClay = clayW ? clayList.reduce(function (a, s3) { return a + s3.clayPct * s3.weight; }, 0) / clayW : null;
     const omList = soils.filter(function (s2) { return s2.organicMatter != null; });
     const omW = omList.reduce(function (a, s2) { return a + s2.weight; }, 0);
     const wOm = omW ? omList.reduce(function (a, s2) { return a + s2.organicMatter * s2.weight; }, 0) / omW : null;
     return {
       dominant: soils[0] || null,
       organicMatter: wOm,
+      clayPct: wClay,
+      texture: textureClass(wClay),
       weightedPh: wPh,
       weightedPhBand: phBand(wPh),
       pluralityDrainage: pluralityDrainage,
@@ -449,7 +463,7 @@
 
     const wkt = 'polygon((' + poly.map(function (p) { return p[0] + ' ' + p[1]; }).join(', ') + '))';
     const propRows = await sdaPost(
-      "SELECT mu.mukey, mu.muname, c.compname, c.comppct_r, c.drainagecl, c.slope_r, ch.ph1to1h2o_r, ch.om_r " +
+      "SELECT mu.mukey, mu.muname, c.compname, c.comppct_r, c.drainagecl, c.slope_r, ch.ph1to1h2o_r, ch.om_r, ch.claytotal_r " +
       "FROM mapunit mu INNER JOIN component c ON c.mukey=mu.mukey " +
       "LEFT JOIN chorizon ch ON ch.cokey=c.cokey AND ch.hzdept_r=0 " +
       "WHERE mu.mukey IN (SELECT mukey FROM SDA_Get_Mukey_from_intersection_with_WktWgs84('" + wkt + "')) " +
@@ -463,9 +477,12 @@
       const ph = p.ph1to1h2o_r != null && p.ph1to1h2o_r !== '' ? parseFloat(p.ph1to1h2o_r) : null;
       const slope = p.slope_r != null && p.slope_r !== '' ? parseFloat(p.slope_r) : null;
       const om = p.om_r != null && p.om_r !== '' ? parseFloat(p.om_r) : null;
+      const clay = p.claytotal_r != null && p.claytotal_r !== '' ? parseFloat(p.claytotal_r) : null;
       const drain = mapDrainage(p.drainagecl);
       return {
         organicMatter: om,
+        clayPct: clay,
+        texture: textureClass(clay),
         mukey: mukey, muname: p.muname || ('Map unit ' + mukey), component: p.compname || null,
         weightPct: Math.round(w * 100), weight: w,
         ph: ph, phBand: phBand(ph),
