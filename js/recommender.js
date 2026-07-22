@@ -723,6 +723,20 @@ function buildEstablishmentPlan(ctx, mix, prepData) {
   ];
   steps.push({ title: 'Depth and drill calibration', bullets: depthBullets });
 
+  // 6b — how to actually run the equipment: calibration procedure + crosshatch
+  const usesDrill = has('drill-fall') || has('drill-spring') || has('tillage');
+  const usesBroadcast = has('broadcast-fall') || has('broadcast-spring') || has('frost-seed');
+  const calBullets = [];
+  if (usesDrill) {
+    calBullets.push('<strong>Calibrate the drill before you plant the field:</strong> disconnect the seed tube at 2-3 openings, drive a measured 60 feet, and catch what comes out of each in a bag. Weigh it, divide by the area that row covered (60 ft x row spacing), and scale up to lb/acre (multiply by 43,560 and divide by the area sampled in ft²). Adjust the metering setting and repeat until you hit the <strong>bulk</strong> rate in the table above - not the PLS rate.');
+    calBullets.push('<strong>Drill in two directions if you can.</strong> Splitting a species\' seed in half and drilling the field twice - once in each direction, ideally at right angles - evens out any row-to-row differences in how the drill meters seed, and is cheap insurance on a mix with several seed sizes in one box.');
+  }
+  if (usesBroadcast) {
+    calBullets.push('<strong>Calibrate the spreader with catch pans:</strong> set 8-10 shallow pans in a line, perpendicular to your direction of travel, spanning the spreader\'s throw. Drive over them at your normal speed and pace, then weigh what each pan caught to find the actual spread width and rate. Adjust the setting and repeat until it matches the bulk rate you need.');
+    calBullets.push('<strong>Always broadcast in a crosshatch:</strong> apply <em>half</em> the seed walking or driving one direction across the field, then the other half on a second pass at a right angle to the first. This is the single best fix for the streaks and skips that plague broadcast seeding, and costs nothing but a second pass.');
+  }
+  if (calBullets.length) steps.push({ title: 'Calibrate the equipment and apply evenly', bullets: calBullets });
+
   // 7 — boxes and inoculation
   const boxes = {};
   mix.forEach(function (m) { const b = (prep[m.species.id] || {}).seedBox || 'Other'; (boxes[b] = boxes[b] || []).push(m.species.commonName); });

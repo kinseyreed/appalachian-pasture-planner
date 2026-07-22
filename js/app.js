@@ -740,7 +740,7 @@ function renderResults(rec, data) {
     });
     out.appendChild(ol);
 
-    const planSrc = ['umd-seeding', 'msu-pasture-est', 'ut-planting', 'umd-summer-grazing', 'uky-rest', 'pb1752'];
+    const planSrc = ['umd-seeding', 'msu-pasture-est', 'ut-planting', 'ifas-calibration', 'psu-spreader-calib', 'umd-summer-grazing', 'uky-rest', 'pb1752'];
     const sw = el('p', 'plan-sources', 'Establishment guidance follows: ');
     planSrc.forEach(function (id, i) {
       const s = data.sources.sources[id];

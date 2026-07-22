@@ -109,6 +109,18 @@
       "url": "https://nominatim.org",
       "note": "Converts a typed address to coordinates in the browser. The address is used once and never stored."
     },
+    "ifas-calibration": {
+      "title": "Calibrating Forage Seeding Equipment (AG158/SS-AGR-90)",
+      "org": "University of Florida IFAS Extension",
+      "url": "https://ask.ifas.ufl.edu/publication/AG158",
+      "note": "Bag/catch calibration procedure for drills and catch-pan procedure for broadcast spreaders, specific to forage seeding."
+    },
+    "psu-spreader-calib": {
+      "title": "Calibrating Your Fertilizer Spreader",
+      "org": "Penn State Extension",
+      "url": "https://extension.psu.edu/calibrating-your-fertilizer-spreader",
+      "note": "Two-direction (crosshatch) application at right angles, splitting the rate in half per pass, and spreader calibration by catch pan."
+    },
     "umd-seeding": {
       "title": "Guidelines for Seeding New Pastures and Renovating Old Pastures (Part III: Seeding and Establishment)",
       "org": "Maryland Department of Agriculture / University of Maryland Extension",
