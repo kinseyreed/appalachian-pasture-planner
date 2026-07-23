@@ -68,23 +68,7 @@ body {
 .fert-unit { font-size: .82rem; color: var(--ink-soft); width: 30px; }
 .slider-grid.single { grid-template-columns: 1fr; }
 
-/* ---- establishment plan ---- */
-.plan-intro { color: var(--ink-soft); font-size: .92rem; margin: 0 0 16px; }
-.plan-list { list-style: none; counter-reset: plan; padding: 0; margin: 0; }
-.plan-step {
-  counter-increment: plan; position: relative; background: var(--paper);
-  border: 1px solid var(--line); border-radius: var(--radius);
-  padding: 16px 18px 16px 58px; margin-bottom: 12px; box-shadow: var(--shadow);
-}
-.plan-step::before {
-  content: counter(plan); position: absolute; left: 16px; top: 16px;
-  width: 28px; height: 28px; border-radius: 50%; background: var(--forest); color: #fff;
-  display: grid; place-items: center; font-weight: 700; font-size: .9rem;
-}
-.plan-title { font-family: var(--font-head); font-size: 1.08rem; color: var(--forest-dark); margin: 2px 0 6px; }
-.plan-body { margin: 0; font-size: .93rem; color: var(--ink); }
-.plan-bullets { margin: 8px 0 0; padding-left: 18px; }
-.plan-bullets li { font-size: .92rem; margin-bottom: 7px; color: var(--ink); }
+/* ---- establishment plan (collapsible steps styled lower in this file) ---- */
 .plan-sources { font-size: .8rem; color: var(--ink-soft); margin: 6px 0 0; }
 .plan-sources a { color: var(--moss); text-decoration: none; }
 .plan-sources a:hover { text-decoration: underline; }
@@ -484,6 +468,67 @@ main { padding-bottom: 60px; }
 .add-tag.forb { background: #fdf0e6; color: #a2632b; }
 .add-sum { color: var(--ink-soft); font-size: .82rem; }
 .add-empty { color: var(--ink-soft); font-size: .88rem; padding: 8px; }
+
+/* ---- soil texture triangle ---- */
+.tri-wrap { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
+.tri-svg { width: 300px; max-width: 100%; touch-action: none; cursor: crosshair; }
+.tri-face { fill: #eef2e8; stroke: var(--moss); stroke-width: 1.5; }
+.tri-lbl { font-size: 10px; fill: var(--ink-soft); font-family: var(--font-body); }
+.tri-pin { fill: var(--amber); stroke: #fff; stroke-width: 2; }
+.tri-readout { font-size: .95rem; color: var(--ink); }
+.tri-readout strong { color: var(--forest-dark); font-size: 1.05rem; display: block; text-transform: capitalize; }
+.tri-readout span { color: var(--ink-soft); font-size: .84rem; }
+.tri-map-btn { display: block; margin-top: 8px; border: 1px solid var(--line); background: #fff; color: var(--moss); border-radius: 8px; padding: 5px 10px; cursor: pointer; font-family: inherit; font-size: .82rem; }
+.tri-map-btn:hover { border-color: var(--moss); }
+
+/* ---- editable table cells ---- */
+.cover-input, .plspct-input { width: 52px; font-family: inherit; font-size: .84rem; padding: 3px 5px; text-align: right; border: 1.5px solid var(--line); border-radius: 7px; background: #fff; }
+.cover-input:focus, .plspct-input:focus { outline: none; border-color: var(--moss); }
+.cover-input.pinned, .plspct-input.pinned { border-color: var(--amber); background: #fdf6ec; font-weight: 700; }
+.plspct-input.tagged { border-color: var(--amber-dark); }
+.cover-input.capped { border-color: #c0552e; }
+.cap-flag { display: inline-block; font-size: .66rem; color: #c0552e; font-weight: 700; margin-top: 2px; }
+
+/* ---- applications (seedings) breakdown ---- */
+.app-intro { font-size: .86rem; color: var(--ink-soft); margin: 0 0 10px; }
+.app-group { border: 1px solid var(--line); border-left: 3px solid var(--moss); border-radius: 10px; padding: 10px 14px; margin-bottom: 10px; background: var(--paper); }
+.app-head { font-weight: 700; color: var(--forest-dark); font-size: .92rem; margin-bottom: 8px; }
+.app-total { float: right; color: var(--amber-dark); font-weight: 800; }
+
+/* ---- collapsible establishment plan ---- */
+.plan-intro { color: var(--ink-soft); font-size: .92rem; margin: 0 0 14px; }
+.plan-expand { border: 1px solid var(--line); background: #fff; color: var(--forest-dark); border-radius: 8px; padding: 4px 12px; cursor: pointer; font-family: inherit; font-size: .82rem; margin-left: 4px; }
+.plan-expand:hover { border-color: var(--moss); }
+.plan-list { counter-reset: plan; }
+.plan-step { counter-increment: plan; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 10px; box-shadow: var(--shadow); overflow: hidden; }
+.plan-step > summary.plan-title { list-style: none; cursor: pointer; padding: 14px 18px 14px 56px; position: relative; font-family: var(--font-head); font-size: 1.06rem; color: var(--forest-dark); }
+.plan-step > summary.plan-title::-webkit-details-marker { display: none; }
+.plan-step > summary.plan-title::before { content: counter(plan); position: absolute; left: 16px; top: 12px; width: 28px; height: 28px; border-radius: 50%; background: var(--forest); color: #fff; display: grid; place-items: center; font-family: var(--font-body); font-weight: 700; font-size: .9rem; }
+.plan-step > summary.plan-title::after { content: '+'; position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: var(--moss); font-size: 1.3rem; }
+.plan-step[open] > summary.plan-title::after { content: '–'; }
+.plan-step > summary.plan-title:hover { background: #f7f8f1; }
+.plan-step-body { padding: 0 18px 16px 56px; }
+.plan-body { margin: 0; font-size: .93rem; color: var(--ink); }
+.plan-bullets { margin: 8px 0 0; padding-left: 18px; }
+.plan-bullets li { font-size: .92rem; margin-bottom: 8px; color: var(--ink); }
+.plan-bullets a, .plan-body a { color: var(--moss); }
+
+/* ---- plan diagrams ---- */
+.plan-diagram { margin-top: 14px; }
+.diag { margin: 0; max-width: 420px; }
+.diag svg { width: 100%; height: auto; background: #fbfaf5; border: 1px solid var(--line); border-radius: 8px; }
+.diag figcaption { font-size: .8rem; color: var(--ink-soft); margin-top: 6px; }
+.dg-field { fill: #eef2e8; stroke: var(--line); }
+.dg-pass1 line { stroke: var(--moss); stroke-width: 2; }
+.dg-pass2 line { stroke: var(--amber); stroke-width: 2; }
+.dg-cap { font-size: 9px; fill: var(--ink-soft); font-family: var(--font-body); }
+.dg-soil { fill: #efe6d6; }
+.dg-surface { stroke: var(--amber-dark); stroke-width: 1.5; }
+.dg-seed { fill: var(--forest); }
+.dg-seed-top { fill: var(--moss); }
+.dg-seed-bad { fill: #c0552e; }
+
+.sc-note.stock { background: #eef4f6; color: #285a68; border: 1px solid #cfe0e6; padding: 7px 10px; border-radius: 8px; font-size: .84rem; margin-bottom: 8px; }
 
 /* ---- footer ---- */
 .site-footer { background: var(--forest-dark); color: #d8e0cd; padding: 30px 0; margin-top: 30px; font-size: .9rem; }

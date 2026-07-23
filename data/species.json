@@ -55,7 +55,12 @@
       "longevity": 5,
       "rootDepth": 4,
       "clayTolerance": 5,
-      "onlyWhenChallenging": true
+      "onlyWhenChallenging": true,
+      "livestock": {
+        "note": {
+          "horses": "For horses, use ONLY novel/endophyte-free fescue — toxic-endophyte (KY-31) fescue causes late-term abortion and agalactia in pregnant mares and fescue foot in cattle."
+        }
+      }
     },
     {
       "id": "orchardgrass",
@@ -103,7 +108,13 @@
       "native": false,
       "longevity": 4,
       "rootDepth": 3,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {
+        "favoredBy": [
+          "horses"
+        ],
+        "note": {}
+      }
     },
     {
       "id": "kentucky-bluegrass",
@@ -149,7 +160,13 @@
       "native": false,
       "longevity": 5,
       "rootDepth": 1,
-      "clayTolerance": 4
+      "clayTolerance": 4,
+      "livestock": {
+        "favoredBy": [
+          "horses"
+        ],
+        "note": {}
+      }
     },
     {
       "id": "timothy",
@@ -193,7 +210,15 @@
       "native": false,
       "longevity": 3,
       "rootDepth": 2,
-      "clayTolerance": 4
+      "clayTolerance": 4,
+      "livestock": {
+        "favoredBy": [
+          "horses"
+        ],
+        "note": {
+          "horses": "A classic, safe horse-hay grass."
+        }
+      }
     },
     {
       "id": "perennial-ryegrass",
@@ -237,7 +262,8 @@
       "native": false,
       "longevity": 3,
       "rootDepth": 2,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {}
     },
     {
       "id": "smooth-bromegrass",
@@ -284,7 +310,8 @@
       "native": false,
       "longevity": 5,
       "rootDepth": 4,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {}
     },
     {
       "id": "white-clover",
@@ -335,7 +362,12 @@
       "native": false,
       "longevity": 5,
       "rootDepth": 2,
-      "clayTolerance": 4
+      "clayTolerance": 4,
+      "livestock": {
+        "note": {
+          "all": "Bloat risk in ruminants on legume-heavy stands — keep plenty of grass in the mix."
+        }
+      }
     },
     {
       "id": "red-clover",
@@ -389,7 +421,15 @@
       "native": false,
       "longevity": 3,
       "rootDepth": 4,
-      "clayTolerance": 4
+      "clayTolerance": 4,
+      "livestock": {
+        "favoredBy": [
+          "dairy"
+        ],
+        "note": {
+          "all": "Bloat risk in ruminants on legume-heavy stands — keep plenty of grass in the mix."
+        }
+      }
     },
     {
       "id": "alfalfa",
@@ -436,7 +476,16 @@
       "native": false,
       "longevity": 4,
       "rootDepth": 5,
-      "clayTolerance": 1
+      "clayTolerance": 1,
+      "livestock": {
+        "favoredBy": [
+          "dairy"
+        ],
+        "note": {
+          "all": "Bloat risk in ruminants on legume-heavy stands — keep plenty of grass in the mix.",
+          "dairy": "Top-quality dairy forage on well-drained, limed ground."
+        }
+      }
     },
     {
       "id": "birdsfoot-trefoil",
@@ -489,7 +538,16 @@
       "native": false,
       "longevity": 5,
       "rootDepth": 4,
-      "clayTolerance": 4
+      "clayTolerance": 4,
+      "livestock": {
+        "favoredBy": [
+          "sheep",
+          "goats"
+        ],
+        "note": {
+          "all": "Non-bloating; condensed tannins improve protein use and help suppress internal parasites — excellent for sheep and goats."
+        }
+      }
     },
     {
       "id": "alsike-clover",
@@ -538,7 +596,17 @@
       "native": false,
       "longevity": 2,
       "rootDepth": 3,
-      "clayTolerance": 5
+      "clayTolerance": 5,
+      "maxCoverPct": 15,
+      "livestock": {
+        "toxicTo": [
+          "horses"
+        ],
+        "note": {
+          "horses": "Can cause photosensitization and liver damage in horses — keep it out of horse pastures.",
+          "ruminant": "Bloat risk in ruminants on legume-heavy stands — keep plenty of grass in the mix."
+        }
+      }
     },
     {
       "id": "annual-lespedeza",
@@ -587,7 +655,8 @@
       "native": false,
       "longevity": 1,
       "rootDepth": 3,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {}
     },
     {
       "id": "crimson-clover",
@@ -634,7 +703,10 @@
       "native": false,
       "longevity": 1,
       "rootDepth": 3,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {
+        "note": {}
+      }
     },
     {
       "id": "chicory",
@@ -681,7 +753,17 @@
       "native": false,
       "longevity": 3,
       "rootDepth": 5,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {
+        "favoredBy": [
+          "goats",
+          "sheep"
+        ],
+        "note": {
+          "dairy": "Fine for dairy, though very high intake can faintly taint milk flavor.",
+          "all": "Anthelmintic properties benefit sheep and goats."
+        }
+      }
     },
     {
       "id": "plantain",
@@ -727,7 +809,14 @@
       "native": false,
       "longevity": 3,
       "rootDepth": 3,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {
+        "favoredBy": [
+          "goats",
+          "sheep"
+        ],
+        "note": {}
+      }
     },
     {
       "id": "switchgrass",
@@ -778,7 +867,8 @@
       "native": true,
       "longevity": 5,
       "rootDepth": 5,
-      "clayTolerance": 4
+      "clayTolerance": 4,
+      "livestock": {}
     },
     {
       "id": "big-bluestem",
@@ -827,7 +917,8 @@
       "native": true,
       "longevity": 5,
       "rootDepth": 5,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {}
     },
     {
       "id": "indiangrass",
@@ -877,7 +968,8 @@
       "native": true,
       "longevity": 5,
       "rootDepth": 5,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {}
     },
     {
       "id": "eastern-gamagrass",
@@ -925,7 +1017,8 @@
       "native": true,
       "longevity": 5,
       "rootDepth": 5,
-      "clayTolerance": 5
+      "clayTolerance": 5,
+      "livestock": {}
     },
     {
       "id": "little-bluestem",
@@ -976,7 +1069,8 @@
       ],
       "longevity": 5,
       "rootDepth": 5,
-      "clayTolerance": 2
+      "clayTolerance": 2,
+      "livestock": {}
     },
     {
       "id": "sideoats-grama",
@@ -1025,7 +1119,8 @@
       ],
       "longevity": 5,
       "rootDepth": 4,
-      "clayTolerance": 2
+      "clayTolerance": 2,
+      "livestock": {}
     },
     {
       "id": "virginia-wildrye",
@@ -1075,7 +1170,8 @@
       ],
       "longevity": 5,
       "rootDepth": 4,
-      "clayTolerance": 4
+      "clayTolerance": 4,
+      "livestock": {}
     },
     {
       "id": "canada-wildrye",
@@ -1123,7 +1219,8 @@
       ],
       "longevity": 3,
       "rootDepth": 4,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {}
     },
     {
       "id": "bottlebrush-grass",
@@ -1169,7 +1266,8 @@
       ],
       "longevity": 5,
       "rootDepth": 4,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {}
     },
     {
       "id": "intermediate-wheatgrass",
@@ -1217,7 +1315,8 @@
       ],
       "longevity": 5,
       "rootDepth": 4,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {}
     },
     {
       "id": "ryegrass-blend",
@@ -1261,7 +1360,8 @@
       ],
       "longevity": 3,
       "rootDepth": 2,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {}
     },
     {
       "id": "meadow-fescue",
@@ -1310,7 +1410,15 @@
       ],
       "longevity": 5,
       "rootDepth": 3,
-      "clayTolerance": 4
+      "clayTolerance": 4,
+      "livestock": {
+        "favoredBy": [
+          "horses"
+        ],
+        "note": {
+          "horses": "Soft-leaved and palatable; a safe, non-toxic fescue for horses."
+        }
+      }
     },
     {
       "id": "maximilian-sunflower",
@@ -1360,7 +1468,13 @@
       ],
       "longevity": 5,
       "rootDepth": 5,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {
+        "favoredBy": [
+          "goats"
+        ],
+        "note": {}
+      }
     },
     {
       "id": "oxeye-sunflower",
@@ -1407,7 +1521,13 @@
       ],
       "longevity": 3,
       "rootDepth": 4,
-      "clayTolerance": 4
+      "clayTolerance": 4,
+      "livestock": {
+        "favoredBy": [
+          "goats"
+        ],
+        "note": {}
+      }
     },
     {
       "id": "grayhead-coneflower",
@@ -1455,7 +1575,13 @@
       ],
       "longevity": 5,
       "rootDepth": 4,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {
+        "favoredBy": [
+          "goats"
+        ],
+        "note": {}
+      }
     },
     {
       "id": "lanceleaf-coreopsis",
@@ -1505,7 +1631,13 @@
       ],
       "longevity": 3,
       "rootDepth": 4,
-      "clayTolerance": 2
+      "clayTolerance": 2,
+      "livestock": {
+        "favoredBy": [
+          "goats"
+        ],
+        "note": {}
+      }
     },
     {
       "id": "small-burnet",
@@ -1552,7 +1684,14 @@
       ],
       "longevity": 5,
       "rootDepth": 4,
-      "clayTolerance": 2
+      "clayTolerance": 2,
+      "livestock": {
+        "favoredBy": [
+          "sheep",
+          "goats"
+        ],
+        "note": {}
+      }
     },
     {
       "id": "purple-prairie-clover",
@@ -1604,7 +1743,8 @@
       ],
       "longevity": 5,
       "rootDepth": 5,
-      "clayTolerance": 2
+      "clayTolerance": 2,
+      "livestock": {}
     },
     {
       "id": "illinois-bundleflower",
@@ -1654,7 +1794,8 @@
       ],
       "longevity": 5,
       "rootDepth": 5,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {}
     },
     {
       "id": "showy-ticktrefoil",
@@ -1706,7 +1847,14 @@
       ],
       "longevity": 5,
       "rootDepth": 4,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {
+        "favoredBy": [
+          "goats",
+          "sheep"
+        ],
+        "note": {}
+      }
     },
     {
       "id": "slender-lespedeza",
@@ -1757,7 +1905,16 @@
       ],
       "longevity": 5,
       "rootDepth": 4,
-      "clayTolerance": 2
+      "clayTolerance": 2,
+      "livestock": {
+        "favoredBy": [
+          "goats",
+          "sheep"
+        ],
+        "note": {
+          "all": "Condensed tannins help control internal parasites in sheep and goats; non-bloating."
+        }
+      }
     },
     {
       "id": "partridge-pea",
@@ -1807,7 +1964,13 @@
       ],
       "longevity": 1,
       "rootDepth": 3,
-      "clayTolerance": 2
+      "clayTolerance": 2,
+      "maxCoverPct": 8,
+      "livestock": {
+        "note": {
+          "all": "Foliage and seed can be cathartic/mildly toxic in quantity — keep it a minor (<8% cover) wildlife/pollinator and soil-building component."
+        }
+      }
     },
     {
       "id": "sainfoin",
@@ -1853,7 +2016,19 @@
       ],
       "longevity": 5,
       "rootDepth": 5,
-      "clayTolerance": 1
+      "clayTolerance": 1,
+      "livestock": {
+        "favoredBy": [
+          "sheep",
+          "goats",
+          "dairy",
+          "beef",
+          "horses"
+        ],
+        "note": {
+          "all": "Non-bloating (condensed tannins) — a safe legume for all classes and a rare bloat-free option for horses."
+        }
+      }
     },
     {
       "id": "kura-clover",
@@ -1900,7 +2075,12 @@
       ],
       "longevity": 5,
       "rootDepth": 4,
-      "clayTolerance": 3
+      "clayTolerance": 3,
+      "livestock": {
+        "note": {
+          "all": "Bloat risk in ruminants on legume-heavy stands — keep plenty of grass in the mix."
+        }
+      }
     },
     {
       "id": "balansa-clover",
@@ -1950,7 +2130,12 @@
       ],
       "longevity": 1,
       "rootDepth": 3,
-      "clayTolerance": 4
+      "clayTolerance": 4,
+      "livestock": {
+        "note": {
+          "all": "Bloat risk in ruminants on legume-heavy stands — keep plenty of grass in the mix."
+        }
+      }
     },
     {
       "id": "strawberry-clover",
@@ -1999,7 +2184,12 @@
       ],
       "longevity": 5,
       "rootDepth": 3,
-      "clayTolerance": 5
+      "clayTolerance": 5,
+      "livestock": {
+        "note": {
+          "all": "Bloat risk in ruminants on legume-heavy stands — keep plenty of grass in the mix."
+        }
+      }
     },
     {
       "id": "white-sweetclover",
@@ -2045,7 +2235,13 @@
       ],
       "longevity": 2,
       "rootDepth": 5,
-      "clayTolerance": 2
+      "clayTolerance": 2,
+      "maxCoverPct": 20,
+      "livestock": {
+        "note": {
+          "all": "Coumarin content means spoiled/moldy hay can cause fatal bleeding (sweetclover disease) — graze or ensile properly and never feed moldy."
+        }
+      }
     },
     {
       "id": "yellow-sweetclover",
@@ -2093,7 +2289,13 @@
       ],
       "longevity": 2,
       "rootDepth": 5,
-      "clayTolerance": 2
+      "clayTolerance": 2,
+      "maxCoverPct": 20,
+      "livestock": {
+        "note": {
+          "all": "Coumarin content means spoiled/moldy hay can cause fatal bleeding (sweetclover disease) — graze or ensile properly and never feed moldy."
+        }
+      }
     }
   ]
 }

@@ -17,6 +17,14 @@ const PH_BAND_VALUE = {
 // A producer who can lime is assumed to raise pH into this range.
 const LIME_TARGET_PH = 6.5;
 
+// USDA hardiness zones, coldest to warmest, for a numeric rank.
+const ZONE_ORDER = ['3a', '3b', '4a', '4b', '5a', '5b', '6a', '6b', '7a', '7b', '8a', '8b', '9a', '9b', '10a'];
+function zoneRank(z) { const i = ZONE_ORDER.indexOf(z); return i === -1 ? 7 : i; }
+
+const LIVESTOCK_LABEL = {
+  beef: 'beef cattle', dairy: 'dairy cattle', sheep: 'sheep', horses: 'horses', goats: 'goats'
+};
+
 /* ---- individual scoring factors ---------------------------------------- */
 
 function scorePh(sp, ctx) {
@@ -180,6 +188,19 @@ function scoreConditions(sp, ctx, reasons) {
 
   if (ctx.cold) pts += (sp.winterHardiness - 3) * 0.9;
 
+  // Livestock suitability: exclude species toxic to a selected class, and give
+  // a small nudge to species especially well suited to those animals.
+  const ls = sp.livestock || {};
+  (ctx.livestock || []).forEach(function (l) {
+    if ((ls.toxicTo || []).indexOf(l) !== -1) {
+      pts -= 20;
+      reasons.push('Keep out of ' + (LIVESTOCK_LABEL[l] || l) + ' pastures — toxicity risk');
+    } else if ((ls.favoredBy || []).indexOf(l) !== -1) {
+      pts += 1.6;
+      reasons.push('Especially good for ' + (LIVESTOCK_LABEL[l] || l));
+    }
+  });
+
   return pts;
 }
 
@@ -312,84 +333,111 @@ function monoMid(sp) {
   return m > 0 ? m : 1;
 }
 
-// `overrides` lets a producer type the purity/germination printed on the seed
-// tag they actually bought, per species: { speciesId: {purity, germ} }.
-// `evenness` (0-1) shapes how each group's cover is split between its species:
-// 1 = every species gets an equal share (maximum Simpson diversity), lower
-// values concentrate cover in the best-scoring species.
-// `rateOverrides` lets a producer pin an actual PLS rate for a species
-// ({ speciesId: lbsPerAcre }); groundcover is then back-calculated from the
-// rates actually in the table rather than from the target split.
-function buildSeedPlan(mix, prepData, totalPls, overrides, evenness, rateOverrides) {
+// Water-filling: distribute `budget` across ids proportional to weight, with no
+// id exceeding its cap. Used to honour toxic-species cover caps while keeping the
+// rest of the split proportional.
+function waterfill(ids, weight, cap, budget) {
+  const out = {}; ids.forEach(function (id) { out[id] = 0; });
+  let active = ids.filter(function (id) { return cap[id] == null || cap[id] > 0; });
+  for (let iter = 0; iter < ids.length + 2 && active.length; iter++) {
+    const used = ids.reduce(function (a, id) { return a + out[id]; }, 0);
+    let rem = budget - used;
+    if (rem <= 1e-9) break;
+    const wSum = active.reduce(function (a, id) { return a + (weight[id] || 1e-9); }, 0) || 1;
+    let capHit = false; const next = [];
+    active.forEach(function (id) {
+      const add = rem * (weight[id] || 1e-9) / wSum;
+      const room = (cap[id] == null ? Infinity : cap[id]) - out[id];
+      if (add >= room - 1e-12) { out[id] += room; capHit = true; }
+      else { out[id] += add; next.push(id); }
+    });
+    if (!capHit) break;
+    active = next;
+  }
+  return out;
+}
+
+// opts: { tags, evenness, coverOverrides, plsPctOverrides, livestock }
+//  - tags: seed-tag purity/germination per species  { id: {purity, germ} }
+//  - coverOverrides: producer-set target GROUND COVER fraction per species { id: 0..1 }
+//  - plsPctOverrides: producer-set PLS% directly per species { id: 0..100 }
+//  - species with a `maxCoverPct` are auto-capped so toxic-in-quantity species
+//    can't dominate the stand.
+function buildSeedPlan(mix, prepData, totalPls, opts) {
+  opts = opts || {};
   const prep = (prepData && prepData.species) || {};
-  const ov = overrides || {};
-  const ev = evenness == null ? 1 : Math.max(0, Math.min(1, evenness));
+  const tags = opts.tags || {};
+  const coverOv = opts.coverOverrides || {};
+  const plsOv = opts.plsPctOverrides || {};
+  const livestock = opts.livestock || [];
+  const ev = opts.evenness == null ? 1 : Math.max(0, Math.min(1, opts.evenness));
+
+  // Horse-safe composition: more grass, fewer legumes (founder/laminitis risk).
+  const target = livestock.indexOf('horses') !== -1
+    ? { grass: 0.62, legume: 0.20, forb: 0.18 } : COMPOSITION_TARGET;
+
   const groups = { grass: [], legume: [], forb: [] };
   mix.forEach(function (m) { if (groups[m.species.type]) groups[m.species.type].push(m); });
-
   const present = Object.keys(groups).filter(function (g) { return groups[g].length; });
-  const tsum = present.reduce(function (a, g) { return a + COMPOSITION_TARGET[g]; }, 0) || 1;
+  const tsum = present.reduce(function (a, g) { return a + target[g]; }, 0) || 1;
 
-  // Desired ground-cover fraction per species: split each group's (normalized)
-  // target cover equally among its members.
-  const coverFrac = {};
-  const decay = 0.4 + 0.6 * ev; // 1.0 = equal shares; 0.4 = strongly top-weighted
+  // Base target cover per species: split each group's normalized target equally
+  // (or top-weighted, per evenness) among its members.
+  const base = {};
+  const decay = 0.4 + 0.6 * ev;
   present.forEach(function (g) {
     const members = groups[g].slice().sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
     const w = members.map(function (_, i) { return Math.pow(decay, i); });
     const wSum = w.reduce(function (a, b) { return a + b; }, 0) || 1;
-    const gTarget = COMPOSITION_TARGET[g] / tsum;
-    members.forEach(function (m, i) { coverFrac[m.species.id] = gTarget * w[i] / wSum; });
+    members.forEach(function (m, i) { base[m.species.id] = (target[g] / tsum) * w[i] / wSum; });
   });
 
-  // Σ(coverFrac · monoRate) is the seed needed to deliver ONE FULL STAND with
-  // each species contributing its target share of the ground — i.e. the
-  // agronomically recommended total rate for this particular mix.
+  // Apply producer cover pins (exact) and toxic caps (upper bound); water-fill
+  // the remaining cover budget across the rest, respecting caps.
+  const ids = mix.map(function (m) { return m.species.id; });
+  const caps = {}; const pinned = {}; let pinnedSum = 0;
+  mix.forEach(function (m) {
+    const sp = m.species;
+    if (sp.maxCoverPct != null) caps[sp.id] = sp.maxCoverPct / 100;
+    if (coverOv[sp.id] != null) { pinned[sp.id] = Math.max(0, coverOv[sp.id]); pinnedSum += pinned[sp.id]; }
+  });
+  const freeIds = ids.filter(function (id) { return pinned[id] == null; });
+  const budget = Math.max(0, 1 - pinnedSum);
+  const filled = waterfill(freeIds, base, caps, budget);
+  const coverFrac = {};
+  let cSum = 0;
+  ids.forEach(function (id) { coverFrac[id] = pinned[id] != null ? pinned[id] : (filled[id] || 0); cSum += coverFrac[id]; });
+  if (cSum > 0) ids.forEach(function (id) { coverFrac[id] = coverFrac[id] / cSum; }); // normalize to 1
+
+  // Recommended total = seed to deliver one full stand at this cover split.
   let recommendedTotal = 0;
   mix.forEach(function (m) { recommendedTotal += coverFrac[m.species.id] * monoMid(m.species); });
   recommendedTotal = recommendedTotal || 1;
   totalPls = totalPls || recommendedTotal;
 
-  // Rates: the target allocation, unless the producer pinned a rate themselves.
-  // Pinned rates are honoured exactly; the unpinned species share whatever is
-  // left of the total, so the table always adds up to the stated total rate.
-  const ratesOv = rateOverrides || {};
-  let pinnedSum = 0, unpinnedDenom = 0;
-  mix.forEach(function (m) {
-    const sp = m.species;
-    if (ratesOv[sp.id] != null) pinnedSum += ratesOv[sp.id];
-    else unpinnedDenom += coverFrac[sp.id] * monoMid(sp);
-  });
-  const remaining = Math.max(0, totalPls - pinnedSum);
+  const denom = recommendedTotal;
   const rates = {};
-  mix.forEach(function (m) {
-    const sp = m.species;
-    if (ratesOv[sp.id] != null) { rates[sp.id] = ratesOv[sp.id]; return; }
-    rates[sp.id] = unpinnedDenom > 0 ? remaining * coverFrac[sp.id] * monoMid(sp) / unpinnedDenom : 0;
-  });
-  if (pinnedSum > totalPls) totalPls = pinnedSum; // pins alone exceed the target
-
-  // Groundcover is ALWAYS back-calculated from the rates actually in the table
-  // (rate ÷ pure-stand rate), so edits move the composition immediately.
-  let standTotal = 0;
-  mix.forEach(function (m) { standTotal += rates[m.species.id] / monoMid(m.species); });
+  mix.forEach(function (m) { rates[m.species.id] = totalPls * coverFrac[m.species.id] * monoMid(m.species) / denom; });
 
   const rows = [];
   mix.forEach(function (m) {
     const sp = m.species;
     const pls = rates[sp.id];
-    const cover = standTotal > 0 ? (pls / monoMid(sp)) / standTotal : 0;
     const p = prep[sp.id];
-    const o = ov[sp.id] || {};
-    const purity = o.purity != null ? o.purity : (p && p.purity);
-    const germ = o.germ != null ? o.germ : (p && p.germ);
-    const plsFrac = purity && germ ? (purity * germ / 10000) : 0.85;
+    const tag = tags[sp.id] || {};
+    const purity = tag.purity != null ? tag.purity : (p && p.purity);
+    const germ = tag.germ != null ? tag.germ : (p && p.germ);
+    const plsFrac = plsOv[sp.id] != null ? plsOv[sp.id] / 100
+      : (purity && germ ? (purity * germ / 10000) : 0.85);
     const price = (p && p.pricePerPlsLb) || [6, 12];
     rows.push({
       species: sp, group: sp.type, prep: p || null,
-      purity: purity, germ: germ, fromTag: !!(o.purity != null || o.germ != null),
-      pinnedRate: ratesOv[sp.id] != null,
-      coverPct: cover * 100,
+      purity: purity, germ: germ, fromTag: !!(tag.purity != null || tag.germ != null),
+      plsPctPinned: plsOv[sp.id] != null,
+      pinnedCover: coverOv[sp.id] != null,
+      capped: sp.maxCoverPct != null && coverFrac[sp.id] * 100 >= sp.maxCoverPct - 0.5,
+      maxCoverPct: sp.maxCoverPct != null ? sp.maxCoverPct : null,
+      coverPct: coverFrac[sp.id] * 100,
       plsRate: pls, plsPct: plsFrac * 100, bulkRate: pls / plsFrac,
       costLow: pls * price[0], costHigh: pls * price[1]
     });
@@ -418,6 +466,12 @@ function buildSeedPlan(mix, prepData, totalPls, overrides, evenness, rateOverrid
   return {
     rows: rows, totals: totals, composition: composition, totalPls: totalPls,
     recommendedTotal: recommendedTotal,
+    target: {
+      grass: present.indexOf('grass') !== -1 ? Math.round(target.grass / tsum * 100) : 0,
+      legume: present.indexOf('legume') !== -1 ? Math.round(target.legume / tsum * 100) : 0,
+      forb: present.indexOf('forb') !== -1 ? Math.round(target.forb / tsum * 100) : 0
+    },
+    horseSafe: livestock.indexOf('horses') !== -1,
     richness: rows.length, simpson: simpson, effectiveSpecies: effective, evenness: ev
   };
 }
@@ -505,8 +559,15 @@ function buildContext(answers) {
   const slopePct = af.slopePct;
   if (slopePct != null && slopePct >= 15) derived.slopes = 5;
   else if (slopePct != null && slopePct >= 8) derived.slopes = 3;
-  const fert = fertilityEmphasis(answers, af);
+  let fert = fertilityEmphasis(answers, af);
+  const noFertilizer = !!answers.noFertilizer;
+  const noLime = !!answers.noLime;
+  // If the producer won't fertilize, lean hard on low-input and nitrogen-fixing
+  // species (they have to carry the stand on their own).
+  if (noFertilizer) { fert = 7; derived['nitrogen'] = Math.max(derived['nitrogen'] || 0, 5); derived['low-input'] = Math.max(derived['low-input'] || 0, 5); }
   if (fert > 0) derived['low-fertility'] = fert;
+  // If the producer won't lime, acidic-tolerant species matter more.
+  if (noLime && (answers.ph === 'lt55' || answers.ph === '55-60')) derived.acidic = Math.max(derived.acidic || 0, 6);
 
   // The farmer's own sliders take precedence where they are higher.
   const stated = answers.priorities || {};
@@ -527,20 +588,32 @@ function buildContext(answers) {
   if (texture === 'heavy') soilDifficulty++;
   if ((derived.slopes || 0) >= 5) soilDifficulty++;
 
+  // Cold from USDA hardiness zone (auto-filled from the location, or chosen).
+  // Fall back to the old elevation answer for plans saved before zones existed.
+  const zone = answers.zone && answers.zone !== 'unknown' ? answers.zone : (af.hardinessZone || null);
+  const cold = zone ? (zoneRank(zone) <= zoneRank('6a')) : (answers.elevation === 'high');
+  const slopePctVal = af.slopePct != null ? af.slopePct : null;
+
   return {
     phValue: phv,
-    canLime: !!answers.canLime,
+    canLime: noLime ? false : !!answers.canLime,
+    noLime: noLime,
+    noFertilizer: noFertilizer,
     drainage: answers.drainage,
     priorities: priorities,
     fertilityEmphasis: fert,
     texture: texture,
+    textureName: answers.textureName || (af.texture ? null : null),
     soilDifficulty: soilDifficulty,
-    clayPct: af.clayPct != null ? af.clayPct : null,
+    clayPct: af.clayPct != null ? af.clayPct : (answers.clayPct != null ? answers.clayPct : null),
+    slopePct: slopePctVal,
     compaction: compaction,
+    livestock: answers.livestock || [],
+    zone: zone,
     imp: function (id) { return priorities[id] || 0; },
     methods: answers.methods || [],
     grazing: answers.grazing || 'rot-managed',
-    cold: answers.elevation === 'high',
+    cold: cold,
     season: answers.season || 'both',
     aspectDryness: aspectDryness,
     recentDroughtStress: Math.max(0, Math.min(1, af.recentDroughtStress || 0))
@@ -571,13 +644,20 @@ function zoneAnswers(farmer, phBand, drainage, extraChallenges) {
   (extraChallenges || []).forEach(function (c) { priorities[c] = Math.max(priorities[c] || 0, 6); });
   return {
     elevation: farmer.elevation,
+    zone: farmer.zone,
     ph: phBand || 'unknown',
     canLime: farmer.canLime,
+    noLime: farmer.noLime,
+    noFertilizer: farmer.noFertilizer,
     drainage: drainage || farmer.drainage,
     priorities: priorities,
     methods: farmer.methods,
     grazing: farmer.grazing,
     season: farmer.season,
+    livestock: farmer.livestock,
+    texture: farmer.texture,
+    textureName: farmer.textureName,
+    clayPct: farmer.clayPct,
     autofill: farmer.autofill
   };
 }
@@ -652,14 +732,21 @@ function buildEstablishmentPlan(ctx, mix, prepData) {
     limeBullets.push('Your pH is workable for this mix. Hold it at ' + targetPh + ' and re-test every 2–3 years.');
   }
   if (needsHighPh) limeBullets.push('Note that ' + names(sp.filter(function (s) { return s.phMin >= 6.4; })) + ' in this mix needs the higher end of that range.');
-  limeBullets.push('For an established sod (pasture you are frost-seeding or overseeding rather than tilling), lime only reaches about 2 inches deep over time, so West Virginia\'s pasture/hayland guidance targets pH 6.0+ at that shallow depth rather than the deeper target used for tilled ground — pull your soil sample from just the top 2 inches on permanent sod.');
-  limeBullets.push('Not all lime is equal: <a href="https://go.wvu.edu/AgLimestoneTool" target="_blank" rel="noopener">WVU\'s Ag Limestone Tool</a> lets you compare products by Effective Neutralizing Value (ENV) so you can price tons of actual neutralizing power, not just tons of rock — useful since pelleted and bulk ag lime differ a lot in ENV per dollar.');
-  limeBullets.push('If bulk ag lime spreading isn\'t practical on a steep or small field, <a href="https://extension.wvu.edu/natural-resources/soil-water/low-rate-application-of-pelleted-lime" target="_blank" rel="noopener">pelleted lime applied through a fertilizer spreader</a> is a workable low-rate alternative — see WVU\'s guidance on rates and limitations.');
+  limeBullets.push('<strong>Take the sample right:</strong> walk a zig-zag across the field and pull 15–20 small cores, mixing them in a clean bucket for one composite sample. Sample the <strong>top 2 inches</strong> on permanent sod (4–6 inches if you will till), skip odd spots (gateways, old feeding/manure areas, wet holes) or bag them separately, and send it to the <a href="https://extension.wvu.edu/natural-resources/soil-water/soil-testing" target="_blank" rel="noopener">WVU Soil Testing Lab</a>. See <a href="https://extension.wvu.edu/files/d/a00cb30b-5077-4802-aa19-7a81a3ff0a03/soil-sampling-and-testing.pdf" target="_blank" rel="noopener">WVU\'s Soil Sampling &amp; Testing</a> for the full how-to.');
+  limeBullets.push('For an established sod (pasture you are frost-seeding or overseeding rather than tilling), lime only reaches about 2 inches deep over time, so West Virginia\'s pasture/hayland guidance targets pH 6.0+ at that shallow depth rather than the deeper target used for tilled ground.');
+  if (ctx.noLime) {
+    limeBullets.push('<strong>You chose not to lime.</strong> This mix has been shifted toward acid-tolerant species, but be realistic: below about pH 5.5 most legumes fix little nitrogen and stands thin out. If you can manage even a light pelleted-lime application on the worst areas, it is the highest-return input on acid Appalachian ground.');
+  } else {
+    limeBullets.push('Not all lime is equal: <a href="https://go.wvu.edu/AgLimestoneTool" target="_blank" rel="noopener">WVU\'s Ag Limestone Tool</a> lets you compare products by Effective Neutralizing Value (ENV) so you can price tons of actual neutralizing power, not just tons of rock — pelleted and bulk ag lime differ a lot in ENV per dollar.');
+    limeBullets.push('If bulk ag lime spreading isn\'t practical on a steep or small field, <a href="https://extension.wvu.edu/natural-resources/soil-water/low-rate-application-of-pelleted-lime" target="_blank" rel="noopener">pelleted lime through a fertilizer spreader</a> is a workable low-rate alternative — see WVU\'s guidance on rates and limits.');
+  }
   steps.push({ title: 'Soil test and lime first', bullets: limeBullets });
 
   // 2 — fertility
   const fertBullets = [];
-  if (ctx.fertilityEmphasis >= 5) fertBullets.push('Fertility reads low. Correct phosphorus and potassium to soil-test recommendation before seeding — seedlings, and especially legumes, cannot fix nitrogen without adequate P and K.');
+  if (ctx.noFertilizer) {
+    fertBullets.push('<strong>You chose not to fertilize.</strong> This mix leans on nitrogen-fixing legumes and low-input species to carry the stand. The one thing worth testing anyway is P and K: legumes cannot fix nitrogen for the grasses if phosphorus or potassium is truly deficient, so even a one-time corrective application on a low-testing field pays for itself. After that, the legumes supply the nitrogen for free.');
+  } else if (ctx.fertilityEmphasis >= 5) fertBullets.push('Fertility reads low. Correct phosphorus and potassium to soil-test recommendation before seeding — seedlings, and especially legumes, cannot fix nitrogen without adequate P and K.');
   else if (ctx.fertilityEmphasis >= 3) fertBullets.push('Fertility reads moderate. Apply P and K to soil-test recommendation at seeding.');
   else fertBullets.push('Fertility looks adequate. Maintain P and K on a regular soil-test cycle, replacing roughly what the forage removes each year.');
   if (legumes.length) {
@@ -679,17 +766,36 @@ function buildEstablishmentPlan(ctx, mix, prepData) {
     });
   }
 
-  // 4 — seedbed (texture-aware, with the standard firmness test)
+  // 4 — seedbed: method choice, herbicide, and slope/compaction suitability
   const heavy = ctx.texture === 'heavy';
-  const seedbedBullets = has('tillage') ? [
-    'Aim for a seedbed that is <strong>firm (not hard), fine (not powdered), and moist (not muddy)</strong>, and free of perennial weeds before you start.',
-    '<strong>The footprint test:</strong> walk across the worked ground — your boot should sink <strong>no more than about ¼ inch</strong>. If you sink deeper, it is too loose: cultipack again before seeding.',
-    'Cultipack <strong>before</strong> seeding to firm the bed, and <strong>again after</strong> to close the seed in. A firm bed pulls moisture up to the seed by capillary action, which is what carries seedlings through a dry spell.'
-  ] : [
-    'Suppress the existing sod so seedlings get light: graze or clip hard to 2–3 inches, and/or use a burndown ahead of drilling. Remove or graze off heavy residue so the openers can reach soil.',
-    'Check that the drill has working <strong>press wheels</strong> to firm soil around each seed. Press wheels matter more the heavier the soil and the drier the conditions' + (heavy ? ' — and your ground reads as heavy clay, so this is worth checking before you start.' : '.'),
-    'Make sure the drill is heavy enough to penetrate, and re-check depth every few passes as conditions change across the field.'
-  ];
+  const steep = (ctx.slopePct != null && ctx.slopePct >= 15) || ctx.imp('slopes') >= 5;
+  const compacted = ctx.compaction >= 5;
+  const seedbedBullets = [];
+
+  // Risk/benefit of the two seedbed routes, and which suits this ground.
+  seedbedBullets.push('<strong>Two routes, and the trade-off:</strong> <em>No-till drilling into killed sod</em> conserves soil moisture, protects against erosion, and is faster and cheaper — but needs a drill and good residue management. <em>Conventional tillage</em> gives a clean, easy-to-plant seedbed and lets you incorporate lime, but it burns diesel, dries the soil, exposes weed seed, and — critically on Appalachian ground — invites erosion.');
+  if (steep) {
+    if (has('tillage')) {
+      seedbedBullets.push('<strong>Caution — your field is steep.</strong> Full tillage on slopes over ~15% risks serious soil loss before the new stand covers the ground. Strongly prefer no-till drilling or frost-seeding into suppressed sod here; if you must till, do it on the contour and get seed and cover on fast.');
+    } else {
+      seedbedBullets.push('<strong>Your field is steep, so no-till is the right call</strong> — it keeps the protective sod and residue in place while the new seedlings establish. Avoid full tillage on this ground.');
+    }
+  }
+  if (compacted) {
+    seedbedBullets.push('<strong>Compaction is high.</strong> A no-till drill can struggle to penetrate a hard pan, and broadcasting onto tight sod gives poor seed-to-soil contact. Options: run the drill when the soil has some moisture (not wet), consider a light vertical-tillage or aeration pass to open the surface' + (steep ? ' — but not on this slope, where any tillage risks erosion; lean on the deep-rooted species in this mix to break the pan over time instead.' : ', and lean on the deep-rooted species in this mix to break the pan over the next few seasons.'));
+  }
+
+  // Herbicide / sod suppression for any non-tillage (drill/broadcast) route.
+  if (!has('tillage') || methods.length > 1) {
+    seedbedBullets.push('<strong>Suppress the existing sod so new seedlings get light</strong> — this is the number-one reason no-till seedings fail. Graze or clip hard to 2–3 inches first. For a tight or weedy sod, spray a non-selective <strong>burndown (glyphosate)</strong> 1–2 weeks before drilling; for a badly weed-infested field, the <em>spray–smother–spray</em> method (burndown, a smother crop like a summer annual, then a second burndown) cleans up the weed seedbank before you seed.');
+    seedbedBullets.push('Match the herbicide to the plants present and mind the label: some pasture herbicides carry <strong>grazing, haying, and replant (rotation) restrictions</strong> that can stop you from seeding legumes for weeks or months. See <a href="https://www.udel.edu/academics/colleges/canr/cooperative-extension/fact-sheets/Considerations-for-Herbicide-Use-in-Pastures/" target="_blank" rel="noopener">Considerations for Herbicide Use in Pastures</a> and, for the whole no-till approach, <a href="https://www.pubs.ext.vt.edu/SPES/spes-92/SPES-92.html" target="_blank" rel="noopener">Virginia Tech\'s No-Till Seeding of Forages</a>.');
+    if (legumes.length) seedbedBullets.push('<strong>Herbicide + new legumes don\'t mix:</strong> most broadleaf pasture herbicides will kill clover and other legume seedlings. Do your weed spraying <em>before</em> seeding (respecting the replant interval on the label), then rely on mowing to manage weeds after the legumes are up.');
+  }
+  if (has('tillage')) {
+    seedbedBullets.push('If tilling: aim for a seedbed that is <strong>firm (not hard), fine (not powdered), and moist (not muddy)</strong>. <strong>Footprint test</strong> — your boot should sink no more than about ¼ inch; if it sinks deeper, cultipack again. Cultipack <strong>before</strong> seeding to firm the bed and <strong>again after</strong> to close the seed in.');
+  } else {
+    seedbedBullets.push('Check the drill has working <strong>press wheels</strong> to firm soil around each seed (they matter more the heavier the soil and the drier the conditions' + (heavy ? ', and your ground reads as heavy clay' : '') + '), remove or graze off heavy residue so the openers reach soil, and make sure the drill is heavy enough to penetrate.');
+  }
   steps.push({ title: 'Prepare the seedbed', bullets: seedbedBullets });
 
   // 5 — when and how to seed (built from the selected methods)
@@ -726,7 +832,7 @@ function buildEstablishmentPlan(ctx, mix, prepData) {
     'On fluffy native seed, roughly 30% should still be visible on the surface after planting.',
     'Calibrate using the <strong>bulk</strong> pounds in the table, never the PLS pounds.'
   ];
-  steps.push({ title: 'Depth and drill calibration', bullets: depthBullets });
+  steps.push({ title: 'Depth and drill calibration', bullets: depthBullets, diagram: 'depth' });
 
   // 6b — how to actually run the equipment: calibration procedure + crosshatch
   const usesDrill = has('drill-fall') || has('drill-spring') || has('tillage');
@@ -740,7 +846,7 @@ function buildEstablishmentPlan(ctx, mix, prepData) {
     calBullets.push('<strong>Calibrate the spreader with catch pans:</strong> set 8-10 shallow pans in a line, perpendicular to your direction of travel, spanning the spreader\'s throw. Drive over them at your normal speed and pace, then weigh what each pan caught to find the actual spread width and rate. Adjust the setting and repeat until it matches the bulk rate you need.');
     calBullets.push('<strong>Always broadcast in a crosshatch:</strong> apply <em>half</em> the seed walking or driving one direction across the field, then the other half on a second pass at a right angle to the first. This is the single best fix for the streaks and skips that plague broadcast seeding, and costs nothing but a second pass.');
   }
-  if (calBullets.length) steps.push({ title: 'Calibrate the equipment and apply evenly', bullets: calBullets });
+  if (calBullets.length) steps.push({ title: 'Calibrate the equipment and apply evenly', bullets: calBullets, diagram: 'crosshatch' });
 
   // 7 — boxes and inoculation
   const boxes = {};

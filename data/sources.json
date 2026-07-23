@@ -139,6 +139,36 @@
       "url": "https://nominatim.org",
       "note": "Converts a typed address to coordinates in the browser. The address is used once and never stored."
     },
+    "wvu-soil-sampling": {
+      "title": "Soil Sampling and Testing (how to take a good sample)",
+      "org": "West Virginia University Extension (Rayburn & Basden)",
+      "url": "https://extension.wvu.edu/files/d/a00cb30b-5077-4802-aa19-7a81a3ff0a03/soil-sampling-and-testing.pdf",
+      "note": "How to collect a representative soil sample: cores per field, sampling depth (2 in for permanent sod, 4-6 in for hay), avoiding odd spots, and where to send it."
+    },
+    "wvu-soil-testing": {
+      "title": "Soil Testing (lab submission & forms)",
+      "org": "West Virginia University Extension",
+      "url": "https://extension.wvu.edu/natural-resources/soil-water/soil-testing",
+      "note": "WVU Soil Testing Lab: how to submit samples, forms, and turnaround."
+    },
+    "psu-renovation-herbicide": {
+      "title": "Pasture and Hay Field Renovation (sod suppression & weed control)",
+      "org": "Penn State Extension",
+      "url": "https://extension.psu.edu/hay-and-pasture-renovation-decisions",
+      "note": "Suppressing existing sod and controlling weeds ahead of no-till seeding, including glyphosate burndown timing."
+    },
+    "udel-herbicide": {
+      "title": "Considerations for Herbicide Use in Pastures",
+      "org": "University of Delaware Cooperative Extension",
+      "url": "https://www.udel.edu/academics/colleges/canr/cooperative-extension/fact-sheets/Considerations-for-Herbicide-Use-in-Pastures/",
+      "note": "Choosing herbicides for pasture renovation and weed control, and reading grazing/haying restriction labels."
+    },
+    "vt-notill-forage": {
+      "title": "No-Till Seeding of Forage Grasses and Legumes (SPES-92)",
+      "org": "Virginia Cooperative Extension / Virginia Tech",
+      "url": "https://www.pubs.ext.vt.edu/SPES/spes-92/SPES-92.html",
+      "note": "No-till vs. conventional seedbed for the Mid-Atlantic: killing the existing sod, residue and light management, and drill setup."
+    },
     "ifas-calibration": {
       "title": "Calibrating Forage Seeding Equipment (AG158/SS-AGR-90)",
       "org": "University of Florida IFAS Extension",

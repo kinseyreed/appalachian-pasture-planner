@@ -70,9 +70,21 @@ const GRAZING_OPTIONS = [
   { id: 'mob', label: 'Management-intensive / mob', hint: 'Frequent moves, long rest' }
 ];
 
-const ELEVATION_OPTIONS = [
-  { id: 'low', label: 'Lower / milder valleys', hint: '' },
-  { id: 'high', label: 'Higher / colder mountains', hint: 'Above ~2,500 ft' }
+const LIVESTOCK_OPTIONS = [
+  { id: 'beef', label: 'Beef cattle', hint: '' },
+  { id: 'dairy', label: 'Dairy cattle', hint: '' },
+  { id: 'sheep', label: 'Sheep', hint: '' },
+  { id: 'horses', label: 'Horses', hint: 'Extra-safe, grass-leaning mix' },
+  { id: 'goats', label: 'Goats', hint: 'Favors browse & forbs' }
+];
+
+const ZONE_OPTIONS = [
+  { id: '5b', label: 'Zone 5b', hint: '−15 to −10 °F' },
+  { id: '6a', label: 'Zone 6a', hint: '−10 to −5 °F' },
+  { id: '6b', label: 'Zone 6b', hint: '−5 to 0 °F' },
+  { id: '7a', label: 'Zone 7a', hint: '0 to 5 °F' },
+  { id: '7b', label: 'Zone 7b', hint: '5 to 10 °F' },
+  { id: 'unknown', label: 'Not sure', hint: 'We\'ll use the climate lookup' }
 ];
 
 const SEASON_OPTIONS = [
@@ -186,25 +198,126 @@ function renderSliders(container, factors) {
   });
 }
 
+/* ---- soil texture triangle ---- */
+// USDA texture class from sand/clay percentages (silt = 100 - sand - clay).
+function textureName(sand, clay) {
+  const silt = 100 - sand - clay;
+  if (clay >= 40) { if (sand >= 45) return 'sandy clay'; if (silt >= 40) return 'silty clay'; return 'clay'; }
+  if (clay >= 27) { if (sand >= 45) return 'sandy clay loam'; if (silt >= 28) return 'silty clay loam'; return 'clay loam'; }
+  if (clay >= 20) { if (sand >= 45 && silt < 28) return 'sandy clay loam'; }
+  if (silt >= 80 && clay < 12) return 'silt';
+  if (silt >= 50 && clay < 27) return 'silt loam';
+  if (clay >= 7 && clay < 27 && silt >= 28 && silt < 50 && sand <= 52) return 'loam';
+  if (sand >= 85 && clay <= 10) return 'sand';
+  if (sand >= 70) return 'loamy sand';
+  if (sand >= 43) return 'sandy loam';
+  if (clay >= 12) return 'clay loam';
+  return 'loam';
+}
+// Coarse class used by the scoring engine.
+function textureClassFromClay(clay) { return clay >= 35 ? 'heavy' : (clay >= 18 ? 'medium' : 'light'); }
+
+const TRI = { size: 300, pad: 34 }; // equilateral triangle geometry
+// Barycentric: clay at top, sand bottom-left, silt bottom-right.
+function triXY(sand, clay) {
+  const silt = 100 - sand - clay;
+  const s = TRI.size, p = TRI.pad;
+  // vertices: clay=top, sand=bottom-left, silt=bottom-right
+  const top = { x: p + s / 2, y: p }, bl = { x: p, y: p + s * 0.866 }, br = { x: p + s, y: p + s * 0.866 };
+  return {
+    x: (clay / 100) * top.x + (sand / 100) * bl.x + (silt / 100) * br.x,
+    y: (clay / 100) * top.y + (sand / 100) * bl.y + (silt / 100) * br.y
+  };
+}
+function xyToTexture(x, y) {
+  // invert barycentric within the triangle
+  const s = TRI.size, p = TRI.pad;
+  const top = { x: p + s / 2, y: p }, bl = { x: p, y: p + s * 0.866 }, br = { x: p + s, y: p + s * 0.866 };
+  const d = (bl.y - br.y) * (top.x - br.x) + (br.x - bl.x) * (top.y - br.y);
+  let a = ((bl.y - br.y) * (x - br.x) + (br.x - bl.x) * (y - br.y)) / d;      // clay weight
+  let b = ((br.y - top.y) * (x - br.x) + (top.x - br.x) * (y - br.y)) / d;    // sand weight
+  let c = 1 - a - b;                                                          // silt weight
+  a = Math.max(0, a); b = Math.max(0, b); c = Math.max(0, c);
+  const sum = a + b + c || 1;
+  return { clay: Math.round(a / sum * 100), sand: Math.round(b / sum * 100), silt: Math.round(c / sum * 100) };
+}
+
+let TEXTURE_STATE = { sand: 40, clay: 20, set: false, fromMap: false };
+
+function renderTextureTriangle() {
+  const host = document.getElementById('q-texture-triangle');
+  if (!host) return;
+  const s = TRI.size, p = TRI.pad, W = s + p * 2, H = s * 0.866 + p * 2;
+  const top = p + s / 2, bl = p, br = p + s, by = p + s * 0.866;
+  host.innerHTML =
+    '<div class="tri-wrap">' +
+    '<svg id="tex-svg" viewBox="0 0 ' + W + ' ' + H + '" class="tri-svg" role="img" aria-label="Soil texture triangle">' +
+    '<polygon points="' + top + ',' + p + ' ' + bl + ',' + by + ' ' + br + ',' + by + '" class="tri-face"/>' +
+    '<text x="' + top + '" y="' + (p - 8) + '" class="tri-lbl" text-anchor="middle">100% clay</text>' +
+    '<text x="' + (bl - 4) + '" y="' + (by + 16) + '" class="tri-lbl" text-anchor="start">100% sand</text>' +
+    '<text x="' + (br + 4) + '" y="' + (by + 16) + '" class="tri-lbl" text-anchor="end">100% silt</text>' +
+    '<circle id="tex-pin" r="7" class="tri-pin"/>' +
+    '</svg>' +
+    '<div class="tri-readout"><strong id="tex-name">—</strong><span id="tex-mix"></span>' +
+    '<button type="button" class="tri-map-btn" id="tex-map-btn">Use soil map instead</button></div>' +
+    '</div>';
+
+  const svg = document.getElementById('tex-svg');
+  const pin = document.getElementById('tex-pin');
+  function place(sand, clay) {
+    const xy = triXY(sand, clay);
+    pin.setAttribute('cx', xy.x); pin.setAttribute('cy', xy.y);
+    pin.style.display = '';
+    const name = textureName(sand, clay);
+    document.getElementById('tex-name').textContent = name.charAt(0).toUpperCase() + name.slice(1);
+    document.getElementById('tex-mix').textContent = ' — ' + Math.round(sand) + '% sand · ' + (100 - Math.round(sand) - Math.round(clay)) + '% silt · ' + Math.round(clay) + '% clay';
+  }
+  function fromEvent(e) {
+    const r = svg.getBoundingClientRect();
+    const pt = e.touches ? e.touches[0] : e;
+    const x = (pt.clientX - r.left) / r.width * W;
+    const y = (pt.clientY - r.top) / r.height * H;
+    const t = xyToTexture(x, y);
+    TEXTURE_STATE = { sand: t.sand, clay: t.clay, set: true, fromMap: false };
+    place(t.sand, t.clay);
+  }
+  let dragging = false;
+  svg.addEventListener('mousedown', function (e) { dragging = true; fromEvent(e); e.preventDefault(); });
+  window.addEventListener('mousemove', function (e) { if (dragging) fromEvent(e); });
+  window.addEventListener('mouseup', function () { dragging = false; });
+  svg.addEventListener('touchstart', function (e) { fromEvent(e); e.preventDefault(); }, { passive: false });
+  svg.addEventListener('touchmove', function (e) { fromEvent(e); e.preventDefault(); }, { passive: false });
+  document.getElementById('tex-map-btn').addEventListener('click', function () {
+    TEXTURE_STATE.set = false; TEXTURE_STATE.fromMap = false;
+    pin.style.display = 'none';
+    document.getElementById('tex-name').textContent = 'Using soil map';
+    document.getElementById('tex-mix').textContent = '';
+  });
+
+  if (TEXTURE_STATE.set) place(TEXTURE_STATE.sand, TEXTURE_STATE.clay);
+  else { pin.style.display = 'none'; document.getElementById('tex-name').textContent = 'Using soil map'; }
+}
+
 function buildForm() {
   renderChips(document.getElementById('q-season'), SEASON_OPTIONS, 'season', false);
-  renderChips(document.getElementById('q-elevation'), ELEVATION_OPTIONS, 'elevation', false);
+  renderChips(document.getElementById('q-livestock'), LIVESTOCK_OPTIONS, 'livestock', true);
+  renderChips(document.getElementById('q-zone'), ZONE_OPTIONS, 'zone', false);
   renderChips(document.getElementById('q-ph'), PH_OPTIONS, 'ph', false);
   renderChips(document.getElementById('q-drainage'), DRAINAGE_OPTIONS, 'drainage', false);
   renderSliders(document.getElementById('q-goals'), GOAL_FACTORS);
-  renderChips(document.getElementById('q-texture'), TEXTURE_OPTIONS, 'texture', false);
+  renderTextureTriangle();
   renderSliders(document.getElementById('q-compaction'), COMPACTION_FACTOR);
   renderChips(document.getElementById('q-method'), METHOD_OPTIONS, 'method', true);
   renderChips(document.getElementById('q-grazing'), GRAZING_OPTIONS, 'grazing', false);
 
   // sensible defaults
   selectDefault('season', 'both');
-  selectDefault('elevation', 'low');
+  selectDefault('livestock', 'beef');
+  selectDefault('zone', 'unknown');
   selectDefault('drainage', 'moderate');
   selectDefault('ph', 'unknown');
   selectDefault('method', 'auto');
   selectDefault('grazing', 'rot-managed');
-  selectDefault('texture', 'unknown');
 }
 
 function readPriorities() {
@@ -246,17 +359,29 @@ function readMulti(group) {
 let AUTOFILL = {};
 
 function readAnswers() {
+  // Soil texture: from the triangle pin if the farmer set one, else let the map fill it.
+  let texture = null, textureName2 = null, clayPct = null;
+  if (TEXTURE_STATE.set) {
+    clayPct = TEXTURE_STATE.clay;
+    texture = textureClassFromClay(TEXTURE_STATE.clay);
+    textureName2 = textureName(TEXTURE_STATE.sand, TEXTURE_STATE.clay);
+  }
   return {
-    elevation: readSingle('elevation'),
+    zone: readSingle('zone'),
     ph: readSingle('ph'),
     canLime: document.getElementById('can-lime').checked,
+    noLime: document.getElementById('no-lime').checked,
+    noFertilizer: document.getElementById('no-fertilizer').checked,
     drainage: readSingle('drainage'),
     priorities: readPriorities(),
     soilP: numOrNull('soil-p'),
     soilK: numOrNull('soil-k'),
     soilOM: numOrNull('soil-om'),
     fertilityUnknown: document.getElementById('fert-unknown').checked,
-    texture: readSingle('texture'),
+    texture: texture,
+    textureName: textureName2,
+    clayPct: clayPct,
+    livestock: readMulti('livestock'),
     compaction: parseInt((document.getElementById('pri-compaction') || {}).value || 0, 10),
     methods: readMulti('method'),
     grazing: readSingle('grazing'),
@@ -335,6 +460,33 @@ function speciesCard(result, sourcesData) {
 
 function money(a, b) { return '$' + Math.round(a) + '–' + Math.round(b); }
 
+// Simple inline SVG diagrams used in the establishment plan.
+const DIAGRAMS = {
+  crosshatch:
+    '<figure class="diag"><svg viewBox="0 0 320 140" role="img" aria-label="Crosshatch seeding: half the seed in each of two passes at right angles">' +
+    '<rect x="6" y="6" width="140" height="128" rx="4" class="dg-field"/>' +
+    '<rect x="174" y="6" width="140" height="128" rx="4" class="dg-field"/>' +
+    // pass 1: vertical lines
+    '<g class="dg-pass1">' + [26, 46, 66, 86, 106, 126].map(function (x) { return '<line x1="' + x + '" y1="12" x2="' + x + '" y2="128"/>'; }).join('') + '</g>' +
+    '<text x="76" y="150" class="dg-cap" text-anchor="middle" transform="translate(0,-6)">Pass 1 — half the seed</text>' +
+    // pass 2 over pass 1 (right field): both directions
+    '<g class="dg-pass1">' + [194, 214, 234, 254, 274, 294].map(function (x) { return '<line x1="' + x + '" y1="12" x2="' + x + '" y2="128"/>'; }).join('') + '</g>' +
+    '<g class="dg-pass2">' + [26, 46, 66, 86, 106].map(function (y) { return '<line x1="180" y1="' + y + '" x2="308" y2="' + y + '"/>'; }).join('') + '</g>' +
+    '<text x="244" y="150" class="dg-cap" text-anchor="middle" transform="translate(0,-6)">Pass 2 — other half, at 90°</text>' +
+    '</svg><figcaption>Split the seed and cover the field twice at right angles. The overlap fills the streaks and skips a single pass leaves behind.</figcaption></figure>',
+  depth:
+    '<figure class="diag"><svg viewBox="0 0 320 130" role="img" aria-label="Seeding depth: small seed shallow, about a quarter inch">' +
+    '<rect x="6" y="52" width="308" height="72" class="dg-soil"/>' +
+    '<line x1="6" y1="52" x2="314" y2="52" class="dg-surface"/>' +
+    '<text x="12" y="46" class="dg-cap">soil surface</text>' +
+    '<circle cx="70" cy="60" r="4" class="dg-seed"/><text x="70" y="88" class="dg-cap" text-anchor="middle">≤ ¼ in</text>' +
+    '<circle cx="70" cy="46" r="4" class="dg-seed dg-seed-top"/>' +
+    '<text x="70" y="34" class="dg-cap" text-anchor="middle">~30% showing</text>' +
+    '<circle cx="180" cy="60" r="4" class="dg-seed"/><text x="180" y="88" class="dg-cap" text-anchor="middle">small seed: shallow ✓</text>' +
+    '<circle cx="270" cy="96" r="5" class="dg-seed dg-seed-bad"/><text x="270" y="118" class="dg-cap" text-anchor="middle">too deep ✗</text>' +
+    '</svg><figcaption>Nearly all forage seed goes no deeper than ¼ inch — on fluffy native seed, about 30% should still show on the surface. Eastern gamagrass is the exception (~1 inch).</figcaption></figure>'
+};
+
 // The interactive seed-mix table. CURRENT holds the editable mix so delete/add
 // and the total-rate control all recompute the plan and groundcover live.
 let CURRENT = null;
@@ -352,12 +504,21 @@ function speciesDetailHtml(result, data) {
   }
   if (result.limeNote) h += '<div class="sc-note lime">Lime this ground up to ~pH 6.5 before seeding.</div>';
   if (sp.cautions) h += '<div class="sc-caution"><strong>Caution:</strong> ' + sp.cautions + '</div>';
+  // Livestock notes relevant to the selected animals (or 'all' / 'ruminant').
+  const chosen = (CURRENT && CURRENT.ctx && CURRENT.ctx.livestock) || [];
+  const lnotes = (sp.livestock && sp.livestock.note) || {};
+  const ruminants = ['beef', 'dairy', 'sheep', 'goats'];
+  const shown = {};
+  Object.keys(lnotes).forEach(function (k) {
+    const relevant = k === 'all' || (k === 'ruminant' && chosen.some(function (l) { return ruminants.indexOf(l) !== -1; })) || chosen.indexOf(k) !== -1;
+    if (relevant && !shown[lnotes[k]]) { shown[lnotes[k]] = 1; h += '<div class="sc-note stock">' + lnotes[k] + '</div>'; }
+  });
   const row = CURRENT && CURRENT.planRows ? CURRENT.planRows[sp.id] : null;
   if (row) {
     h += '<div class="tag-editor">' +
       '<div class="tag-head">From your seed tag</div>' +
-      '<p class="tag-help">Type what the label on the bag you ordered says. Bulk pounds and cost update to match. ' +
-      'If the tag only lists germination, leave purity as is.</p>' +
+      '<p class="tag-help">Type what the label on the bag you ordered says — bulk pounds and cost update to match. ' +
+      'If the tag only lists germination, leave purity as is. (You can also type a PLS% straight into the table\'s PLS % column.)</p>' +
       '<label>Purity <input type="number" class="tag-input" data-tag="purity" data-id="' + sp.id + '" value="' + (row.purity != null ? row.purity : '') + '" min="1" max="100" step="0.1">%</label>' +
       '<label>Germination (incl. hard/dormant) <input type="number" class="tag-input" data-tag="germ" data-id="' + sp.id + '" value="' + (row.germ != null ? row.germ : '') + '" min="1" max="100" step="0.1">%</label>' +
       '<div class="tag-result">= <strong>' + (Math.round(row.plsPct * 10) / 10) + '% PLS</strong> &rarr; ' +
@@ -378,8 +539,11 @@ function speciesDetailHtml(result, data) {
 function renderSeedTable() {
   if (!CURRENT) return;
   const data = CURRENT.data, mix = CURRENT.mix, total = CURRENT.total;
-  const plan = window.APP_RECOMMENDER.buildSeedPlan(
-    mix, data.prep, CURRENT.totalUserSet ? total : null, CURRENT.tags, CURRENT.evenness, CURRENT.rates);
+  const livestock = (CURRENT.ctx && CURRENT.ctx.livestock) || [];
+  const plan = window.APP_RECOMMENDER.buildSeedPlan(mix, data.prep, CURRENT.totalUserSet ? total : null, {
+    tags: CURRENT.tags, evenness: CURRENT.evenness, coverOverrides: CURRENT.coverOverrides,
+    plsPctOverrides: CURRENT.plsPctOverrides, livestock: livestock
+  });
   if (!CURRENT.totalUserSet) CURRENT.total = plan.recommendedTotal;
   const totalInput = document.getElementById('total-pls');
   if (totalInput && document.activeElement !== totalInput) totalInput.value = Math.round(plan.totalPls * 10) / 10;
@@ -388,16 +552,17 @@ function renderSeedTable() {
   CURRENT.planRows = {};
   plan.rows.forEach(function (r) { CURRENT.planRows[r.species.id] = r; });
   const V = (data.vendors && data.vendors.vendors) || {};
-  const c = plan.composition;
+  const c = plan.composition, t = plan.target;
 
   document.getElementById('comp-summary').innerHTML = 'Estimated groundcover: ' +
     '<span class="comp-chip grass">Grasses ' + (c.grass || 0) + '%</span>' +
     '<span class="comp-chip legume">Legumes ' + (c.legume || 0) + '%</span>' +
     '<span class="comp-chip forb">Forbs ' + (c.forb || 0) + '%</span>' +
-    '<span class="comp-target">aim ~50 / 35 / 15</span>';
+    '<span class="comp-target">aim ~' + t.grass + ' / ' + t.legume + ' / ' + t.forb +
+    (plan.horseSafe ? ' <em>(grass-leaning for horses)</em>' : '') + '</span>';
 
-  let html = '<thead><tr><th></th><th>Species</th><th class="num">Cover</th><th>Suggested variety</th><th>Seed box</th>' +
-    '<th>Depth</th><th>When to plant</th><th class="num">PLS<br>lb/ac</th><th class="num">Bulk<br>lb/ac</th><th class="num">Est.<br>$/ac</th><th>Sources</th></tr></thead><tbody>';
+  let html = '<thead><tr><th></th><th>Species</th><th class="num">Cover %</th><th>Suggested variety</th><th>Seed box</th>' +
+    '<th>Depth</th><th>When to plant</th><th class="num">PLS %</th><th class="num">PLS<br>lb/ac</th><th class="num">Bulk<br>lb/ac</th><th class="num">Est.<br>$/ac</th><th>Sources</th></tr></thead><tbody>';
   plan.rows.forEach(function (r) {
     const p = r.prep || {};
     const v = (p.varieties && p.varieties[0]) || { name: '—', note: '' };
@@ -405,16 +570,18 @@ function renderSeedTable() {
       const x = V[id]; if (!x) return '';
       return '<a href="' + x.url + '" target="_blank" rel="noopener" title="' + x.name + ' — ' + (x.region || '') + '">' + x.name.split(' ')[0] + '</a>';
     }).filter(Boolean).join(', ');
+    const capNote = r.maxCoverPct != null ? ' title="Capped at ' + r.maxCoverPct + '% — this species can be toxic in quantity"' : ' title="Edit to set this species&#39; groundcover share"';
     html += '<tr class="grp-' + r.group + '" data-row="' + r.species.id + '">' +
       '<td><button type="button" class="row-del" data-act="del" data-id="' + r.species.id + '" title="Remove from mix">×</button></td>' +
       '<td><button type="button" class="row-name" data-act="detail" data-id="' + r.species.id + '"><strong>' + r.species.commonName + '</strong><br><span class="tsci">' + r.species.scientificName + '</span></button></td>' +
-      '<td class="num">' + r.coverPct.toFixed(0) + '%</td>' +
+      '<td class="num"><input type="number" class="cover-input' + (r.pinnedCover ? ' pinned' : '') + (r.capped ? ' capped' : '') + '" data-id="' + r.species.id + '" value="' + r.coverPct.toFixed(0) + '" min="0" max="100" step="1"' + capNote + '>' +
+      (r.capped ? '<br><span class="cap-flag" title="Toxic in quantity">cap ' + r.maxCoverPct + '%</span>' : '') + '</td>' +
       '<td title="' + (v.note || '') + '">' + v.name + '</td>' +
       '<td>' + (p.seedBox || '—') + '</td>' +
       '<td>' + (p.depth || '—') + '</td>' +
       '<td>' + (p.seasonWindow || '—') + '</td>' +
-      '<td class="num"><input type="number" class="rate-input' + (r.pinnedRate ? ' pinned' : '') + '" data-id="' + r.species.id + '" value="' + r.plsRate.toFixed(1) + '" min="0" step="0.1" title="Edit to set this species&#39; rate yourself">' +
-      '<br><span class="pls-pct' + (r.fromTag ? ' tagged' : '') + '">' + Math.round(r.plsPct) + '% PLS</span></td>' +
+      '<td class="num"><input type="number" class="plspct-input' + (r.plsPctPinned ? ' pinned' : (r.fromTag ? ' tagged' : '')) + '" data-id="' + r.species.id + '" value="' + Math.round(r.plsPct) + '" min="1" max="100" step="1" title="Edit to set PLS% directly (or use the seed-tag fields in the species detail)"></td>' +
+      '<td class="num">' + r.plsRate.toFixed(1) + '</td>' +
       '<td class="num">' + r.bulkRate.toFixed(1) + '</td>' +
       '<td class="num">' + money(r.costLow, r.costHigh) + '</td>' +
       '<td class="src">' + srcs + '</td></tr>';
@@ -431,15 +598,55 @@ function renderSeedTable() {
   setTxt('m-eff', plan.effectiveSpecies.toFixed(1));
   setTxt('even-val', CURRENT.evenness >= 0.95 ? 'even' : (CURRENT.evenness <= 0.3 ? 'top-heavy' : 'mixed'));
 
-  const byBox = {};
-  plan.rows.forEach(function (r) { const b = (r.prep && r.prep.seedBox) || 'Other'; (byBox[b] = byBox[b] || []).push(r); });
-  let bh = '<h4>Filling your drill boxes</h4><div class="box-list">';
-  Object.keys(byBox).forEach(function (b) {
-    const rows = byBox[b]; const tot = rows.reduce(function (a, r) { return a + r.bulkRate; }, 0);
-    bh += '<div class="box-item"><div class="box-name">' + b + ' — ' + tot.toFixed(1) + ' bulk lb/ac</div>' +
-      '<div class="box-species">' + rows.map(function (r) { return r.species.commonName + ' (' + r.bulkRate.toFixed(1) + ')'; }).join(', ') + '</div></div>';
+  renderApplications(plan.rows);
+}
+
+// Group species into the separate SEEDINGS they'll be applied in (e.g. fall-drilled
+// grasses vs. legumes frost-seeded in late winter), each with its own bulk-lb
+// total and per-box breakdown — that's what you actually weigh out on the day.
+function renderApplications(rows) {
+  const host = document.getElementById('box-summary');
+  if (!host) return;
+  const methods = (CURRENT.ctx && CURRENT.ctx.methods) || [];
+  const auto = methods.indexOf('auto') !== -1 || !methods.length;
+  const frostAvail = auto || methods.indexOf('frost-seed') !== -1;
+  const springDrill = auto || methods.indexOf('drill-spring') !== -1 || methods.indexOf('broadcast-spring') !== -1;
+
+  const PHASES = {
+    frost: { label: 'Late winter — frost-seed (broadcast onto short sod)', order: 0 },
+    fall: { label: 'Late summer / early fall — drill or broadcast', order: 1 },
+    spring: { label: 'Mid-April to May, soil ≥ 60 °F — drill', order: 2 }
+  };
+  function phaseOf(r) {
+    const sp = r.species;
+    if (sp.season === 'warm' && springDrill) return 'spring';
+    if (sp.type === 'legume' && sp.season === 'cool' && frostAvail) return 'frost';
+    return 'fall';
+  }
+  const groups = {};
+  rows.forEach(function (r) { const k = phaseOf(r); (groups[k] = groups[k] || []).push(r); });
+  const keys = Object.keys(groups).sort(function (a, b) { return PHASES[a].order - PHASES[b].order; });
+  const multi = keys.length > 1;
+
+  let h = '<h4>What to weigh out, by seeding</h4>';
+  if (multi) h += '<p class="app-intro">This mix goes in as <strong>' + keys.length + ' separate seedings</strong> at different times. Buy and weigh each on its own — the totals below are the bulk pounds per acre for each.</p>';
+  keys.forEach(function (k) {
+    const gr = groups[k];
+    const tot = gr.reduce(function (a, r) { return a + r.bulkRate; }, 0);
+    const cost = gr.reduce(function (a, r) { return a + (r.costLow + r.costHigh) / 2; }, 0);
+    h += '<div class="app-group"><div class="app-head">' + (multi ? PHASES[k].label : 'This seeding') +
+      ' <span class="app-total">' + tot.toFixed(1) + ' bulk lb/ac' + (cost ? ' · ~$' + Math.round(cost) + '/ac' : '') + '</span></div>';
+    // by box within the phase
+    const byBox = {};
+    gr.forEach(function (r) { const b = (r.prep && r.prep.seedBox) || 'Other'; (byBox[b] = byBox[b] || []).push(r); });
+    Object.keys(byBox).forEach(function (b) {
+      const rr = byBox[b]; const bt = rr.reduce(function (a, r) { return a + r.bulkRate; }, 0);
+      h += '<div class="box-item"><div class="box-name">' + b + ' — ' + bt.toFixed(1) + ' bulk lb/ac</div>' +
+        '<div class="box-species">' + rr.map(function (r) { return r.species.commonName + ' (' + r.bulkRate.toFixed(1) + ')'; }).join(', ') + '</div></div>';
+    });
+    h += '</div>';
   });
-  document.getElementById('box-summary').innerHTML = bh + '</div>';
+  host.innerHTML = h;
 }
 
 function toggleDetailRow(id) {
@@ -507,7 +714,8 @@ function csvCell(v) {
 function exportCsv() {
   const plan = window.APP_RECOMMENDER.buildSeedPlan(
     CURRENT.mix, CURRENT.data.prep, CURRENT.totalUserSet ? CURRENT.total : null,
-    CURRENT.tags, CURRENT.evenness, CURRENT.rates);
+    { tags: CURRENT.tags, evenness: CURRENT.evenness, coverOverrides: CURRENT.coverOverrides,
+      plsPctOverrides: CURRENT.plsPctOverrides, livestock: (CURRENT.ctx && CURRENT.ctx.livestock) || [] });
   const V = (CURRENT.data.vendors && CURRENT.data.vendors.vendors) || {};
   const c = plan.composition;
   const lines = [];
@@ -541,7 +749,8 @@ function savePlan() {
     answers: CURRENT.answers || LAST_ANSWERS,
     speciesIds: CURRENT.mix.map(function (m) { return m.species.id; }),
     total: CURRENT.total, totalUserSet: CURRENT.totalUserSet,
-    evenness: CURRENT.evenness, tags: CURRENT.tags, rates: CURRENT.rates
+    evenness: CURRENT.evenness, tags: CURRENT.tags,
+    coverOverrides: CURRENT.coverOverrides, plsPctOverrides: CURRENT.plsPctOverrides
   };
   downloadFile('pasture-plan.json', 'application/json', JSON.stringify(plan, null, 2));
 }
@@ -561,7 +770,8 @@ async function openPlan(file) {
   renderResults(rec, DATA);
   setTimeout(function () {
     CURRENT.tags = p.tags || {};
-    CURRENT.rates = p.rates || {};
+    CURRENT.coverOverrides = p.coverOverrides || {};
+    CURRENT.plsPctOverrides = p.plsPctOverrides || {};
     CURRENT.evenness = p.evenness == null ? 1 : p.evenness;
     CURRENT.total = p.total;
     CURRENT.totalUserSet = !!p.totalUserSet;
@@ -594,19 +804,18 @@ function renderAddPanel(filter) {
 }
 
 function buildSeedTableSection(mix, data, scored, ctx) {
-  CURRENT = { mix: mix.slice(), data: data, total: null, totalUserSet: false, scored: scored || [], tags: {}, rates: {}, planRows: {}, openDetail: null, evenness: 1, ctx: ctx || null, answers: LAST_ANSWERS };
+  CURRENT = { mix: mix.slice(), data: data, total: null, totalUserSet: false, scored: scored || [], tags: {}, coverOverrides: {}, plsPctOverrides: {}, planRows: {}, openDetail: null, evenness: 1, ctx: ctx || null, answers: LAST_ANSWERS };
   const section = el('section', 'seed-table-section');
   section.innerHTML =
     '<h3 class="section-h">Your seed-mix plan — what to buy &amp; how to plant it</h3>' +
     '<p class="seed-intro"><strong>Click a species name</strong> to see its details and to enter the purity and germination from your own seed tag (this recalculates its PLS and bulk pounds). Use the remove button to drop a species, or add more below — rates, groundcover and diversity update automatically.</p>' +
     '<div class="seed-ctrl no-print">' +
-      '<div class="rate-row"><label for="total-pls"><strong>Total seeding rate</strong></label>' +
+      '<div class="rate-row"><label for="total-pls">Total seeding rate</label>' +
       '<input type="number" id="total-pls" min="1" max="80" step="0.5"> <span class="ctrl-hint">lb PLS/acre</span>' +
       '<button type="button" class="rate-reset" data-act="rate-reset">reset to recommended (<span id="rec-total">—</span>)</button></div>' +
-      '<p class="rate-why"><strong>Where this number comes from:</strong> each species is seeded at its share of what a <em>pure stand</em> of that species would need, ' +
-      'so the mix as a whole delivers about one full stand\'s worth of seed spread across the species. That total is recalculated whenever you add, remove or re-weight species.<br>' +
-      '<strong>Why it matters:</strong> seed much lighter and the stand comes in thin, leaving gaps that weeds fill in the establishment year; seed much heavier and you pay for seed that mostly competes with itself and thins out anyway. ' +
-      'Add roughly <strong>50% more if broadcasting</strong> rather than drilling, since less of the seed reaches soil.</p>' +
+      '<p class="rate-why">You usually don\'t need to touch this. It\'s set from the mix itself — each species at its share of what a <em>pure stand</em> would need — so the whole mix delivers about one full stand\'s worth of seed. ' +
+      'What you actually buy and weigh out is the <strong>bulk pounds per seeding</strong> shown below the table. ' +
+      'Seed much lighter and the stand comes in thin (weeds fill the gaps); much heavier just wastes seed. Add roughly <strong>50% more if broadcasting</strong> instead of drilling.</p>' +
     '</div>' +
     '<div class="diversity-panel no-print">' +
     '<div class="div-controls">' +
@@ -653,7 +862,7 @@ function buildSeedTableSection(mix, data, scored, ctx) {
     else if (act === 'save') { savePlan(); }
     else if (act === 'load') { document.getElementById('plan-file').click(); }
     else if (act === 'rate-reset') {
-      CURRENT.rates = {}; CURRENT.totalUserSet = false; CURRENT.openDetail = null; renderSeedTable();
+      CURRENT.coverOverrides = {}; CURRENT.plsPctOverrides = {}; CURRENT.totalUserSet = false; CURRENT.openDetail = null; renderSeedTable();
     }
     else if (act === 'rich-up') { adjustRichness(1); }
     else if (act === 'rich-down') { adjustRichness(-1); }
@@ -670,11 +879,21 @@ function buildSeedTableSection(mix, data, scored, ctx) {
       e.target.value = '';
       return;
     }
-    if (e.target.classList.contains('rate-input')) {
+    if (e.target.classList.contains('cover-input')) {
       const rid = e.target.getAttribute('data-id');
       const rv = parseFloat(e.target.value);
-      if (isNaN(rv) || rv < 0) delete CURRENT.rates[rid]; else CURRENT.rates[rid] = rv;
+      if (isNaN(rv) || rv < 0) delete CURRENT.coverOverrides[rid]; else CURRENT.coverOverrides[rid] = Math.min(1, rv / 100);
       renderSeedTable();
+      return;
+    }
+    if (e.target.classList.contains('plspct-input')) {
+      const rid = e.target.getAttribute('data-id');
+      const rv = parseFloat(e.target.value);
+      if (isNaN(rv) || rv <= 0) delete CURRENT.plsPctOverrides[rid]; else CURRENT.plsPctOverrides[rid] = Math.min(100, rv);
+      // a direct PLS% overrides any seed-tag purity/germ for that species
+      delete CURRENT.tags[rid];
+      renderSeedTable();
+      if (CURRENT.openDetail === rid) { CURRENT.openDetail = null; toggleDetailRow(rid); }
       return;
     }
     if (!e.target.classList.contains('tag-input')) return;
@@ -684,6 +903,7 @@ function buildSeedTableSection(mix, data, scored, ctx) {
     CURRENT.tags[id] = CURRENT.tags[id] || {};
     if (isNaN(v) || v <= 0) delete CURRENT.tags[id][which]; else CURRENT.tags[id][which] = Math.min(100, v);
     if (!Object.keys(CURRENT.tags[id]).length) delete CURRENT.tags[id];
+    delete CURRENT.plsPctOverrides[id]; // seed-tag purity/germ supersedes a direct PLS% pin
     renderSeedTable();
     if (CURRENT.openDetail === id) { CURRENT.openDetail = null; toggleDetailRow(id); }
   });
@@ -724,19 +944,35 @@ function renderResults(rec, data) {
   if (window.APP_RECOMMENDER.buildEstablishmentPlan) {
     const steps = window.APP_RECOMMENDER.buildEstablishmentPlan(rec.ctx, mainMix, data.prep);
     out.appendChild(el('h3', 'section-h', 'How to plant this mix and get it established'));
-    out.appendChild(el('p', 'plan-intro',
-      'Written for this mix, your soil, and the seeding methods you chose — in the order you should do them.'));
-    const ol = el('ol', 'plan-list');
-    steps.forEach(function (st) {
-      const li = el('li', 'plan-step');
-      li.appendChild(el('h4', 'plan-title', st.title));
-      if (st.body) li.appendChild(el('p', 'plan-body', st.body));
+    const introRow = el('p', 'plan-intro',
+      'Written for this mix, your soil, and the seeding methods you chose — in the order you should do them. Click a step to open it. ');
+    const expandAll = el('button', 'plan-expand no-print', 'Expand all');
+    let open = false;
+    expandAll.addEventListener('click', function () {
+      open = !open;
+      out.querySelectorAll('.plan-step').forEach(function (d) { d.open = open; });
+      expandAll.textContent = open ? 'Collapse all' : 'Expand all';
+    });
+    introRow.appendChild(expandAll);
+    out.appendChild(introRow);
+    const ol = el('div', 'plan-list');
+    steps.forEach(function (st, i) {
+      const d = el('details', 'plan-step');
+      if (i === 0) d.open = true;
+      const sum = document.createElement('summary');
+      sum.className = 'plan-title';
+      sum.innerHTML = st.title;
+      d.appendChild(sum);
+      const body = el('div', 'plan-step-body');
+      if (st.body) body.appendChild(el('p', 'plan-body', st.body));
       if (st.bullets && st.bullets.length) {
         const ul = el('ul', 'plan-bullets');
         st.bullets.forEach(function (b) { ul.appendChild(el('li', null, b)); });
-        li.appendChild(ul);
+        body.appendChild(ul);
       }
-      ol.appendChild(li);
+      if (st.diagram && DIAGRAMS[st.diagram]) body.appendChild(el('div', 'plan-diagram', DIAGRAMS[st.diagram]));
+      d.appendChild(body);
+      ol.appendChild(d);
     });
     out.appendChild(ol);
 
@@ -883,10 +1119,18 @@ function applyPastureFindings(pasture, terrain, climate) {
     if (prof.widespread.acidic) addChallenge('acidic', true);
     if (prof.widespread.steep) addChallenge('slopes', true);
   }
-  if (prof && prof.texture) selectValue('texture', prof.texture, true);
-  const cold = (terrain && terrain.high) || (climate && climate.cold);
-  if (terrain || climate) selectValue('elevation', cold ? 'high' : 'low', true);
+  // Growing zone from the climate lookup's hardiness zone.
+  if (climate && climate.hardinessZone) selectValue('zone', climate.hardinessZone, true);
   if (climate && climate.lowRainfall) addChallenge('droughty', true);
+
+  // Soil texture: drop the triangle pin from mapped clay/sand (unless the farmer
+  // already placed one themselves).
+  if (prof && prof.clayPct != null && !TEXTURE_STATE.set) {
+    const clay = Math.round(prof.clayPct);
+    const sand = prof.sandPct != null ? Math.round(prof.sandPct) : Math.round((100 - clay) * 0.45);
+    TEXTURE_STATE = { sand: sand, clay: clay, set: true, fromMap: true };
+    renderTextureTriangle();
+  }
 
   AUTOFILL = {
     aspectDeg: terrain ? terrain.aspectDeg : null,
@@ -895,6 +1139,7 @@ function applyPastureFindings(pasture, terrain, climate) {
     organicMatter: prof ? prof.organicMatter : null,
     texture: prof ? prof.texture : null,
     clayPct: prof ? prof.clayPct : null,
+    hardinessZone: climate ? climate.hardinessZone : null,
     recentDroughtStress: climate ? climate.droughtStress : 0
   };
 

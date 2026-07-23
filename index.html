@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Appalachian Pasture Planner</title>
   <meta name="description" content="A free tool that helps Appalachian producers design diverse, research-based seed mixes for permanent pastures based on their soil, conditions, goals, and resources." />
-  <link rel="stylesheet" href="css/styles.css?v=20260726" />
+  <link rel="stylesheet" href="css/styles.css?v=20260727" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f5233'/%3E%3Cpath d='M16 25V12M16 12c0-4 3-6 7-6 0 4-3 6-7 6zM16 16c0-4-3-6-7-6 0 4 3 6 7 6z' stroke='%23c8d9b8' stroke-width='2.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E" />
@@ -78,23 +78,32 @@
 
       <section class="q-block">
         <div class="q-head"><span class="q-num">2</span><div>
-          <h2>Where is your pasture?</h2>
-          <p class="q-desc">Elevation affects which species survive winter.</p>
+          <h2>What will graze it?</h2>
+          <p class="q-desc">Pick all that apply — the mix avoids species that are toxic to them and favors what suits them.</p>
         </div></div>
-        <div class="chip-row" id="q-elevation"></div>
+        <div class="chip-row wrap-chips" id="q-livestock"></div>
       </section>
 
       <section class="q-block">
         <div class="q-head"><span class="q-num">3</span><div>
+          <h2>USDA hardiness zone</h2>
+          <p class="q-desc">This sets winter-hardiness. If you used the map above, we filled it in for you.</p>
+        </div></div>
+        <div class="chip-row" id="q-zone"></div>
+      </section>
+
+      <section class="q-block">
+        <div class="q-head"><span class="q-num">4</span><div>
           <h2>What is your soil pH?</h2>
           <p class="q-desc">From a soil test if you have one — otherwise pick "not sure."</p>
         </div></div>
         <div class="chip-row" id="q-ph"></div>
         <label class="checkline"><input type="checkbox" id="can-lime" /> I'm able to apply lime to raise pH</label>
+        <label class="checkline"><input type="checkbox" id="no-lime" /> I don't want to apply lime</label>
       </section>
 
       <section class="q-block">
-        <div class="q-head"><span class="q-num">4</span><div>
+        <div class="q-head"><span class="q-num">5</span><div>
           <h2>How does the ground drain?</h2>
           <p class="q-desc">Pick what best describes most of the field.</p>
         </div></div>
@@ -102,7 +111,7 @@
       </section>
 
       <section class="q-block">
-        <div class="q-head"><span class="q-num">5</span><div>
+        <div class="q-head"><span class="q-num">6</span><div>
           <h2>What are your goals?</h2>
           <p class="q-desc">Slide up the ones that matter to you — 0 (not important) to 7 (top priority). Leave the rest at 0.</p>
         </div></div>
@@ -110,7 +119,7 @@
       </section>
 
       <section class="q-block">
-        <div class="q-head"><span class="q-num">6</span><div>
+        <div class="q-head"><span class="q-num">7</span><div>
           <h2>Soil fertility &amp; structure</h2>
           <p class="q-desc">Enter your soil test results if you have them — otherwise tick the box below and we'll
             assume typical values for your soil type and land use.</p>
@@ -125,14 +134,16 @@
         </div>
         <label class="checkline"><input type="checkbox" id="fert-unknown" />
           I don't know my soil fertility — assume an average for this soil type and land use</label>
-        <p class="sub-label">Soil texture</p>
-        <div class="chip-row" id="q-texture"></div>
+        <label class="checkline"><input type="checkbox" id="no-fertilizer" />
+          I don't want to apply fertilizer — lean on nitrogen-fixing legumes and low-input species</label>
+        <p class="sub-label">Soil texture — drag the pin on the triangle, or leave it to the soil map</p>
+        <div id="q-texture-triangle"></div>
         <p class="sub-label">How compacted is the soil?</p>
         <div class="slider-grid single" id="q-compaction"></div>
       </section>
 
       <section class="q-block">
-        <div class="q-head"><span class="q-num">7</span><div>
+        <div class="q-head"><span class="q-num">8</span><div>
           <h2>How will you seed and graze it?</h2>
           <p class="q-desc">This shapes species choice and management tips.</p>
         </div></div>
@@ -168,8 +179,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script src="js/geo.js?v=20260726"></script>
-  <script src="js/recommender.js?v=20260726"></script>
-  <script src="js/app.js?v=20260726"></script>
+  <script src="js/geo.js?v=20260727"></script>
+  <script src="js/recommender.js?v=20260727"></script>
+  <script src="js/app.js?v=20260727"></script>
 </body>
 </html>

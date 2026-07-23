@@ -427,6 +427,9 @@
         phBand: phBand(weightedPh(dry)), drainage: 'well', challenges: ['droughty'], soils: dry.map(function (s) { return s.component || s.muname; }) });
     }
 
+    const sandList = soils.filter(function (s4) { return s4.sandPct != null; });
+    const sandW = sandList.reduce(function (a, s4) { return a + s4.weight; }, 0);
+    const wSand = sandW ? sandList.reduce(function (a, s4) { return a + s4.sandPct * s4.weight; }, 0) / sandW : null;
     const clayList = soils.filter(function (s3) { return s3.clayPct != null; });
     const clayW = clayList.reduce(function (a, s3) { return a + s3.weight; }, 0);
     const wClay = clayW ? clayList.reduce(function (a, s3) { return a + s3.clayPct * s3.weight; }, 0) / clayW : null;
@@ -437,6 +440,7 @@
       dominant: soils[0] || null,
       organicMatter: wOm,
       clayPct: wClay,
+      sandPct: wSand,
       texture: textureClass(wClay),
       weightedPh: wPh,
       weightedPhBand: phBand(wPh),
@@ -463,7 +467,7 @@
 
     const wkt = 'polygon((' + poly.map(function (p) { return p[0] + ' ' + p[1]; }).join(', ') + '))';
     const propRows = await sdaPost(
-      "SELECT mu.mukey, mu.muname, c.compname, c.comppct_r, c.drainagecl, c.slope_r, ch.ph1to1h2o_r, ch.om_r, ch.claytotal_r " +
+      "SELECT mu.mukey, mu.muname, c.compname, c.comppct_r, c.drainagecl, c.slope_r, ch.ph1to1h2o_r, ch.om_r, ch.claytotal_r, ch.sandtotal_r " +
       "FROM mapunit mu INNER JOIN component c ON c.mukey=mu.mukey " +
       "LEFT JOIN chorizon ch ON ch.cokey=c.cokey AND ch.hzdept_r=0 " +
       "WHERE mu.mukey IN (SELECT mukey FROM SDA_Get_Mukey_from_intersection_with_WktWgs84('" + wkt + "')) " +
@@ -478,10 +482,12 @@
       const slope = p.slope_r != null && p.slope_r !== '' ? parseFloat(p.slope_r) : null;
       const om = p.om_r != null && p.om_r !== '' ? parseFloat(p.om_r) : null;
       const clay = p.claytotal_r != null && p.claytotal_r !== '' ? parseFloat(p.claytotal_r) : null;
+      const sand = p.sandtotal_r != null && p.sandtotal_r !== '' ? parseFloat(p.sandtotal_r) : null;
       const drain = mapDrainage(p.drainagecl);
       return {
         organicMatter: om,
         clayPct: clay,
+        sandPct: sand,
         texture: textureClass(clay),
         mukey: mukey, muname: p.muname || ('Map unit ' + mukey), component: p.compname || null,
         weightPct: Math.round(w * 100), weight: w,
