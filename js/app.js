@@ -62,12 +62,16 @@ const METHOD_OPTIONS = [
   { id: 'tillage', label: 'Conventional tillage seedbed', hint: 'Full prep + cultipack' }
 ];
 
+// Framed around rest (recovery time) rather than self-graded "management quality,"
+// since producers reliably overestimate how good their management is. Rest is the
+// single best predictor of whether a diverse stand persists, and it's something a
+// producer can answer factually.
 const GRAZING_OPTIONS = [
-  { id: 'continuous-heavy', label: 'Continuous, heavily stocked', hint: 'Set-stocked, grazed short' },
-  { id: 'continuous-light', label: 'Continuous, lightly stocked', hint: 'Set-stocked, low density' },
-  { id: 'rot-overgrazed', label: 'Rotational but overgrazed', hint: 'Paddocks, short rest, grazed low' },
-  { id: 'rot-managed', label: 'Well-managed rotational', hint: 'Adequate rest & residual' },
-  { id: 'mob', label: 'Management-intensive / mob', hint: 'Frequent moves, long rest' }
+  { id: 'set-stocked', label: 'On the same ground all season', hint: 'Animals stay put' },
+  { id: 'extensive-slow', label: 'A few big pastures, moved every month or two', hint: '1–3 months per pasture, then move' },
+  { id: 'short-rest', label: 'Rotated, animals back within ~1–2 weeks', hint: 'Short rest between grazings' },
+  { id: 'adequate-rest', label: 'Rotated, ~3–5 weeks rest', hint: 'Regrowth recovers before they return' },
+  { id: 'long-rest', label: 'Long rest / frequent moves (mob)', hint: '5+ weeks rest' }
 ];
 
 const LIVESTOCK_OPTIONS = [
@@ -132,13 +136,19 @@ async function loadData() {
   ]);
   let local = null;
   try { local = await fetchJson('data/local-observations.json'); } catch (e) { local = null; }
+  let trial = null;
+  try { trial = await fetchJson('data/trial-establishment.json'); } catch (e) { trial = null; }
+  let photos = null;
+  try { photos = await fetchJson('data/species-photos.json'); } catch (e) { photos = null; }
   return {
     species: applyLocal(speciesFile, local),
     sources: sources,
     resources: resources,
     prep: prep,
     vendors: vendors,
-    local: local
+    local: local,
+    trial: trial,
+    photos: photos && photos.photos ? photos.photos : {}
   };
 }
 
@@ -317,7 +327,7 @@ function buildForm() {
   selectDefault('drainage', 'moderate');
   selectDefault('ph', 'unknown');
   selectDefault('method', 'auto');
-  selectDefault('grazing', 'rot-managed');
+  selectDefault('grazing', 'extensive-slow');
 }
 
 function readPriorities() {
@@ -460,6 +470,37 @@ function speciesCard(result, sourcesData) {
 
 function money(a, b) { return '$' + Math.round(a) + '–' + Math.round(b); }
 
+// Compact badge summarising this species' West Virginia field-trial result.
+function trialBadge(ti) {
+  if (!ti) return null;
+  if (ti.signalType === 'establishment') {
+    if (ti.outcome === 'not_detected') {
+      return { cls: 'neg', sym: 'WV ✕', label: 'WV trial: didn’t establish',
+        tip: 'Was sown in the West Virginia trial but didn’t establish well on farms like yours.' };
+    }
+    if (ti.perf >= 0.15) {
+      return { cls: 'pos', sym: 'WV ✓', label: 'WV trial: established well',
+        tip: 'Established ' + (ti.perf >= 0.45 ? 'strongly' : 'well') + ' in the West Virginia trial on farms like yours.' };
+    }
+    if (ti.perf > -0.15) {
+      return { cls: 'mix', sym: 'WV ○', label: 'WV trial: modest',
+        tip: 'Established modestly in the West Virginia trial on farms like yours.' };
+    }
+    return { cls: 'neg', sym: 'WV ↓', label: 'WV trial: slow',
+      tip: 'Was slow to establish in the West Virginia trial on farms like yours.' };
+  }
+  // Unsown volunteer: positive-only evidence of suitability.
+  return { cls: 'pos', sym: 'WV ✓', label: 'WV trial: grows well here',
+    tip: 'Grows well on its own in West Virginia pastures like yours.' };
+}
+
+function trialBadgeHtml(ti) {
+  const b = trialBadge(ti);
+  if (!b) return '';
+  return ' <span class="trial-badge tb-' + b.cls + '" title="' + b.tip.replace(/"/g, '&quot;') + '">' + b.sym + '</span>';
+}
+
+
 // Simple inline SVG diagrams used in the establishment plan.
 const DIAGRAMS = {
   crosshatch:
@@ -494,38 +535,96 @@ let LAST_ANSWERS = null;
 
 function speciesDetailHtml(result, data) {
   const sp = result.species;
-  let h = '<div class="detail-inner">';
-  h += '<p class="d-summary">' + sp.summary + '</p>';
-  if (sp.strengths) h += '<p class="d-line"><strong>Strengths:</strong> ' + sp.strengths + '</p>';
+  const photo = data.photos && data.photos[sp.id];
+
+  // Top: photo beside the summary + why-it-fits reasons.
+  let photoHtml = '';
+  if (photo && photo.url) {
+    const cite = (photo.license && photo.license !== 'Public domain')
+      ? photo.credit + ' · ' + photo.license : photo.credit;
+    photoHtml = '<figure class="sp-photo">' +
+      '<img src="' + photo.url + '" alt="' + sp.commonName + '" loading="lazy">' +
+      '<figcaption>Photo: <a href="' + (photo.source || '#') + '" target="_blank" rel="noopener">' +
+      cite + '</a> (via Wikimedia Commons)</figcaption></figure>';
+  }
+
+  let reasonsHtml = '';
   if (result.reasons && result.reasons.length) {
-    h += '<ul class="sc-reasons">' + result.reasons.map(function (r) {
-      return '<li class="' + (r.indexOf('WV trial') === 0 ? 'reason local' : 'reason') + '">' + r + '</li>';
+    reasonsHtml = '<ul class="d-reasons">' + result.reasons.map(function (r) {
+      return '<li class="' + (r.indexOf('WV trial') === 0 ? 'd-reason trial' : 'd-reason') + '">' + r + '</li>';
     }).join('') + '</ul>';
   }
-  if (result.limeNote) h += '<div class="sc-note lime">Lime this ground up to ~pH 6.5 before seeding.</div>';
-  if (sp.cautions) h += '<div class="sc-caution"><strong>Caution:</strong> ' + sp.cautions + '</div>';
-  // Livestock notes relevant to the selected animals (or 'all' / 'ruminant').
+
+  // Site-match meter: how relevant the WV trial result is to this producer's land
+  // (climate + soil + grazing similarity to the trial farms behind the signal).
+  let matchHtml = '';
+  const ti = result.trial;
+  if (ti && ti.matchPct != null) {
+    const lvl = ti.matchPct >= 75 ? 'high' : (ti.matchPct >= 50 ? 'mod' : 'low');
+    matchHtml = '<div class="site-match">' +
+      '<span class="sm-label">Site match' +
+        infoDot('How closely your land’s climate, soil and grazing match the West Virginia trial farms behind this result. Higher = this trial evidence is more relevant to your site.') +
+      '</span>' +
+      '<span class="sm-meter"><span class="sm-fill sm-' + lvl + '" style="width:' + ti.matchPct + '%"></span></span>' +
+      '<strong class="sm-pct">' + ti.matchPct + '%</strong></div>';
+  } else if (ti) {
+    // Trial-assessed, but not enough site info to score the match yet.
+    matchHtml = '<div class="site-match sm-missing">' +
+      '<span class="sm-label">Site match' +
+        infoDot('How closely your land’s climate, soil and grazing match the West Virginia trial farms. Enter your address at the top (or at least your soil pH) to see it.') +
+      '</span>' +
+      '<span class="sm-missing-note">add your address or soil pH above to see how closely your land matches the trial farms</span></div>';
+  }
+
+  const whyBody = reasonsHtml + matchHtml;
+  let h = '<div class="detail-inner">' +
+    '<div class="detail-top">' + photoHtml +
+      '<div class="detail-main">' +
+        '<p class="d-summary">' + sp.summary + '</p>' +
+        (sp.strengths ? '<p class="d-line"><strong>Strengths:</strong> ' + sp.strengths + '</p>' : '') +
+        (whyBody ? '<div class="d-sec"><div class="d-sec-head">Why it suits your mix</div>' + whyBody + '</div>' : '') +
+      '</div>' +
+    '</div>';
+
+  // Planting: seed box + depth (moved out of the main table to keep it lean).
+  const prow = CURRENT && CURRENT.planRows ? CURRENT.planRows[sp.id] : null;
+  const prep = (prow && prow.prep) || {};
+  if (prep.seedBox || prep.depth || prep.seasonWindow) {
+    h += '<div class="d-sec"><div class="d-sec-head">Planting</div><ul class="d-facts">' +
+      (prep.seasonWindow ? '<li><span class="d-fact-k">When</span>' + prep.seasonWindow + '</li>' : '') +
+      (prep.depth ? '<li><span class="d-fact-k">Depth</span>' + prep.depth + '</li>' : '') +
+      (prep.seedBox ? '<li><span class="d-fact-k">Seed box</span>' + prep.seedBox + '</li>' : '') +
+      '</ul></div>';
+  }
+
+  // Keep in mind: lime, cautions, livestock — grouped so warnings don't scatter.
+  let keep = '';
+  if (result.limeNote) keep += '<div class="sc-note lime">Lime this ground up to ~pH 6.5 before seeding.</div>';
+  if (sp.cautions) keep += '<div class="sc-caution"><strong>Caution:</strong> ' + sp.cautions + '</div>';
   const chosen = (CURRENT && CURRENT.ctx && CURRENT.ctx.livestock) || [];
   const lnotes = (sp.livestock && sp.livestock.note) || {};
   const ruminants = ['beef', 'dairy', 'sheep', 'goats'];
   const shown = {};
   Object.keys(lnotes).forEach(function (k) {
     const relevant = k === 'all' || (k === 'ruminant' && chosen.some(function (l) { return ruminants.indexOf(l) !== -1; })) || chosen.indexOf(k) !== -1;
-    if (relevant && !shown[lnotes[k]]) { shown[lnotes[k]] = 1; h += '<div class="sc-note stock">' + lnotes[k] + '</div>'; }
+    if (relevant && !shown[lnotes[k]]) { shown[lnotes[k]] = 1; keep += '<div class="sc-note stock">' + lnotes[k] + '</div>'; }
   });
+  if (keep) h += '<div class="d-sec"><div class="d-sec-head">Keep in mind</div>' + keep + '</div>';
+
+  // Seed-tag calculator.
   const row = CURRENT && CURRENT.planRows ? CURRENT.planRows[sp.id] : null;
   if (row) {
-    h += '<div class="tag-editor">' +
-      '<div class="tag-head">From your seed tag</div>' +
-      '<p class="tag-help">Type what the label on the bag you ordered says — bulk pounds and cost update to match. ' +
-      'If the tag only lists germination, leave purity as is. (You can also type a PLS% straight into the table\'s PLS % column.)</p>' +
+    h += '<details class="tag-editor"' + (row.fromTag ? '' : ' open') + '><summary class="tag-head">For an exact amount, enter your seed tag' +
+      infoDot('Every bag’s seed is a different quality. Type the purity and germination % printed on the tag of the bag you buy, and the bulk pounds and cost update to match it exactly.') + '</summary>' +
+      '<div class="tag-body">' +
+      (row.fromTag ? '' : '<p class="tag-note">The bulk amount below is an estimate using typical seed quality. Enter your tag for the exact pounds to buy.</p>') +
       '<label>Purity <input type="number" class="tag-input" data-tag="purity" data-id="' + sp.id + '" value="' + (row.purity != null ? row.purity : '') + '" min="1" max="100" step="0.1">%</label>' +
-      '<label>Germination (incl. hard/dormant) <input type="number" class="tag-input" data-tag="germ" data-id="' + sp.id + '" value="' + (row.germ != null ? row.germ : '') + '" min="1" max="100" step="0.1">%</label>' +
-      '<div class="tag-result">= <strong>' + (Math.round(row.plsPct * 10) / 10) + '% PLS</strong> &rarr; ' +
-      '<strong>' + row.bulkRate.toFixed(1) + ' bulk lb/ac</strong> to deliver ' + row.plsRate.toFixed(1) + ' lb PLS/ac' +
-      (row.fromTag ? ' <button type="button" class="tag-reset" data-act="tag-reset" data-id="' + sp.id + '">reset to default</button>' : '') +
-      '</div></div>';
+      '<label>Germination <input type="number" class="tag-input" data-tag="germ" data-id="' + sp.id + '" value="' + (row.germ != null ? row.germ : '') + '" min="1" max="100" step="0.1">%</label>' +
+      '<div class="tag-result">&rarr; buy <strong>' + row.bulkRate.toFixed(1) + ' bulk lb/ac</strong>' +
+      (row.fromTag ? ' <span class="tag-exact">(exact, from your tag)</span> <button type="button" class="tag-reset" data-act="tag-reset" data-id="' + sp.id + '">reset to estimate</button>' : '') +
+      '</div></div></details>';
   }
+
   if (sp.sources && sp.sources.length) {
     const ss = sp.sources.map(function (id) {
       const s = data.sources.sources[id]; if (!s) return '';
@@ -545,24 +644,27 @@ function renderSeedTable() {
     plsPctOverrides: CURRENT.plsPctOverrides, livestock: livestock
   });
   if (!CURRENT.totalUserSet) CURRENT.total = plan.recommendedTotal;
+  // The control is shown in BULK lb/acre (what you buy). Internally the mix is
+  // composed in PLS, so keep the bulk:PLS ratio to convert the producer's bulk
+  // entry back to a PLS total. Bulk is linear in PLS for a fixed composition.
+  const bulkPerPls = plan.totalPls > 0 ? plan.totals.bulk / plan.totalPls : 1;
+  CURRENT.bulkPerPls = bulkPerPls;
   const totalInput = document.getElementById('total-pls');
-  if (totalInput && document.activeElement !== totalInput) totalInput.value = Math.round(plan.totalPls * 10) / 10;
+  if (totalInput && document.activeElement !== totalInput) totalInput.value = Math.round(plan.totals.bulk * 10) / 10;
   const recEl = document.getElementById('rec-total');
-  if (recEl) recEl.textContent = (Math.round(plan.recommendedTotal * 10) / 10) + ' lb';
+  if (recEl) recEl.textContent = (Math.round(plan.recommendedTotal * bulkPerPls * 10) / 10) + ' lb';
   CURRENT.planRows = {};
   plan.rows.forEach(function (r) { CURRENT.planRows[r.species.id] = r; });
   const V = (data.vendors && data.vendors.vendors) || {};
   const c = plan.composition, t = plan.target;
 
-  document.getElementById('comp-summary').innerHTML = 'Estimated groundcover: ' +
-    '<span class="comp-chip grass">Grasses ' + (c.grass || 0) + '%</span>' +
-    '<span class="comp-chip legume">Legumes ' + (c.legume || 0) + '%</span>' +
-    '<span class="comp-chip forb">Forbs ' + (c.forb || 0) + '%</span>' +
-    '<span class="comp-target">aim ~' + t.grass + ' / ' + t.legume + ' / ' + t.forb +
-    (plan.horseSafe ? ' <em>(grass-leaning for horses)</em>' : '') + '</span>';
+  renderCompositionBar(c, t, plan.horseSafe);
 
-  let html = '<thead><tr><th></th><th>Species</th><th class="num">Cover %</th><th>Suggested variety</th><th>Seed box</th>' +
-    '<th>Depth</th><th>When to plant</th><th class="num">PLS %</th><th class="num">PLS<br>lb/ac</th><th class="num">Bulk<br>lb/ac</th><th class="num">Est.<br>$/ac</th><th>Sources</th></tr></thead><tbody>';
+  const trialById = {};
+  (CURRENT.scored || []).forEach(function (s) { if (s.trial) trialById[s.species.id] = s.trial; });
+
+  let html = '<thead><tr><th></th><th>Species</th><th class="num">Cover %</th>' +
+    '<th class="num">Bulk<br>lb/ac</th><th class="num">Est.<br>$/ac</th><th>Suggested variety</th><th>Where to buy</th></tr></thead><tbody>';
   plan.rows.forEach(function (r) {
     const p = r.prep || {};
     const v = (p.varieties && p.varieties[0]) || { name: '—', note: '' };
@@ -571,34 +673,72 @@ function renderSeedTable() {
       return '<a href="' + x.url + '" target="_blank" rel="noopener" title="' + x.name + ' — ' + (x.region || '') + '">' + x.name.split(' ')[0] + '</a>';
     }).filter(Boolean).join(', ');
     const capNote = r.maxCoverPct != null ? ' title="Capped at ' + r.maxCoverPct + '% — this species can be toxic in quantity"' : ' title="Edit to set this species&#39; groundcover share"';
+    const bulkTitle = r.fromTag ? ' title="From your seed tag"' : ' title="Assumes typical seed quality — enter your seed tag in the species detail for an exact amount"';
     html += '<tr class="grp-' + r.group + '" data-row="' + r.species.id + '">' +
-      '<td><button type="button" class="row-del" data-act="del" data-id="' + r.species.id + '" title="Remove from mix">×</button></td>' +
-      '<td><button type="button" class="row-name" data-act="detail" data-id="' + r.species.id + '"><strong>' + r.species.commonName + '</strong><br><span class="tsci">' + r.species.scientificName + '</span></button></td>' +
-      '<td class="num"><input type="number" class="cover-input' + (r.pinnedCover ? ' pinned' : '') + (r.capped ? ' capped' : '') + '" data-id="' + r.species.id + '" value="' + r.coverPct.toFixed(0) + '" min="0" max="100" step="1"' + capNote + '>' +
+      '<td class="c-del"><button type="button" class="row-del" data-act="del" data-id="' + r.species.id + '" title="Remove from mix">×</button></td>' +
+      '<td class="c-name"><button type="button" class="row-name" data-act="detail" data-id="' + r.species.id + '" aria-expanded="false"><strong>' + r.species.commonName + '</strong>' + trialBadgeHtml(trialById[r.species.id]) + '<span class="expand-cue">›</span><br><span class="tsci">' + r.species.scientificName + '</span></button></td>' +
+      '<td class="num" data-label="Cover %"><input type="number" class="cover-input' + (r.pinnedCover ? ' pinned' : '') + (r.capped ? ' capped' : '') + '" data-id="' + r.species.id + '" value="' + r.coverPct.toFixed(0) + '" min="0" max="100" step="1"' + capNote + '>' +
       (r.capped ? '<br><span class="cap-flag" title="Toxic in quantity">cap ' + r.maxCoverPct + '%</span>' : '') + '</td>' +
-      '<td title="' + (v.note || '') + '">' + v.name + '</td>' +
-      '<td>' + (p.seedBox || '—') + '</td>' +
-      '<td>' + (p.depth || '—') + '</td>' +
-      '<td>' + (p.seasonWindow || '—') + '</td>' +
-      '<td class="num"><input type="number" class="plspct-input' + (r.plsPctPinned ? ' pinned' : (r.fromTag ? ' tagged' : '')) + '" data-id="' + r.species.id + '" value="' + Math.round(r.plsPct) + '" min="1" max="100" step="1" title="Edit to set PLS% directly (or use the seed-tag fields in the species detail)"></td>' +
-      '<td class="num">' + r.plsRate.toFixed(1) + '</td>' +
-      '<td class="num">' + r.bulkRate.toFixed(1) + '</td>' +
-      '<td class="num">' + money(r.costLow, r.costHigh) + '</td>' +
-      '<td class="src">' + srcs + '</td></tr>';
+      '<td class="num" data-label="Bulk lb/ac"' + bulkTitle + '>' + r.bulkRate.toFixed(1) + (r.fromTag ? '' : '<span class="est-dot" title="Estimate — enter your seed tag for the exact amount">*</span>') + '</td>' +
+      '<td class="num" data-label="Est. $/ac">' + money(r.costLow, r.costHigh) + '</td>' +
+      '<td data-label="Variety" title="' + (v.note || '') + '">' + v.name + '</td>' +
+      '<td class="src" data-label="Where to buy">' + srcs + '</td></tr>';
   });
-  html += '</tbody><tfoot><tr><td></td><td>TOTAL per acre</td><td class="num">100%</td><td colspan="4"></td>' +
-    '<td class="num">' + plan.totals.pls.toFixed(1) + '</td><td class="num">' + plan.totals.bulk.toFixed(1) + '</td>' +
-    '<td class="num">' + money(plan.totals.costLow, plan.totals.costHigh) + '</td><td></td></tr></tfoot>';
+  html += '</tbody><tfoot><tr><td></td><td>TOTAL per acre</td><td class="num">100%</td>' +
+    '<td class="num">' + plan.totals.bulk.toFixed(1) + '</td>' +
+    '<td class="num">' + money(plan.totals.costLow, plan.totals.costHigh) + '</td><td></td><td></td></tr></tfoot>';
   document.getElementById('seed-table-el').innerHTML = html;
 
   const setTxt = function (id, v) { const n = document.getElementById(id); if (n) n.textContent = v; };
   setTxt('m-rich', plan.richness);
   setTxt('rich-val', plan.richness);
-  setTxt('m-simpson', plan.simpson.toFixed(2));
-  setTxt('m-eff', plan.effectiveSpecies.toFixed(1));
   setTxt('even-val', CURRENT.evenness >= 0.95 ? 'even' : (CURRENT.evenness <= 0.3 ? 'top-heavy' : 'mixed'));
+  renderBiodiversityScore(plan.simpson);
 
   renderApplications(plan.rows);
+}
+
+// Small "?" info affordance: hover/focus reveals the detail, so the main UI can
+// stay concise. Keyboard-focusable for accessibility.
+function infoDot(tip) {
+  return '<button type="button" class="info-dot" tabindex="0" aria-label="More info" data-tip="' +
+    tip.replace(/"/g, '&quot;') + '">i</button>';
+}
+
+// Horizontal part-to-whole bar for the grass/legume/forb groundcover share.
+function renderCompositionBar(c, t, horseSafe) {
+  const bar = document.getElementById('comp-bar');
+  const legend = document.getElementById('comp-legend');
+  if (!bar) return;
+  const segs = [
+    { key: 'grass', label: 'Grasses', pct: c.grass || 0, target: t.grass },
+    { key: 'legume', label: 'Legumes', pct: c.legume || 0, target: t.legume },
+    { key: 'forb', label: 'Forbs', pct: c.forb || 0, target: t.forb }
+  ];
+  bar.innerHTML = segs.map(function (s) {
+    return '<span class="comp-seg comp-' + s.key + '" style="width:' + s.pct + '%" ' +
+      'title="' + s.label + ' ' + s.pct + '% (aim ~' + s.target + '%)">' +
+      (s.pct >= 12 ? '<span class="comp-seg-pct">' + s.pct + '%</span>' : '') + '</span>';
+  }).join('');
+  legend.innerHTML = segs.map(function (s) {
+    return '<span class="comp-key"><span class="comp-dot comp-' + s.key + '"></span>' +
+      s.label + ' <strong>' + s.pct + '%</strong></span>';
+  }).join('') + '<span class="comp-aim">aim ~' + t.grass + '/' + t.legume + '/' + t.forb +
+    (horseSafe ? ' · grass-leaning for horses' : '') + '</span>';
+}
+
+// Friendly 0–100 biodiversity score (the Simpson index, without the jargon/math).
+function renderBiodiversityScore(simpson) {
+  const score = Math.round((simpson || 0) * 100);
+  const bands = [[85, 'Very high', 'vhigh'], [70, 'High', 'high'], [50, 'Moderate', 'mod'], [0, 'Building', 'low']];
+  let label = 'Building', cls = 'low';
+  for (let i = 0; i < bands.length; i++) { if (score >= bands[i][0]) { label = bands[i][1]; cls = bands[i][2]; break; } }
+  const num = document.getElementById('bio-num');
+  const lab = document.getElementById('bio-label');
+  const fill = document.getElementById('bio-fill');
+  if (num) num.textContent = score;
+  if (lab) { lab.textContent = label; lab.className = 'bio-label bio-' + cls; }
+  if (fill) { fill.style.width = score + '%'; fill.className = 'bio-fill bio-' + cls; }
 }
 
 // Group species into the separate SEEDINGS they'll be applied in (e.g. fall-drilled
@@ -652,15 +792,22 @@ function renderApplications(rows) {
 function toggleDetailRow(id) {
   const tr = document.querySelector('#seed-table-el tr[data-row="' + id + '"]');
   if (!tr) return;
+  const nameBtn = tr.querySelector('.row-name');
   const next = tr.nextElementSibling;
-  if (next && next.classList.contains('detail-row')) { next.remove(); CURRENT.openDetail = null; return; }
+  if (next && next.classList.contains('detail-row')) {
+    next.remove(); tr.classList.remove('expanded');
+    if (nameBtn) nameBtn.setAttribute('aria-expanded', 'false');
+    CURRENT.openDetail = null; return;
+  }
   CURRENT.openDetail = id;
   const result = CURRENT.mix.find(function (m) { return m.species.id === id; });
   if (!result) return;
   const dr = document.createElement('tr');
   dr.className = 'detail-row grp-' + result.species.type;
-  dr.innerHTML = '<td></td><td colspan="10">' + speciesDetailHtml(result, CURRENT.data) + '</td>';
+  dr.innerHTML = '<td></td><td colspan="6">' + speciesDetailHtml(result, CURRENT.data) + '</td>';
   tr.parentNode.insertBefore(dr, tr.nextSibling);
+  tr.classList.add('expanded');
+  if (nameBtn) nameBtn.setAttribute('aria-expanded', 'true');
 }
 
 // Add or drop a species, keeping the grass/legume/forb balance sensible.
@@ -808,37 +955,44 @@ function buildSeedTableSection(mix, data, scored, ctx) {
   const section = el('section', 'seed-table-section');
   section.innerHTML =
     '<h3 class="section-h">Your seed-mix plan — what to buy &amp; how to plant it</h3>' +
-    '<p class="seed-intro"><strong>Click a species name</strong> to see its details and to enter the purity and germination from your own seed tag (this recalculates its PLS and bulk pounds). Use the remove button to drop a species, or add more below — rates, groundcover and diversity update automatically.</p>' +
+    '<p class="seed-intro"><strong>Click any species</strong> to see planting depth, seed-box, a photo and more. <strong>Bulk lb/ac is what you buy</strong> — for exact amounts, open a species and enter the <strong>purity &amp; germination</strong> printed on your seed tag.</p>' +
     '<div class="seed-ctrl no-print">' +
-      '<div class="rate-row"><label for="total-pls">Total seeding rate</label>' +
-      '<input type="number" id="total-pls" min="1" max="80" step="0.5"> <span class="ctrl-hint">lb PLS/acre</span>' +
-      '<button type="button" class="rate-reset" data-act="rate-reset">reset to recommended (<span id="rec-total">—</span>)</button></div>' +
-      '<p class="rate-why">You usually don\'t need to touch this. It\'s set from the mix itself — each species at its share of what a <em>pure stand</em> would need — so the whole mix delivers about one full stand\'s worth of seed. ' +
-      'What you actually buy and weigh out is the <strong>bulk pounds per seeding</strong> shown below the table. ' +
-      'Seed much lighter and the stand comes in thin (weeds fill the gaps); much heavier just wastes seed. Add roughly <strong>50% more if broadcasting</strong> instead of drilling.</p>' +
+      '<div class="rate-row"><label for="total-pls">Total seed to buy</label>' +
+      '<input type="number" id="total-pls" min="1" max="140" step="0.5"> <span class="ctrl-hint">lb/acre (bulk)</span>' +
+      '<button type="button" class="rate-reset" data-act="rate-reset">reset to recommended (<span id="rec-total">—</span>)</button>' +
+      infoDot('You rarely change this — it\'s set so the whole mix equals about one full stand\'s worth of seed. This is the total bulk pounds you\'d buy across all species. Seeding lighter lets weeds fill the gaps; heavier just wastes seed. Add roughly 50% more if you broadcast instead of drill.') +
+      '</div>' +
     '</div>' +
-    '<div class="diversity-panel no-print">' +
-    '<div class="div-controls">' +
-      '<div class="div-ctl"><span class="div-label">Species richness</span>' +
-        '<button type="button" class="rich-btn" data-act="rich-down" title="Remove a species">&minus;</button>' +
-        '<output id="rich-val">0</output>' +
-        '<button type="button" class="rich-btn" data-act="rich-up" title="Add a species">+</button></div>' +
-      '<div class="div-ctl"><label class="div-label" for="evenness">Evenness</label>' +
-        '<input type="range" id="evenness" min="0" max="100" step="5" value="100">' +
-        '<output id="even-val">even</output></div>' +
+    '<div class="glance">' +
+      '<div class="glance-card">' +
+        '<div class="glance-head">Groundcover mix' +
+          infoDot('The share of ground each plant type is expected to cover once the stand fills in. A balanced pasture aims for mostly grasses, a strong share of legumes to feed the grass and the animals, and some forbs for diversity.') +
+        '</div>' +
+        '<div id="comp-bar" class="comp-bar"></div>' +
+        '<div id="comp-legend" class="comp-legend"></div>' +
+      '</div>' +
+      '<div class="glance-card">' +
+        '<div class="glance-head">Biodiversity score' +
+          infoDot('How evenly ground cover is spread across the species in your mix, on a 0–100 scale (the Simpson diversity index). Higher means a more balanced, resilient stand that resists weeds and keeps producing when one species struggles.') +
+        '</div>' +
+        '<div class="bio-score"><strong id="bio-num">0</strong><span class="bio-of">/100</span>' +
+          '<span id="bio-label" class="bio-label">—</span></div>' +
+        '<div class="bio-meter"><div id="bio-fill" class="bio-fill"></div></div>' +
+        '<div class="bio-controls no-print">' +
+          '<span class="bio-ctl"><span class="bio-ctl-label"><strong id="m-rich">0</strong> species</span>' +
+            '<button type="button" class="rich-btn" data-act="rich-down" title="Remove a species">&minus;</button>' +
+            '<output id="rich-val">0</output>' +
+            '<button type="button" class="rich-btn" data-act="rich-up" title="Add a species">+</button></span>' +
+          '<span class="bio-ctl"><label class="bio-ctl-label" for="evenness">Cover spread</label>' +
+            '<input type="range" id="evenness" min="0" max="100" step="5" value="100">' +
+            '<output id="even-val">even</output></span>' +
+        '</div>' +
+      '</div>' +
     '</div>' +
-    '<div class="div-metrics">' +
-      '<span class="metric"><strong id="m-rich">0</strong> species</span>' +
-      '<span class="metric"><strong id="m-simpson">0</strong> Simpson diversity</span>' +
-      '<span class="metric"><strong id="m-eff">0</strong> effective species</span>' +
-    '</div>' +
-    '<p class="div-def"><strong>Simpson\'s index of diversity</strong> (D = 1 &minus; &Sigma;p&sup2;, where p is each species\' share of groundcover) ' +
-    'runs from 0 to just under 1: <strong>0</strong> means one species owns the whole stand, and values near <strong>1</strong> mean cover is spread evenly across many species. ' +
-    'The <em>effective species</em> number (1 &divide; &Sigma;p&sup2;) says how many equally-abundant species this mix behaves like. ' +
-    'Raising richness adds the next best-suited species; raising evenness spreads cover more equally instead of concentrating it in the top performers.</p>' +
-  '</div>' +
-  '<div id="comp-summary" class="comp-summary"></div>' +
+    '<div class="add-control no-print"><button type="button" class="btn btn-secondary" data-act="add-open">+ Add a species</button>' +
+    '<div id="add-panel" class="add-panel" hidden><input type="text" id="add-search" placeholder="Search species…" autocomplete="off"><div id="add-list" class="add-list"></div></div></div>' +
     '<div class="table-scroll"><table class="seed-table" id="seed-table-el"></table></div>' +
+    '<p class="table-hint no-print">Tap a species for its photo, planting depth, seed box — and to enter your seed tag for exact amounts. <span class="hint-star">*</span> bulk amounts are estimates until you do.</p>' +
     '<div class="plan-io no-print">' +
       '<button type="button" class="btn btn-secondary" data-act="csv">Download for Excel (CSV)</button>' +
       '<button type="button" class="btn btn-secondary" data-act="save">Save plan</button>' +
@@ -846,8 +1000,6 @@ function buildSeedTableSection(mix, data, scored, ctx) {
       '<input type="file" id="plan-file" accept="application/json,.json" hidden>' +
       '<p class="io-hint">Save your plan now, then reopen it once the seed arrives to enter the purity and germination from each tag. Files stay on your computer — nothing is uploaded.</p>' +
     '</div>' +
-    '<div class="add-control no-print"><button type="button" class="btn btn-secondary" data-act="add-open">+ Add a species</button>' +
-    '<div id="add-panel" class="add-panel" hidden><input type="text" id="add-search" placeholder="Search species…" autocomplete="off"><div id="add-list" class="add-list"></div></div></div>' +
     '<div id="box-summary" class="box-summary"></div>' +
     '<p class="seed-note">Costs and varieties are planning estimates ($ per pound of pure live seed) — confirm current quotes and regional ecotypes with the sources listed. ' +
     '<strong>Groundcover %</strong> is estimated from each species\' rate vs. a pure stand. <strong>Bulk lb</strong> is what you weigh out and buy. Inoculate all legumes before planting.</p>';
@@ -908,7 +1060,12 @@ function buildSeedTableSection(mix, data, scored, ctx) {
     if (CURRENT.openDetail === id) { CURRENT.openDetail = null; toggleDetailRow(id); }
   });
   section.addEventListener('input', function (e) {
-    if (e.target.id === 'total-pls') { CURRENT.total = parseFloat(e.target.value) || null; CURRENT.totalUserSet = true; renderSeedTable(); }
+    if (e.target.id === 'total-pls') {
+      // The control is in bulk lb/acre; convert back to the internal PLS total.
+      const b = parseFloat(e.target.value);
+      CURRENT.total = (b > 0 && CURRENT.bulkPerPls) ? b / CURRENT.bulkPerPls : null;
+      CURRENT.totalUserSet = true; renderSeedTable();
+    }
     else if (e.target.id === 'evenness') { CURRENT.evenness = parseInt(e.target.value, 10) / 100; renderSeedTable(); }
     else if (e.target.id === 'add-search') { renderAddPanel(e.target.value); }
   });
@@ -931,9 +1088,16 @@ function renderResults(rec, data) {
     return;
   }
 
+  if (rec.usedTrial) {
+    out.appendChild(el('div', 'local-banner trial-banner',
+      '<strong>Informed by the West Virginia diversity field trial.</strong> ' +
+      'Species were nudged up or down by how well they actually established across 18 WV farms (2022) ' +
+      'most like your site. ' +
+      '<span class="trial-caveat">Helpful evidence to weigh alongside the rest — not a guarantee.</span>'));
+  }
   if (rec.usedLocal) {
     out.appendChild(el('div', 'local-banner',
-      '<strong>Informed by West Virginia trial data.</strong> Species adjusted using local establishment results.'));
+      '<strong>Informed by your added observations.</strong> Species adjusted using the data in local-observations.json.'));
   }
 
   // Interactive seed-mix table (species details on click; add/remove; groundcover).
@@ -989,23 +1153,7 @@ function renderResults(rec, data) {
     out.appendChild(sw);
   }
 
-  // Sources / bibliography
-  if (rec.sources.length) {
-    out.appendChild(el('h3', 'section-h', 'Sources'));
-    const bib = el('ul', 'bibliography');
-    rec.sources.forEach(function (s) {
-      const li = el('li', s.isLocal ? 'bib-local' : null);
-      const a = el('a', null, s.title);
-      a.href = s.url || '#'; a.target = '_blank'; a.rel = 'noopener';
-      li.appendChild(a);
-      li.appendChild(document.createTextNode(' — ' + (s.org || '') + (s.note ? '. ' + s.note : '')));
-      if (s.isLocal) li.appendChild(el('span', 'bib-badge', 'your data'));
-      bib.appendChild(li);
-    });
-    out.appendChild(bib);
-  }
-
-  // Actions
+  // Actions — kept above the Sources list so Print / Save PDF is easy to reach.
   const actions = el('div', 'results-actions no-print');
   const printBtn = el('button', 'btn btn-secondary', 'Print / Save PDF');
   printBtn.addEventListener('click', function () { window.print(); });
@@ -1017,6 +1165,32 @@ function renderResults(rec, data) {
   actions.appendChild(printBtn);
   actions.appendChild(againBtn);
   out.appendChild(actions);
+
+  // Sources / bibliography — collapsible to keep the results tidy.
+  if (rec.sources.length) {
+    const det = el('details', 'sources-details');
+    const sum = document.createElement('summary');
+    sum.className = 'sources-summary';
+    sum.textContent = 'Sources (' + rec.sources.length + ')';
+    det.appendChild(sum);
+    const bib = el('ul', 'bibliography');
+    rec.sources.forEach(function (s) {
+      const li = el('li', (s.isLocal || s.isTrial) ? 'bib-local' : null);
+      if (s.url) {
+        const a = el('a', null, s.title);
+        a.href = s.url; a.target = '_blank'; a.rel = 'noopener';
+        li.appendChild(a);
+      } else {
+        li.appendChild(el('span', 'bib-title', s.title));
+      }
+      li.appendChild(document.createTextNode(' — ' + (s.org || '') + (s.note ? '. ' + s.note : '')));
+      if (s.isTrial) li.appendChild(el('span', 'bib-badge', 'WV trial'));
+      else if (s.isLocal) li.appendChild(el('span', 'bib-badge', 'your data'));
+      bib.appendChild(li);
+    });
+    det.appendChild(bib);
+    out.appendChild(det);
+  }
 
   out.appendChild(el('p', 'disclaimer',
     'This planner offers research-based starting points, not a prescription. Confirm choices with a current soil test and your local NRCS or Extension office before buying seed.'));
@@ -1140,7 +1314,9 @@ function applyPastureFindings(pasture, terrain, climate) {
     texture: prof ? prof.texture : null,
     clayPct: prof ? prof.clayPct : null,
     hardinessZone: climate ? climate.hardinessZone : null,
-    recentDroughtStress: climate ? climate.droughtStress : 0
+    recentDroughtStress: climate ? climate.droughtStress : 0,
+    annualPrecipIn: climate ? climate.annualPrecipIn : null,
+    cmd: climate && climate.climateMoistureDeficit != null ? climate.climateMoistureDeficit : null
   };
 
   // Offer the mapped organic matter as a starting value if the farmer hasn't
@@ -1218,9 +1394,13 @@ function renderPastureSummary(pasture, terrain, climate, place) {
       (terrain.aspect.indexOf('S') !== -1 ? ' (warmer, drier)' : (terrain.aspect.indexOf('N') !== -1 ? ' (cooler, moister)' : '')), 'USGS 3DEP'));
   }
   if (climate) {
-    grid.appendChild(summaryRow('Hardiness zone', climate.hardinessZone + ' (avg. low ' + climate.avgExtremeMinF + '°F)', 'Open-Meteo'));
-    grid.appendChild(summaryRow('Frost-free days', climate.frostFreeDays + ' days/yr', 'Open-Meteo'));
-    grid.appendChild(summaryRow('Annual rainfall', climate.annualPrecipIn + ' in/yr', 'Open-Meteo'));
+    // Normals come from ClimateNA when the precomputed grid covers this point,
+    // otherwise from Open-Meteo ERA5.
+    const normSrc = (climate.source || '').indexOf('ClimateNA') === 0 ? 'ClimateNA' : 'Open-Meteo';
+    const zoneSrc = (climate.zoneSource || '').indexOf('ClimateNA') === 0 ? 'ClimateNA' : 'Open-Meteo';
+    grid.appendChild(summaryRow('Hardiness zone', climate.hardinessZone + ' (avg. low ' + climate.avgExtremeMinF + '°F)', zoneSrc));
+    grid.appendChild(summaryRow('Frost-free days', climate.frostFreeDays + ' days/yr', normSrc));
+    grid.appendChild(summaryRow('Annual rainfall', climate.annualPrecipIn + ' in/yr', normSrc));
     if (climate.recentPrecipPctNormal != null) {
       const dry = climate.droughtStress > 0.15;
       const row = summaryRow('Recent rainfall', climate.recentPrecipPctNormal + '% of normal (last 90 days) — ' +
@@ -1347,15 +1527,61 @@ function initLookup() {
     if (!q) { addr.focus(); setLookupStatus('Type an address, or use “Use my location”.', 'error'); return; }
     locate(function () { return window.APP_GEO.geocode(q); }, null);
   });
-  addr.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('lookup-btn').click(); }
-  });
+  setupAddressSuggest(addr);
   document.getElementById('geoloc-btn').addEventListener('click', function () {
     locate(function () { return window.APP_GEO.browserLocation(); }, 'your current location');
   });
   document.getElementById('scan-btn').addEventListener('click', scanPasture);
   document.getElementById('draw-btn').addEventListener('click', toggleDraw);
   document.getElementById('clear-draw-btn').addEventListener('click', clearDraw);
+}
+
+// Google-Maps-style address autocomplete: forgiving, suggestion-driven input.
+function setupAddressSuggest(addr) {
+  const box = document.getElementById('addr-suggest');
+  if (!box) return;
+  let items = [], active = -1, timer = null, seq = 0;
+
+  function hide() { box.hidden = true; box.innerHTML = ''; items = []; active = -1; addr.setAttribute('aria-expanded', 'false'); }
+  function pick(i) {
+    const it = items[i]; if (!it) return;
+    addr.value = it.label; hide();
+    locate(function () { return Promise.resolve({ lat: it.lat, lon: it.lon, label: it.label }); }, it.label);
+  }
+  function render() {
+    if (!items.length) { hide(); return; }
+    box.innerHTML = items.map(function (it, i) {
+      return '<li role="option" class="addr-opt' + (i === active ? ' active' : '') + '" data-i="' + i + '">' + it.label + '</li>';
+    }).join('');
+    box.hidden = false; addr.setAttribute('aria-expanded', 'true');
+  }
+
+  addr.addEventListener('input', function () {
+    const q = addr.value.trim();
+    clearTimeout(timer);
+    if (q.length < 3) { hide(); return; }
+    const mine = ++seq;
+    timer = setTimeout(function () {
+      window.APP_GEO.suggest(q).then(function (res) {
+        if (mine !== seq) return;            // ignore out-of-order responses
+        items = res; active = -1; render();
+      }).catch(function () { hide(); });
+    }, 250);
+  });
+  addr.addEventListener('keydown', function (e) {
+    if (!box.hidden && items.length) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); active = (active + 1) % items.length; render(); return; }
+      if (e.key === 'ArrowUp') { e.preventDefault(); active = (active - 1 + items.length) % items.length; render(); return; }
+      if (e.key === 'Enter' && active >= 0) { e.preventDefault(); pick(active); return; }
+      if (e.key === 'Escape') { hide(); return; }
+    }
+    if (e.key === 'Enter') { e.preventDefault(); hide(); document.getElementById('lookup-btn').click(); }
+  });
+  box.addEventListener('mousedown', function (e) {
+    const li = e.target.closest('.addr-opt'); if (!li) return;
+    e.preventDefault(); pick(parseInt(li.getAttribute('data-i'), 10));
+  });
+  addr.addEventListener('blur', function () { setTimeout(hide, 150); });
 }
 
 /* ---- boot -------------------------------------------------------------- */

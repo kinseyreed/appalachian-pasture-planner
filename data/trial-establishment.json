@@ -1,0 +1,4972 @@
+{
+  "meta": {
+    "source": "WVU / USDA NRCS CIG Soil Health Demonstration \u2014 West Virginia plant-diversity field trial",
+    "design": "20 farms x Control (unseeded) / High Diversity / Low Diversity plots; High & Low no-till drill-seeded spring 2022.",
+    "metrics": "Sown species carry an establishment index combining mean dry-weight biomass 2023-2025 (weight 0.6) and % cover May 2026 (weight 0.4), each as the normalized seeded-vs-Control contrast in [-1,1]. Unsown species carry an absolute abundance index (0-1) used as positive-only evidence that the species suits a location.",
+    "caveats": "Plant identification was not perfect; the no-till drill seeding method was not controlled as a separate factor. Each species carries an ID-reliability factor that scales its nudge, and sown species that were never detected stay neutral unless they are a genuine (high-confidence) failure. Treat the signal as supporting evidence, not proof. Only species already in the planner are included.",
+    "generated": "2026-10-15",
+    "siteMatching": "At runtime the planner weights each trial farm by similarity to the user site over pH, clay %, precipitation (MAP) and moisture deficit (CMD), using per-species matchWeights derived from which of those variables best predicts that species establishment. The site-weighted index is then scaled by sample size and ID reliability."
+  },
+  "mixes": {
+    "high": [
+      "alfalfa",
+      "alsike-clover",
+      "balansa-clover",
+      "big-bluestem",
+      "bottlebrush-grass",
+      "canada-wildrye",
+      "chicory",
+      "eastern-gamagrass",
+      "grayhead-coneflower",
+      "indiangrass",
+      "intermediate-wheatgrass",
+      "kura-clover",
+      "lanceleaf-coreopsis",
+      "little-bluestem",
+      "maximilian-sunflower",
+      "oxeye-sunflower",
+      "plantain",
+      "purple-prairie-clover",
+      "ryegrass-blend",
+      "sainfoin",
+      "sideoats-grama",
+      "slender-lespedeza",
+      "small-burnet",
+      "smooth-bromegrass",
+      "strawberry-clover",
+      "virginia-wildrye",
+      "white-clover",
+      "white-sweetclover",
+      "yellow-sweetclover"
+    ],
+    "low": [
+      "orchardgrass",
+      "perennial-ryegrass",
+      "red-clover",
+      "ryegrass-blend",
+      "white-clover"
+    ]
+  },
+  "farms": {
+    "AS": {
+      "ph": 6.47,
+      "om": 8.5,
+      "p_ppm": 18.17,
+      "k_ppm": 72.83,
+      "cec": 10.87,
+      "clayPct": 7.5,
+      "sandPct": 22.5,
+      "texture": "Silt loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -26.4,
+      "mat_c": 11.4,
+      "map_mm": 1131.0,
+      "cmd": 125.0,
+      "dd5": 2999.0,
+      "ahm": 18.9,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 42.25
+    },
+    "DS": {
+      "ph": 5.57,
+      "om": 7.31,
+      "p_ppm": 2.67,
+      "k_ppm": 49.0,
+      "cec": 10.77,
+      "clayPct": 7.5,
+      "sandPct": 55.0,
+      "texture": "Sandy loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -26.0,
+      "mat_c": 12.0,
+      "map_mm": 1371.0,
+      "cmd": 71.0,
+      "dd5": 3104.0,
+      "ahm": 16.0,
+      "hardinessZone": "5b",
+      "grazingAuDaysPerAcre": 39.59
+    },
+    "GF": {
+      "ph": 5.67,
+      "om": 6.75,
+      "p_ppm": 14.0,
+      "k_ppm": 107.5,
+      "cec": 10.13,
+      "clayPct": 7.5,
+      "sandPct": 30.0,
+      "texture": "Silt loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -27.4,
+      "mat_c": 10.5,
+      "map_mm": 1099.0,
+      "cmd": 156.0,
+      "dd5": 2836.0,
+      "ahm": 18.7,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 212.5
+    },
+    "HH": {
+      "ph": 6.6,
+      "om": 5.16,
+      "p_ppm": 38.17,
+      "k_ppm": 290.0,
+      "cec": 7.83,
+      "clayPct": 10.0,
+      "sandPct": 25.0,
+      "texture": "Silt loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -26.3,
+      "mat_c": 12.2,
+      "map_mm": 1179.0,
+      "cmd": 173.0,
+      "dd5": 3241.0,
+      "ahm": 18.9,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 196.47
+    },
+    "KA": {
+      "ph": 7.23,
+      "om": 5.71,
+      "p_ppm": 18.83,
+      "k_ppm": 70.83,
+      "cec": 7.8,
+      "clayPct": 10.0,
+      "sandPct": 45.0,
+      "texture": "Loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -27.1,
+      "mat_c": 10.9,
+      "map_mm": 1375.0,
+      "cmd": 50.0,
+      "dd5": 2807.0,
+      "ahm": 15.2,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 32.14
+    },
+    "MM": {
+      "ph": 6.0,
+      "om": 7.0,
+      "p_ppm": 19.83,
+      "k_ppm": 121.0,
+      "cec": 11.07,
+      "clayPct": 10.0,
+      "sandPct": 30.0,
+      "texture": "Silt loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -26.7,
+      "mat_c": 11.9,
+      "map_mm": 1302.0,
+      "cmd": 93.0,
+      "dd5": 3096.0,
+      "ahm": 16.8,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 181.5
+    },
+    "PA": {
+      "ph": 6.8,
+      "om": 5.65,
+      "p_ppm": 12.83,
+      "k_ppm": 33.67,
+      "cec": 7.93,
+      "clayPct": 10.0,
+      "sandPct": 17.5,
+      "texture": "Silt loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -26.3,
+      "mat_c": 12.2,
+      "map_mm": 1281.0,
+      "cmd": 108.0,
+      "dd5": 3187.0,
+      "ahm": 17.4,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 45.66
+    },
+    "PV": {
+      "ph": 6.67,
+      "om": 5.01,
+      "p_ppm": 31.17,
+      "k_ppm": 47.33,
+      "cec": 7.33,
+      "clayPct": 7.5,
+      "sandPct": 10.0,
+      "texture": "Silt",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -27.1,
+      "mat_c": 11.2,
+      "map_mm": 1139.0,
+      "cmd": 164.0,
+      "dd5": 2882.0,
+      "ahm": 18.6,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 27.21
+    },
+    "QF": {
+      "ph": 6.23,
+      "om": 6.41,
+      "p_ppm": 21.5,
+      "k_ppm": 84.17,
+      "cec": 8.87,
+      "clayPct": 10.0,
+      "sandPct": 35.0,
+      "texture": "Silt loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -28.4,
+      "mat_c": 10.6,
+      "map_mm": 1010.0,
+      "cmd": 220.0,
+      "dd5": 2800.0,
+      "ahm": 20.4,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 53.87
+    },
+    "RF1": {
+      "ph": 6.1,
+      "om": 8.54,
+      "p_ppm": 27.67,
+      "k_ppm": 63.5,
+      "cec": 12.3,
+      "clayPct": 12.5,
+      "sandPct": 30.0,
+      "texture": "Silt loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -27.5,
+      "mat_c": 10.5,
+      "map_mm": 1272.0,
+      "cmd": 50.0,
+      "dd5": 2742.0,
+      "ahm": 16.1,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 56.64
+    },
+    "RF2": {
+      "ph": 6.97,
+      "om": 7.95,
+      "p_ppm": 10.67,
+      "k_ppm": 55.83,
+      "cec": 11.37,
+      "clayPct": 12.5,
+      "sandPct": 22.5,
+      "texture": "Silt loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -27.5,
+      "mat_c": 10.5,
+      "map_mm": 1271.0,
+      "cmd": 51.0,
+      "dd5": 2745.0,
+      "ahm": 16.1,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 58.91
+    },
+    "RF3": {
+      "ph": 6.2,
+      "om": 7.3,
+      "p_ppm": 13.67,
+      "k_ppm": 50.83,
+      "cec": 11.63,
+      "clayPct": 10.0,
+      "sandPct": 22.5,
+      "texture": "Silt loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -27.5,
+      "mat_c": 10.5,
+      "map_mm": 1273.0,
+      "cmd": 49.0,
+      "dd5": 2739.0,
+      "ahm": 16.1,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 56.37
+    },
+    "RV": {
+      "ph": 6.23,
+      "om": 6.56,
+      "p_ppm": 1.83,
+      "k_ppm": 54.83,
+      "cec": 10.5,
+      "clayPct": 7.5,
+      "sandPct": 20.0,
+      "texture": "Silt loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -26.9,
+      "mat_c": 11.6,
+      "map_mm": 1216.0,
+      "cmd": 86.0,
+      "dd5": 3056.0,
+      "ahm": 17.8,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 22.83
+    },
+    "SB": {
+      "ph": 5.9,
+      "om": 5.96,
+      "p_ppm": 30.83,
+      "k_ppm": 388.33,
+      "cec": 9.5,
+      "clayPct": 10.0,
+      "sandPct": 25.0,
+      "texture": "Silt loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -26.8,
+      "mat_c": 12.2,
+      "map_mm": 893.0,
+      "cmd": 350.0,
+      "dd5": 3198.0,
+      "ahm": 24.8,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 50.85
+    },
+    "SL": {
+      "ph": 7.1,
+      "om": 3.53,
+      "p_ppm": 18.33,
+      "k_ppm": 90.67,
+      "cec": 8.8,
+      "clayPct": null,
+      "sandPct": null,
+      "texture": null,
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": null,
+      "mat_c": null,
+      "map_mm": null,
+      "cmd": null,
+      "dd5": null,
+      "ahm": null,
+      "hardinessZone": null,
+      "grazingAuDaysPerAcre": null
+    },
+    "TE": {
+      "ph": 5.17,
+      "om": 5.28,
+      "p_ppm": 9.67,
+      "k_ppm": 193.17,
+      "cec": 10.37,
+      "clayPct": 10.0,
+      "sandPct": 42.5,
+      "texture": "Loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -27.5,
+      "mat_c": 11.1,
+      "map_mm": 992.0,
+      "cmd": 223.0,
+      "dd5": 2932.0,
+      "ahm": 21.2,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 70.87
+    },
+    "TF": {
+      "ph": 6.1,
+      "om": 6.4,
+      "p_ppm": 3.33,
+      "k_ppm": 169.67,
+      "cec": 9.07,
+      "clayPct": 10.0,
+      "sandPct": 30.0,
+      "texture": "Silt loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -27.1,
+      "mat_c": 11.4,
+      "map_mm": 1349.0,
+      "cmd": 46.0,
+      "dd5": 2961.0,
+      "ahm": 15.9,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 86.91
+    },
+    "TH": {
+      "ph": 6.7,
+      "om": 6.21,
+      "p_ppm": 7.17,
+      "k_ppm": 171.67,
+      "cec": 11.57,
+      "clayPct": 17.5,
+      "sandPct": 22.5,
+      "texture": "Silt loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -26.2,
+      "mat_c": 12.2,
+      "map_mm": 1111.0,
+      "cmd": 195.0,
+      "dd5": 3238.0,
+      "ahm": 20.0,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 29.47
+    },
+    "TS": {
+      "ph": 7.87,
+      "om": 8.24,
+      "p_ppm": 3.67,
+      "k_ppm": 155.0,
+      "cec": 14.8,
+      "clayPct": 22.5,
+      "sandPct": 42.5,
+      "texture": "Loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -27.1,
+      "mat_c": 11.3,
+      "map_mm": 1203.0,
+      "cmd": 120.0,
+      "dd5": 2972.0,
+      "ahm": 17.7,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 22.41
+    },
+    "WB": {
+      "ph": 6.6,
+      "om": 7.02,
+      "p_ppm": 6.5,
+      "k_ppm": 176.5,
+      "cec": 9.97,
+      "clayPct": 15.0,
+      "sandPct": 22.5,
+      "texture": "Silt loam",
+      "drainage": null,
+      "drainageClass": null,
+      "slopePct": null,
+      "emt_c": -27.6,
+      "mat_c": 11.0,
+      "map_mm": 1114.0,
+      "cmd": 190.0,
+      "dd5": 2809.0,
+      "ahm": 18.8,
+      "hardinessZone": "5a",
+      "grazingAuDaysPerAcre": 79.98
+    }
+  },
+  "species": {
+    "alfalfa": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Good",
+      "reliabilityFactor": 1.0,
+      "nFarms": 18,
+      "nFarmsEstablished": 16,
+      "meanPerf": 0.638,
+      "meanAbund": 0.169,
+      "perFarm": {
+        "AS": {
+          "cBio": 0.0,
+          "hBio": 19.32,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.621,
+          "abund": 0.003
+        },
+        "DS": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.091,
+          "abund": 0.003
+        },
+        "GF": {
+          "cBio": 0.0,
+          "hBio": 6.86,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.909,
+          "abund": 0.233
+        },
+        "HH": {
+          "cBio": 0.0,
+          "hBio": 0.14,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.223,
+          "abund": 0.005
+        },
+        "KA": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.875,
+          "abund": 0.233
+        },
+        "PA": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.091,
+          "abund": 0.003
+        },
+        "PV": {
+          "cBio": 0.0,
+          "hBio": 0.14,
+          "lBio": 0.0,
+          "cCov": 0.05,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.412,
+          "abund": 0.1
+        },
+        "QF": {
+          "cBio": 0.0,
+          "hBio": 1.5,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.8,
+          "abund": 0.233
+        },
+        "RF1": {
+          "cBio": 0.0,
+          "hBio": 9.53,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.87,
+          "abund": 0.1
+        },
+        "RF2": {
+          "cBio": 0.0,
+          "hBio": 10.46,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.923,
+          "abund": 0.233
+        },
+        "RF3": {
+          "cBio": 0.0,
+          "hBio": 21.27,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.936,
+          "abund": 0.233
+        },
+        "RV": {
+          "cBio": 0.0,
+          "hBio": 1.61,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.494,
+          "abund": 0.003
+        },
+        "SB": {
+          "cBio": 0.0,
+          "hBio": 1.43,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.819,
+          "abund": 0.5
+        },
+        "TE": {
+          "cBio": 0.0,
+          "hBio": 3.44,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.05,
+          "perf": 0.874,
+          "abund": 0.233
+        },
+        "TF": {
+          "cBio": 0.0,
+          "hBio": 0.55,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.615,
+          "abund": 0.1
+        },
+        "TH": {
+          "cBio": 0.0,
+          "hBio": 1.23,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.05,
+          "perf": 0.776,
+          "abund": 0.233
+        },
+        "TS": {
+          "cBio": 0.01,
+          "hBio": 0.04,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.325,
+          "abund": 0.1
+        },
+        "WB": {
+          "cBio": 0.0,
+          "hBio": 1.59,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.831,
+          "abund": 0.5
+        }
+      },
+      "matchWeights": {
+        "ph": 0.44,
+        "clay": 0.34,
+        "map": 0.52,
+        "cmd": 0.39
+      },
+      "climatePredictors": [
+        {
+          "var": "map",
+          "r": -0.32,
+          "n": 18
+        },
+        {
+          "var": "ph",
+          "r": -0.2,
+          "n": 18
+        },
+        {
+          "var": "cmd",
+          "r": 0.12,
+          "n": 18
+        },
+        {
+          "var": "clay",
+          "r": 0.05,
+          "n": 18
+        }
+      ]
+    },
+    "annual-lespedeza": {
+      "inHighMix": false,
+      "inLowMix": false,
+      "signalType": "volunteer",
+      "outcome": "detected",
+      "idReliability": "Moderate",
+      "reliabilityFactor": 0.7,
+      "nFarms": 4,
+      "nFarmsEstablished": 3,
+      "meanPerf": 0.134,
+      "meanAbund": 0.108,
+      "perFarm": {
+        "DS": {
+          "cBio": 2.18,
+          "hBio": 3.01,
+          "lBio": 6.08,
+          "cCov": 0.55,
+          "hCov": 0.05,
+          "lCov": 3.5,
+          "perf": 0.37,
+          "abund": 0.233
+        },
+        "MM": {
+          "cBio": 0.74,
+          "hBio": 5.02,
+          "lBio": 3.19,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.63,
+          "abund": 0.167
+        },
+        "RV": {
+          "cBio": 0.0,
+          "hBio": 0.07,
+          "lBio": 0.29,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.05,
+          "perf": 0.176,
+          "abund": 0.003
+        },
+        "TF": {
+          "cBio": 0.89,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": -0.639,
+          "abund": 0.03
+        }
+      },
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "big-bluestem": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Moderate",
+      "reliabilityFactor": 0.7,
+      "nFarms": 15,
+      "nFarmsEstablished": 15,
+      "meanPerf": 0.82,
+      "meanAbund": 0.288,
+      "perFarm": {
+        "AS": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.75,
+          "abund": 0.1
+        },
+        "DS": {
+          "cBio": 0.0,
+          "hBio": 11.01,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.949,
+          "abund": 0.5
+        },
+        "GF": {
+          "cBio": 0.0,
+          "hBio": 1.47,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.746,
+          "abund": 0.049
+        },
+        "KA": {
+          "cBio": 0.0,
+          "hBio": 42.33,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.968,
+          "abund": 0.5
+        },
+        "PA": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.524,
+          "abund": 0.037
+        },
+        "PV": {
+          "cBio": 0.0,
+          "hBio": 6.28,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.926,
+          "abund": 0.209
+        },
+        "QF": {
+          "cBio": 0.0,
+          "hBio": 5.04,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.921,
+          "abund": 0.5
+        },
+        "RF1": {
+          "cBio": 0.0,
+          "hBio": 21.47,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.977,
+          "abund": 0.716
+        },
+        "RF2": {
+          "cBio": 0.0,
+          "hBio": 0.06,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.417,
+          "abund": 0.233
+        },
+        "RF3": {
+          "cBio": 0.0,
+          "hBio": 26.87,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.939,
+          "abund": 0.233
+        },
+        "RV": {
+          "cBio": 0.0,
+          "hBio": 4.61,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.916,
+          "abund": 0.5
+        },
+        "SB": {
+          "cBio": 0.0,
+          "hBio": 1.93,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.686,
+          "abund": 0.037
+        },
+        "TE": {
+          "cBio": 0.0,
+          "hBio": 7.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.935,
+          "abund": 0.5
+        },
+        "TF": {
+          "cBio": 0.0,
+          "hBio": 2.17,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.788,
+          "abund": 0.1
+        },
+        "TS": {
+          "cBio": 0.0,
+          "hBio": 6.63,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.858,
+          "abund": 0.1
+        }
+      },
+      "matchWeights": {
+        "ph": 0.46,
+        "clay": 0.35,
+        "map": 0.33,
+        "cmd": 0.34
+      },
+      "climatePredictors": [
+        {
+          "var": "ph",
+          "r": -0.23,
+          "n": 15
+        },
+        {
+          "var": "clay",
+          "r": -0.07,
+          "n": 15
+        },
+        {
+          "var": "cmd",
+          "r": -0.06,
+          "n": 15
+        },
+        {
+          "var": "map",
+          "r": 0.05,
+          "n": 15
+        }
+      ]
+    },
+    "birdsfoot-trefoil": {
+      "inHighMix": false,
+      "inLowMix": false,
+      "signalType": "volunteer",
+      "outcome": "detected",
+      "idReliability": "Good",
+      "reliabilityFactor": 1.0,
+      "nFarms": 3,
+      "nFarmsEstablished": 1,
+      "meanPerf": 0.131,
+      "meanAbund": 0.179,
+      "perFarm": {
+        "KA": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.355,
+          "abund": 0.037
+        },
+        "TH": {
+          "cBio": 0.0,
+          "hBio": 0.02,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.016,
+          "abund": 0.001
+        },
+        "TS": {
+          "cBio": 22.16,
+          "hBio": 8.49,
+          "lBio": 21.11,
+          "cCov": 3.5,
+          "hCov": 7.5,
+          "lCov": 7.5,
+          "perf": 0.021,
+          "abund": 0.5
+        }
+      },
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "bottlebrush-grass": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Poor",
+      "reliabilityFactor": 0.4,
+      "nFarms": 6,
+      "nFarmsEstablished": 4,
+      "meanPerf": 0.483,
+      "meanAbund": 0.106,
+      "perFarm": {
+        "AS": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.524,
+          "abund": 0.037
+        },
+        "KA": {
+          "cBio": 0.0,
+          "hBio": 3.07,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.891,
+          "abund": 0.5
+        },
+        "PV": {
+          "cBio": 0.0,
+          "hBio": 1.74,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.777,
+          "abund": 0.058
+        },
+        "QF": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.091,
+          "abund": 0.003
+        },
+        "RV": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.091,
+          "abund": 0.003
+        },
+        "TS": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.524,
+          "abund": 0.037
+        }
+      },
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "canada-wildrye": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Poor",
+      "reliabilityFactor": 0.4,
+      "nFarms": 1,
+      "nFarmsEstablished": 1,
+      "meanPerf": 0.524,
+      "meanAbund": 0.037,
+      "perFarm": {
+        "PA": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.524,
+          "abund": 0.037
+        }
+      },
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "chicory": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Moderate",
+      "reliabilityFactor": 0.7,
+      "nFarms": 19,
+      "nFarmsEstablished": 15,
+      "meanPerf": 0.447,
+      "meanAbund": 0.05,
+      "perFarm": {
+        "AS": {
+          "cBio": 0.03,
+          "hBio": 0.0,
+          "lBio": 0.02,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": -0.062,
+          "abund": 0.001
+        },
+        "DS": {
+          "cBio": 0.0,
+          "hBio": 0.04,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.074,
+          "abund": 0.001
+        },
+        "GF": {
+          "cBio": 3.09,
+          "hBio": 7.04,
+          "lBio": 0.03,
+          "cCov": 0.05,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.223,
+          "abund": 0.003
+        },
+        "HH": {
+          "cBio": 0.03,
+          "hBio": 0.15,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.172,
+          "abund": 0.005
+        },
+        "KA": {
+          "cBio": 0.0,
+          "hBio": 7.77,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.05,
+          "perf": 0.773,
+          "abund": 0.037
+        },
+        "MM": {
+          "cBio": 0.0,
+          "hBio": 1.13,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.694,
+          "abund": 0.038
+        },
+        "PA": {
+          "cBio": 0.51,
+          "hBio": 4.83,
+          "lBio": 0.03,
+          "cCov": 0.05,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.444,
+          "abund": 0.003
+        },
+        "PV": {
+          "cBio": 0.0,
+          "hBio": 2.73,
+          "lBio": 1.87,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.55,
+          "perf": 0.807,
+          "abund": 0.1
+        },
+        "QF": {
+          "cBio": 0.0,
+          "hBio": 0.2,
+          "lBio": 0.03,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.05,
+          "perf": 0.381,
+          "abund": 0.037
+        },
+        "RF1": {
+          "cBio": 0.0,
+          "hBio": 0.78,
+          "lBio": 0.0,
+          "cCov": 0.05,
+          "hCov": 0.55,
+          "lCov": 0.05,
+          "perf": 0.547,
+          "abund": 0.037
+        },
+        "RF2": {
+          "cBio": 10.81,
+          "hBio": 2.89,
+          "lBio": 7.27,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.016,
+          "abund": 0.233
+        },
+        "RF3": {
+          "cBio": 0.0,
+          "hBio": 17.16,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.793,
+          "abund": 0.037
+        },
+        "RV": {
+          "cBio": 0.0,
+          "hBio": 2.45,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.535,
+          "abund": 0.003
+        },
+        "SB": {
+          "cBio": 6.04,
+          "hBio": 6.97,
+          "lBio": 2.27,
+          "cCov": 0.55,
+          "hCov": 0.55,
+          "lCov": 1.5,
+          "perf": 0.041,
+          "abund": 0.1
+        },
+        "TE": {
+          "cBio": 0.0,
+          "hBio": 2.35,
+          "lBio": 0.0,
+          "cCov": 0.05,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.495,
+          "abund": 0.003
+        },
+        "TF": {
+          "cBio": 0.02,
+          "hBio": 10.89,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.922,
+          "abund": 0.233
+        },
+        "TH": {
+          "cBio": 0.0,
+          "hBio": 0.58,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.538,
+          "abund": 0.019
+        },
+        "TS": {
+          "cBio": 0.0,
+          "hBio": 1.45,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.744,
+          "abund": 0.048
+        },
+        "WB": {
+          "cBio": 0.0,
+          "hBio": 0.28,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.362,
+          "abund": 0.009
+        }
+      },
+      "matchWeights": {
+        "ph": 0.45,
+        "clay": 0.46,
+        "map": 0.55,
+        "cmd": 0.55
+      },
+      "climatePredictors": [
+        {
+          "var": "map",
+          "r": 0.36,
+          "n": 19
+        },
+        {
+          "var": "cmd",
+          "r": -0.35,
+          "n": 19
+        },
+        {
+          "var": "clay",
+          "r": 0.23,
+          "n": 19
+        },
+        {
+          "var": "ph",
+          "r": 0.22,
+          "n": 19
+        }
+      ]
+    },
+    "eastern-gamagrass": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Good",
+      "reliabilityFactor": 1.0,
+      "nFarms": 14,
+      "nFarmsEstablished": 13,
+      "meanPerf": 0.687,
+      "meanAbund": 0.582,
+      "perFarm": {
+        "AS": {
+          "cBio": 0.0,
+          "hBio": 1.06,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.783,
+          "abund": 0.5
+        },
+        "DS": {
+          "cBio": 0.0,
+          "hBio": 1.41,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 37.5,
+          "lCov": 0.0,
+          "perf": 0.838,
+          "abund": 1.0
+        },
+        "GF": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.524,
+          "abund": 0.037
+        },
+        "KA": {
+          "cBio": 0.0,
+          "hBio": 22.87,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 37.5,
+          "lCov": 0.0,
+          "perf": 0.982,
+          "abund": 1.0
+        },
+        "PA": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 17.5,
+          "lCov": 0.0,
+          "perf": 0.972,
+          "abund": 1.0
+        },
+        "PV": {
+          "cBio": 0.0,
+          "hBio": 0.71,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 17.5,
+          "lCov": 0.0,
+          "perf": 0.741,
+          "abund": 1.0
+        },
+        "QF": {
+          "cBio": 0.0,
+          "hBio": 0.05,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.405,
+          "abund": 0.233
+        },
+        "RF2": {
+          "cBio": 0.0,
+          "hBio": 0.03,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.38,
+          "abund": 0.233
+        },
+        "RF3": {
+          "cBio": 0.0,
+          "hBio": 1.79,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 17.5,
+          "lCov": 0.0,
+          "perf": 0.858,
+          "abund": 1.0
+        },
+        "RV": {
+          "cBio": 0.0,
+          "hBio": 13.76,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 37.5,
+          "lCov": 0.0,
+          "perf": 0.974,
+          "abund": 1.0
+        },
+        "SB": {
+          "cBio": 0.0,
+          "hBio": 0.04,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.081,
+          "abund": 0.003
+        },
+        "TE": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.524,
+          "abund": 0.037
+        },
+        "TF": {
+          "cBio": 0.0,
+          "hBio": 26.32,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 17.5,
+          "lCov": 0.0,
+          "perf": 0.978,
+          "abund": 1.0
+        },
+        "WB": {
+          "cBio": 0.0,
+          "hBio": 0.42,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.573,
+          "abund": 0.1
+        }
+      },
+      "matchWeights": {
+        "ph": 0.49,
+        "clay": 0.52,
+        "map": 0.85,
+        "cmd": 0.84
+      },
+      "climatePredictors": [
+        {
+          "var": "map",
+          "r": 0.79,
+          "n": 14
+        },
+        {
+          "var": "cmd",
+          "r": -0.78,
+          "n": 14
+        },
+        {
+          "var": "clay",
+          "r": -0.31,
+          "n": 14
+        },
+        {
+          "var": "ph",
+          "r": 0.27,
+          "n": 14
+        }
+      ]
+    },
+    "grayhead-coneflower": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Moderate",
+      "reliabilityFactor": 0.7,
+      "nFarms": 16,
+      "nFarmsEstablished": 15,
+      "meanPerf": 0.659,
+      "meanAbund": 0.186,
+      "perFarm": {
+        "AS": {
+          "cBio": 0.0,
+          "hBio": 2.45,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.848,
+          "abund": 0.233
+        },
+        "DS": {
+          "cBio": 0.0,
+          "hBio": 0.82,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.05,
+          "perf": 0.673,
+          "abund": 0.1
+        },
+        "GF": {
+          "cBio": 0.0,
+          "hBio": 1.28,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.641,
+          "abund": 0.037
+        },
+        "KA": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.091,
+          "abund": 0.003
+        },
+        "PA": {
+          "cBio": 0.0,
+          "hBio": 0.11,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.486,
+          "abund": 0.5
+        },
+        "PV": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.875,
+          "abund": 0.233
+        },
+        "QF": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.875,
+          "abund": 0.233
+        },
+        "RF1": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.524,
+          "abund": 0.037
+        },
+        "RF2": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.75,
+          "abund": 0.1
+        },
+        "RF3": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.524,
+          "abund": 0.037
+        },
+        "RV": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.875,
+          "abund": 0.233
+        },
+        "SB": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.524,
+          "abund": 0.037
+        },
+        "TF": {
+          "cBio": 0.0,
+          "hBio": 0.48,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.669,
+          "abund": 0.5
+        },
+        "TH": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.875,
+          "abund": 0.233
+        },
+        "TS": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.875,
+          "abund": 0.233
+        },
+        "WB": {
+          "cBio": 0.0,
+          "hBio": 0.08,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.433,
+          "abund": 0.233
+        }
+      },
+      "matchWeights": {
+        "ph": 0.31,
+        "clay": 0.38,
+        "map": 0.52,
+        "cmd": 0.42
+      },
+      "climatePredictors": [
+        {
+          "var": "map",
+          "r": -0.32,
+          "n": 16
+        },
+        {
+          "var": "cmd",
+          "r": 0.17,
+          "n": 16
+        },
+        {
+          "var": "clay",
+          "r": 0.11,
+          "n": 16
+        },
+        {
+          "var": "ph",
+          "r": -0.01,
+          "n": 16
+        }
+      ]
+    },
+    "indiangrass": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Good",
+      "reliabilityFactor": 1.0,
+      "nFarms": 18,
+      "nFarmsEstablished": 18,
+      "meanPerf": 0.921,
+      "meanAbund": 0.521,
+      "perFarm": {
+        "AS": {
+          "cBio": 0.0,
+          "hBio": 9.99,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.921,
+          "abund": 0.233
+        },
+        "DS": {
+          "cBio": 0.0,
+          "hBio": 114.26,
+          "lBio": 0.14,
+          "cCov": 0.55,
+          "hCov": 37.5,
+          "lCov": 7.5,
+          "perf": 0.981,
+          "abund": 1.0
+        },
+        "GF": {
+          "cBio": 0.0,
+          "hBio": 14.02,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.929,
+          "abund": 0.233
+        },
+        "KA": {
+          "cBio": 0.0,
+          "hBio": 119.39,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.972,
+          "abund": 0.5
+        },
+        "MM": {
+          "cBio": 0.0,
+          "hBio": 9.6,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.95,
+          "abund": 0.32
+        },
+        "PA": {
+          "cBio": 0.0,
+          "hBio": 17.32,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.883,
+          "abund": 0.1
+        },
+        "PV": {
+          "cBio": 0.0,
+          "hBio": 9.99,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 17.5,
+          "lCov": 0.0,
+          "perf": 0.96,
+          "abund": 1.0
+        },
+        "QF": {
+          "cBio": 0.0,
+          "hBio": 27.05,
+          "lBio": 0.0,
+          "cCov": 1.5,
+          "hCov": 17.5,
+          "lCov": 0.0,
+          "perf": 0.917,
+          "abund": 1.0
+        },
+        "RF1": {
+          "cBio": 0.0,
+          "hBio": 10.07,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.781,
+          "abund": 0.037
+        },
+        "RF2": {
+          "cBio": 0.0,
+          "hBio": 2.9,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.862,
+          "abund": 0.233
+        },
+        "RF3": {
+          "cBio": 0.0,
+          "hBio": 14.45,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.967,
+          "abund": 0.482
+        },
+        "RV": {
+          "cBio": 0.0,
+          "hBio": 72.87,
+          "lBio": 0.02,
+          "cCov": 0.0,
+          "hCov": 37.5,
+          "lCov": 0.0,
+          "perf": 0.991,
+          "abund": 1.0
+        },
+        "SB": {
+          "cBio": 0.0,
+          "hBio": 0.84,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.726,
+          "abund": 0.233
+        },
+        "TE": {
+          "cBio": 0.0,
+          "hBio": 23.44,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.962,
+          "abund": 0.5
+        },
+        "TF": {
+          "cBio": 0.0,
+          "hBio": 14.84,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.55,
+          "perf": 0.955,
+          "abund": 0.5
+        },
+        "TH": {
+          "cBio": 0.0,
+          "hBio": 12.88,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.953,
+          "abund": 0.5
+        },
+        "TS": {
+          "cBio": 0.0,
+          "hBio": 28.39,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 37.5,
+          "lCov": 0.0,
+          "perf": 0.984,
+          "abund": 1.0
+        },
+        "WB": {
+          "cBio": 0.0,
+          "hBio": 2.8,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.884,
+          "abund": 0.5
+        }
+      },
+      "matchWeights": {
+        "ph": 0.38,
+        "clay": 0.31,
+        "map": 0.57,
+        "cmd": 0.58
+      },
+      "climatePredictors": [
+        {
+          "var": "cmd",
+          "r": -0.4,
+          "n": 18
+        },
+        {
+          "var": "map",
+          "r": 0.38,
+          "n": 18
+        },
+        {
+          "var": "ph",
+          "r": 0.12,
+          "n": 18
+        },
+        {
+          "var": "clay",
+          "r": -0.02,
+          "n": 18
+        }
+      ]
+    },
+    "intermediate-wheatgrass": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Poor",
+      "reliabilityFactor": 0.4,
+      "nFarms": 13,
+      "nFarmsEstablished": 12,
+      "meanPerf": 0.78,
+      "meanAbund": 0.328,
+      "perFarm": {
+        "AS": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.75,
+          "abund": 0.1
+        },
+        "GF": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.938,
+          "abund": 0.5
+        },
+        "PA": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.091,
+          "abund": 0.003
+        },
+        "PV": {
+          "cBio": 0.0,
+          "hBio": 10.13,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.947,
+          "abund": 0.5
+        },
+        "QF": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.938,
+          "abund": 0.5
+        },
+        "RF1": {
+          "cBio": 0.0,
+          "hBio": 1.58,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.759,
+          "abund": 0.053
+        },
+        "RF2": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.524,
+          "abund": 0.037
+        },
+        "RF3": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.875,
+          "abund": 0.233
+        },
+        "SB": {
+          "cBio": 0.0,
+          "hBio": 8.35,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.916,
+          "abund": 0.233
+        },
+        "TE": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.938,
+          "abund": 0.5
+        },
+        "TF": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.938,
+          "abund": 0.5
+        },
+        "TH": {
+          "cBio": 0.0,
+          "hBio": 0.38,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.56,
+          "abund": 0.1
+        },
+        "WB": {
+          "cBio": 0.0,
+          "hBio": 9.74,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 17.5,
+          "lCov": 0.0,
+          "perf": 0.96,
+          "abund": 1.0
+        }
+      },
+      "matchWeights": {
+        "ph": 0.7,
+        "clay": 0.47,
+        "map": 0.59,
+        "cmd": 0.51
+      },
+      "climatePredictors": [
+        {
+          "var": "ph",
+          "r": -0.57,
+          "n": 13
+        },
+        {
+          "var": "map",
+          "r": -0.41,
+          "n": 13
+        },
+        {
+          "var": "cmd",
+          "r": 0.3,
+          "n": 13
+        },
+        {
+          "var": "clay",
+          "r": -0.24,
+          "n": 13
+        }
+      ]
+    },
+    "lanceleaf-coreopsis": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Moderate",
+      "reliabilityFactor": 0.7,
+      "nFarms": 5,
+      "nFarmsEstablished": 2,
+      "meanPerf": 0.257,
+      "meanAbund": 0.03,
+      "perFarm": {
+        "DS": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.55,
+          "perf": 0.091,
+          "abund": 0.037
+        },
+        "GF": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.091,
+          "abund": 0.003
+        },
+        "KA": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.75,
+          "abund": 0.1
+        },
+        "PA": {
+          "cBio": 0.0,
+          "hBio": 0.18,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.261,
+          "abund": 0.006
+        },
+        "TS": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.091,
+          "abund": 0.003
+        }
+      },
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "little-bluestem": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Poor",
+      "reliabilityFactor": 0.4,
+      "nFarms": 8,
+      "nFarmsEstablished": 7,
+      "meanPerf": 0.561,
+      "meanAbund": 0.068,
+      "perFarm": {
+        "KA": {
+          "cBio": 0.0,
+          "hBio": 0.05,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.091,
+          "abund": 0.003
+        },
+        "QF": {
+          "cBio": 0.0,
+          "hBio": 2.44,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.848,
+          "abund": 0.233
+        },
+        "RF3": {
+          "cBio": 0.0,
+          "hBio": 0.07,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.118,
+          "abund": 0.002
+        },
+        "RV": {
+          "cBio": 0.0,
+          "hBio": 19.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.621,
+          "abund": 0.003
+        },
+        "TE": {
+          "cBio": 0.0,
+          "hBio": 12.94,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.614,
+          "abund": 0.003
+        },
+        "TF": {
+          "cBio": 0.0,
+          "hBio": 6.53,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.929,
+          "abund": 0.218
+        },
+        "TH": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.524,
+          "abund": 0.037
+        },
+        "TS": {
+          "cBio": 0.0,
+          "hBio": 1.45,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.744,
+          "abund": 0.048
+        }
+      },
+      "matchWeights": {
+        "ph": 0.41,
+        "clay": 0.42,
+        "map": 0.57,
+        "cmd": 0.57
+      },
+      "climatePredictors": [
+        {
+          "var": "cmd",
+          "r": 0.39,
+          "n": 8
+        },
+        {
+          "var": "map",
+          "r": -0.38,
+          "n": 8
+        },
+        {
+          "var": "clay",
+          "r": 0.17,
+          "n": 8
+        },
+        {
+          "var": "ph",
+          "r": -0.16,
+          "n": 8
+        }
+      ]
+    },
+    "orchardgrass": {
+      "inHighMix": false,
+      "inLowMix": true,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Good",
+      "reliabilityFactor": 1.0,
+      "nFarms": 19,
+      "nFarmsEstablished": 19,
+      "meanPerf": 0.638,
+      "meanAbund": 0.974,
+      "perFarm": {
+        "AS": {
+          "cBio": 24.95,
+          "hBio": 6.3,
+          "lBio": 138.61,
+          "cCov": 17.5,
+          "hCov": 17.5,
+          "lCov": 62.5,
+          "perf": 0.639,
+          "abund": 1.0
+        },
+        "DS": {
+          "cBio": 7.21,
+          "hBio": 11.42,
+          "lBio": 31.87,
+          "cCov": 1.5,
+          "hCov": 7.5,
+          "lCov": 17.5,
+          "perf": 0.702,
+          "abund": 1.0
+        },
+        "GF": {
+          "cBio": 43.26,
+          "hBio": 23.02,
+          "lBio": 185.24,
+          "cCov": 37.5,
+          "hCov": 37.5,
+          "lCov": 87.5,
+          "perf": 0.531,
+          "abund": 1.0
+        },
+        "HH": {
+          "cBio": 0.0,
+          "hBio": 2.87,
+          "lBio": 33.55,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.985,
+          "abund": 1.0
+        },
+        "KA": {
+          "cBio": 85.0,
+          "hBio": 27.04,
+          "lBio": 110.13,
+          "cCov": 7.5,
+          "hCov": 7.5,
+          "lCov": 62.5,
+          "perf": 0.389,
+          "abund": 1.0
+        },
+        "MM": {
+          "cBio": 1.56,
+          "hBio": 0.0,
+          "lBio": 67.42,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.948,
+          "abund": 1.0
+        },
+        "PA": {
+          "cBio": 3.96,
+          "hBio": 3.74,
+          "lBio": 67.32,
+          "cCov": 1.5,
+          "hCov": 7.5,
+          "lCov": 37.5,
+          "perf": 0.894,
+          "abund": 1.0
+        },
+        "PV": {
+          "cBio": 109.13,
+          "hBio": 20.11,
+          "lBio": 113.13,
+          "cCov": 17.5,
+          "hCov": 17.5,
+          "lCov": 62.5,
+          "perf": 0.234,
+          "abund": 1.0
+        },
+        "QF": {
+          "cBio": 15.49,
+          "hBio": 0.43,
+          "lBio": 84.35,
+          "cCov": 3.5,
+          "hCov": 1.5,
+          "lCov": 62.5,
+          "perf": 0.767,
+          "abund": 1.0
+        },
+        "RF1": {
+          "cBio": 48.13,
+          "hBio": 5.73,
+          "lBio": 80.07,
+          "cCov": 3.5,
+          "hCov": 17.5,
+          "lCov": 37.5,
+          "perf": 0.477,
+          "abund": 1.0
+        },
+        "RF2": {
+          "cBio": 77.2,
+          "hBio": 24.7,
+          "lBio": 124.94,
+          "cCov": 3.5,
+          "hCov": 17.5,
+          "lCov": 37.5,
+          "perf": 0.469,
+          "abund": 1.0
+        },
+        "RF3": {
+          "cBio": 45.98,
+          "hBio": 13.32,
+          "lBio": 140.97,
+          "cCov": 7.5,
+          "hCov": 17.5,
+          "lCov": 17.5,
+          "perf": 0.461,
+          "abund": 1.0
+        },
+        "RV": {
+          "cBio": 0.3,
+          "hBio": 0.0,
+          "lBio": 23.75,
+          "cCov": 3.5,
+          "hCov": 1.5,
+          "lCov": 7.5,
+          "perf": 0.712,
+          "abund": 0.5
+        },
+        "SB": {
+          "cBio": 36.16,
+          "hBio": 16.69,
+          "lBio": 122.27,
+          "cCov": 17.5,
+          "hCov": 17.5,
+          "lCov": 62.5,
+          "perf": 0.549,
+          "abund": 1.0
+        },
+        "TE": {
+          "cBio": 97.99,
+          "hBio": 27.85,
+          "lBio": 167.15,
+          "cCov": 17.5,
+          "hCov": 17.5,
+          "lCov": 37.5,
+          "perf": 0.3,
+          "abund": 1.0
+        },
+        "TF": {
+          "cBio": 19.28,
+          "hBio": 25.5,
+          "lBio": 209.36,
+          "cCov": 3.5,
+          "hCov": 1.5,
+          "lCov": 62.5,
+          "perf": 0.853,
+          "abund": 1.0
+        },
+        "TH": {
+          "cBio": 18.4,
+          "hBio": 12.21,
+          "lBio": 179.74,
+          "cCov": 7.5,
+          "hCov": 3.5,
+          "lCov": 37.5,
+          "perf": 0.751,
+          "abund": 1.0
+        },
+        "TS": {
+          "cBio": 4.74,
+          "hBio": 0.0,
+          "lBio": 36.44,
+          "cCov": 1.5,
+          "hCov": 0.55,
+          "lCov": 37.5,
+          "perf": 0.821,
+          "abund": 1.0
+        },
+        "WB": {
+          "cBio": 23.23,
+          "hBio": 41.18,
+          "lBio": 98.82,
+          "cCov": 3.5,
+          "hCov": 17.5,
+          "lCov": 17.5,
+          "perf": 0.631,
+          "abund": 1.0
+        }
+      },
+      "matchWeights": {
+        "ph": 0.42,
+        "clay": 0.45,
+        "map": 0.45,
+        "cmd": 0.34
+      },
+      "climatePredictors": [
+        {
+          "var": "clay",
+          "r": 0.21,
+          "n": 19
+        },
+        {
+          "var": "map",
+          "r": 0.21,
+          "n": 19
+        },
+        {
+          "var": "ph",
+          "r": 0.17,
+          "n": 19
+        },
+        {
+          "var": "cmd",
+          "r": -0.06,
+          "n": 19
+        }
+      ]
+    },
+    "oxeye-sunflower": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Moderate",
+      "reliabilityFactor": 0.7,
+      "nFarms": 15,
+      "nFarmsEstablished": 13,
+      "meanPerf": 0.559,
+      "meanAbund": 0.201,
+      "perFarm": {
+        "AS": {
+          "cBio": 0.0,
+          "hBio": 3.19,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.869,
+          "abund": 0.233
+        },
+        "DS": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.938,
+          "abund": 0.5
+        },
+        "GF": {
+          "cBio": 0.0,
+          "hBio": 2.67,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.805,
+          "abund": 0.1
+        },
+        "KA": {
+          "cBio": 0.0,
+          "hBio": 2.23,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 17.5,
+          "lCov": 0.0,
+          "perf": 0.879,
+          "abund": 1.0
+        },
+        "PA": {
+          "cBio": 0.0,
+          "hBio": 1.57,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.664,
+          "abund": 0.037
+        },
+        "PV": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.524,
+          "abund": 0.037
+        },
+        "QF": {
+          "cBio": 0.0,
+          "hBio": 0.23,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.225,
+          "abund": 0.003
+        },
+        "RF1": {
+          "cBio": 0.0,
+          "hBio": 0.18,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.195,
+          "abund": 0.003
+        },
+        "RF2": {
+          "cBio": 0.0,
+          "hBio": 0.13,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.476,
+          "abund": 0.233
+        },
+        "RF3": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.875,
+          "abund": 0.233
+        },
+        "RV": {
+          "cBio": 0.0,
+          "hBio": 0.77,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.574,
+          "abund": 0.037
+        },
+        "TE": {
+          "cBio": 0.0,
+          "hBio": 0.04,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.077,
+          "abund": 0.003
+        },
+        "TF": {
+          "cBio": 0.0,
+          "hBio": 1.97,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.853,
+          "abund": 0.5
+        },
+        "TS": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.091,
+          "abund": 0.003
+        },
+        "WB": {
+          "cBio": 0.0,
+          "hBio": 0.03,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.334,
+          "abund": 0.1
+        }
+      },
+      "matchWeights": {
+        "ph": 0.38,
+        "clay": 0.72,
+        "map": 0.7,
+        "cmd": 0.67
+      },
+      "climatePredictors": [
+        {
+          "var": "clay",
+          "r": -0.6,
+          "n": 15
+        },
+        {
+          "var": "map",
+          "r": 0.57,
+          "n": 15
+        },
+        {
+          "var": "cmd",
+          "r": -0.52,
+          "n": 15
+        },
+        {
+          "var": "ph",
+          "r": -0.12,
+          "n": 15
+        }
+      ]
+    },
+    "perennial-ryegrass": {
+      "inHighMix": false,
+      "inLowMix": true,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Poor",
+      "reliabilityFactor": 0.4,
+      "nFarms": 3,
+      "nFarmsEstablished": 2,
+      "meanPerf": 0.153,
+      "meanAbund": 0.11,
+      "perFarm": {
+        "QF": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.55,
+          "perf": 0.524,
+          "abund": 0.037
+        },
+        "SB": {
+          "cBio": 2.49,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 3.5,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": -0.85,
+          "abund": 0.233
+        },
+        "TS": {
+          "cBio": 0.0,
+          "hBio": 1.17,
+          "lBio": 1.83,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.786,
+          "abund": 0.061
+        }
+      },
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "plantain": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Good",
+      "reliabilityFactor": 1.0,
+      "nFarms": 19,
+      "nFarmsEstablished": 11,
+      "meanPerf": 0.198,
+      "meanAbund": 0.438,
+      "perFarm": {
+        "AS": {
+          "cBio": 0.24,
+          "hBio": 2.1,
+          "lBio": 0.18,
+          "cCov": 0.55,
+          "hCov": 1.5,
+          "lCov": 0.05,
+          "perf": 0.543,
+          "abund": 0.1
+        },
+        "DS": {
+          "cBio": 18.51,
+          "hBio": 16.71,
+          "lBio": 29.56,
+          "cCov": 7.5,
+          "hCov": 1.5,
+          "lCov": 7.5,
+          "perf": -0.283,
+          "abund": 0.5
+        },
+        "GF": {
+          "cBio": 21.34,
+          "hBio": 24.83,
+          "lBio": 2.34,
+          "cCov": 0.55,
+          "hCov": 3.5,
+          "lCov": 0.05,
+          "perf": 0.304,
+          "abund": 0.233
+        },
+        "HH": {
+          "cBio": 0.0,
+          "hBio": 8.85,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.947,
+          "abund": 0.295
+        },
+        "KA": {
+          "cBio": 0.0,
+          "hBio": 7.78,
+          "lBio": 0.0,
+          "cCov": 3.5,
+          "hCov": 1.5,
+          "lCov": 0.55,
+          "perf": 0.418,
+          "abund": 0.233
+        },
+        "MM": {
+          "cBio": 4.68,
+          "hBio": 1.78,
+          "lBio": 1.46,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": -0.416,
+          "abund": 0.156
+        },
+        "PA": {
+          "cBio": 8.39,
+          "hBio": 16.2,
+          "lBio": 27.75,
+          "cCov": 0.55,
+          "hCov": 3.5,
+          "lCov": 17.5,
+          "perf": 0.446,
+          "abund": 1.0
+        },
+        "PV": {
+          "cBio": 17.61,
+          "hBio": 62.93,
+          "lBio": 46.05,
+          "cCov": 17.5,
+          "hCov": 17.5,
+          "lCov": 17.5,
+          "perf": 0.336,
+          "abund": 1.0
+        },
+        "QF": {
+          "cBio": 82.76,
+          "hBio": 13.81,
+          "lBio": 34.48,
+          "cCov": 17.5,
+          "hCov": 3.5,
+          "lCov": 17.5,
+          "perf": -0.687,
+          "abund": 1.0
+        },
+        "RF1": {
+          "cBio": 14.55,
+          "hBio": 56.83,
+          "lBio": 79.3,
+          "cCov": 1.5,
+          "hCov": 7.5,
+          "lCov": 17.5,
+          "perf": 0.606,
+          "abund": 1.0
+        },
+        "RF2": {
+          "cBio": 30.44,
+          "hBio": 44.83,
+          "lBio": 77.87,
+          "cCov": 3.5,
+          "hCov": 17.5,
+          "lCov": 7.5,
+          "perf": 0.374,
+          "abund": 1.0
+        },
+        "RF3": {
+          "cBio": 19.63,
+          "hBio": 63.72,
+          "lBio": 59.84,
+          "cCov": 17.5,
+          "hCov": 17.5,
+          "lCov": 37.5,
+          "perf": 0.315,
+          "abund": 1.0
+        },
+        "RV": {
+          "cBio": 0.0,
+          "hBio": 1.33,
+          "lBio": 0.19,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.05,
+          "perf": 0.726,
+          "abund": 0.003
+        },
+        "SB": {
+          "cBio": 1.14,
+          "hBio": 0.17,
+          "lBio": 0.0,
+          "cCov": 0.05,
+          "hCov": 1.5,
+          "lCov": 0.05,
+          "perf": -0.041,
+          "abund": 0.1
+        },
+        "TE": {
+          "cBio": 1.13,
+          "hBio": 2.53,
+          "lBio": 0.79,
+          "cCov": 0.55,
+          "hCov": 1.5,
+          "lCov": 1.5,
+          "perf": 0.35,
+          "abund": 0.1
+        },
+        "TF": {
+          "cBio": 9.96,
+          "hBio": 4.43,
+          "lBio": 3.16,
+          "cCov": 0.55,
+          "hCov": 1.5,
+          "lCov": 0.55,
+          "perf": -0.074,
+          "abund": 0.1
+        },
+        "TH": {
+          "cBio": 0.0,
+          "hBio": 0.02,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.059,
+          "abund": 0.003
+        },
+        "TS": {
+          "cBio": 30.01,
+          "hBio": 6.24,
+          "lBio": 18.05,
+          "cCov": 1.5,
+          "hCov": 3.5,
+          "lCov": 7.5,
+          "perf": -0.243,
+          "abund": 0.5
+        },
+        "WB": {
+          "cBio": 0.04,
+          "hBio": 0.09,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.08,
+          "abund": 0.003
+        }
+      },
+      "matchWeights": {
+        "ph": 0.36,
+        "clay": 0.48,
+        "map": 0.37,
+        "cmd": 0.44
+      },
+      "climatePredictors": [
+        {
+          "var": "clay",
+          "r": -0.25,
+          "n": 19
+        },
+        {
+          "var": "cmd",
+          "r": -0.2,
+          "n": 19
+        },
+        {
+          "var": "map",
+          "r": 0.11,
+          "n": 19
+        },
+        {
+          "var": "ph",
+          "r": 0.08,
+          "n": 19
+        }
+      ]
+    },
+    "red-clover": {
+      "inHighMix": false,
+      "inLowMix": true,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Moderate",
+      "reliabilityFactor": 0.7,
+      "nFarms": 18,
+      "nFarmsEstablished": 9,
+      "meanPerf": 0.19,
+      "meanAbund": 0.271,
+      "perFarm": {
+        "AS": {
+          "cBio": 3.09,
+          "hBio": 1.4,
+          "lBio": 2.27,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.05,
+          "perf": -0.048,
+          "abund": 0.1
+        },
+        "DS": {
+          "cBio": 2.98,
+          "hBio": 3.11,
+          "lBio": 0.88,
+          "cCov": 3.5,
+          "hCov": 3.5,
+          "lCov": 3.5,
+          "perf": -0.289,
+          "abund": 0.233
+        },
+        "GF": {
+          "cBio": 4.01,
+          "hBio": 7.35,
+          "lBio": 8.87,
+          "cCov": 0.55,
+          "hCov": 0.55,
+          "lCov": 0.05,
+          "perf": 0.036,
+          "abund": 0.037
+        },
+        "KA": {
+          "cBio": 0.06,
+          "hBio": 0.27,
+          "lBio": 10.94,
+          "cCov": 0.05,
+          "hCov": 0.55,
+          "lCov": 1.5,
+          "perf": 0.851,
+          "abund": 0.1
+        },
+        "MM": {
+          "cBio": 0.95,
+          "hBio": 0.0,
+          "lBio": 0.21,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": -0.449,
+          "abund": 0.032
+        },
+        "PA": {
+          "cBio": 1.32,
+          "hBio": 10.15,
+          "lBio": 4.93,
+          "cCov": 1.5,
+          "hCov": 7.5,
+          "lCov": 3.5,
+          "perf": 0.466,
+          "abund": 0.5
+        },
+        "PV": {
+          "cBio": 0.0,
+          "hBio": 1.63,
+          "lBio": 3.4,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.05,
+          "perf": 0.559,
+          "abund": 0.037
+        },
+        "QF": {
+          "cBio": 0.49,
+          "hBio": 0.37,
+          "lBio": 3.12,
+          "cCov": 1.5,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.084,
+          "abund": 0.1
+        },
+        "RF1": {
+          "cBio": 1.34,
+          "hBio": 6.23,
+          "lBio": 8.4,
+          "cCov": 3.5,
+          "hCov": 17.5,
+          "lCov": 7.5,
+          "perf": 0.553,
+          "abund": 1.0
+        },
+        "RF2": {
+          "cBio": 11.28,
+          "hBio": 10.65,
+          "lBio": 12.52,
+          "cCov": 7.5,
+          "hCov": 7.5,
+          "lCov": 7.5,
+          "perf": 0.031,
+          "abund": 0.5
+        },
+        "RF3": {
+          "cBio": 13.85,
+          "hBio": 26.16,
+          "lBio": 1.53,
+          "cCov": 7.5,
+          "hCov": 37.5,
+          "lCov": 17.5,
+          "perf": -0.308,
+          "abund": 1.0
+        },
+        "RV": {
+          "cBio": 0.01,
+          "hBio": 1.73,
+          "lBio": 1.4,
+          "cCov": 3.5,
+          "hCov": 1.5,
+          "lCov": 0.55,
+          "perf": 0.177,
+          "abund": 0.233
+        },
+        "SB": {
+          "cBio": 0.93,
+          "hBio": 3.87,
+          "lBio": 2.13,
+          "cCov": 0.05,
+          "hCov": 1.5,
+          "lCov": 0.55,
+          "perf": 0.384,
+          "abund": 0.1
+        },
+        "TE": {
+          "cBio": 3.48,
+          "hBio": 1.6,
+          "lBio": 2.81,
+          "cCov": 0.55,
+          "hCov": 1.5,
+          "lCov": 0.55,
+          "perf": -0.059,
+          "abund": 0.1
+        },
+        "TF": {
+          "cBio": 0.47,
+          "hBio": 0.77,
+          "lBio": 9.27,
+          "cCov": 3.5,
+          "hCov": 1.5,
+          "lCov": 0.55,
+          "perf": 0.257,
+          "abund": 0.233
+        },
+        "TH": {
+          "cBio": 0.0,
+          "hBio": 0.37,
+          "lBio": 1.11,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.69,
+          "abund": 0.037
+        },
+        "TS": {
+          "cBio": 9.89,
+          "hBio": 11.15,
+          "lBio": 7.47,
+          "cCov": 7.5,
+          "hCov": 3.5,
+          "lCov": 7.5,
+          "perf": -0.081,
+          "abund": 0.5
+        },
+        "WB": {
+          "cBio": 0.08,
+          "hBio": 4.87,
+          "lBio": 1.08,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.55,
+          "perf": 0.57,
+          "abund": 0.037
+        }
+      },
+      "matchWeights": {
+        "ph": 0.55,
+        "clay": 0.41,
+        "map": 0.36,
+        "cmd": 0.42
+      },
+      "climatePredictors": [
+        {
+          "var": "ph",
+          "r": 0.36,
+          "n": 18
+        },
+        {
+          "var": "cmd",
+          "r": 0.17,
+          "n": 18
+        },
+        {
+          "var": "clay",
+          "r": 0.16,
+          "n": 18
+        },
+        {
+          "var": "map",
+          "r": -0.09,
+          "n": 18
+        }
+      ]
+    },
+    "ryegrass-blend": {
+      "inHighMix": true,
+      "inLowMix": true,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Poor",
+      "reliabilityFactor": 0.4,
+      "nFarms": 18,
+      "nFarmsEstablished": 18,
+      "meanPerf": 0.687,
+      "meanAbund": 0.193,
+      "perFarm": {
+        "AS": {
+          "cBio": 0.0,
+          "hBio": 15.61,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.94,
+          "abund": 0.52
+        },
+        "DS": {
+          "cBio": 0.0,
+          "hBio": 1.42,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.587,
+          "abund": 0.047
+        },
+        "GF": {
+          "cBio": 0.0,
+          "hBio": 4.66,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.734,
+          "abund": 0.1
+        },
+        "HH": {
+          "cBio": 0.0,
+          "hBio": 3.56,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.781,
+          "abund": 0.119
+        },
+        "KA": {
+          "cBio": 0.0,
+          "hBio": 1.41,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.662,
+          "abund": 0.233
+        },
+        "MM": {
+          "cBio": 0.0,
+          "hBio": 1.84,
+          "lBio": 0.71,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.718,
+          "abund": 0.061
+        },
+        "PA": {
+          "cBio": 0.0,
+          "hBio": 1.95,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.55,
+          "perf": 0.717,
+          "abund": 0.233
+        },
+        "PV": {
+          "cBio": 0.0,
+          "hBio": 11.93,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.865,
+          "abund": 0.233
+        },
+        "QF": {
+          "cBio": 0.0,
+          "hBio": 0.05,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.169,
+          "abund": 0.037
+        },
+        "RF1": {
+          "cBio": 0.0,
+          "hBio": 15.54,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.706,
+          "abund": 0.037
+        },
+        "RF2": {
+          "cBio": 0.0,
+          "hBio": 17.76,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.947,
+          "abund": 0.592
+        },
+        "RF3": {
+          "cBio": 0.0,
+          "hBio": 9.14,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.901,
+          "abund": 0.305
+        },
+        "SB": {
+          "cBio": 0.0,
+          "hBio": 3.2,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.697,
+          "abund": 0.1
+        },
+        "TE": {
+          "cBio": 0.0,
+          "hBio": 7.39,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.769,
+          "abund": 0.1
+        },
+        "TF": {
+          "cBio": 0.0,
+          "hBio": 0.32,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.244,
+          "abund": 0.011
+        },
+        "TH": {
+          "cBio": 0.0,
+          "hBio": 6.43,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.865,
+          "abund": 0.214
+        },
+        "TS": {
+          "cBio": 0.0,
+          "hBio": 3.35,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.604,
+          "abund": 0.037
+        },
+        "WB": {
+          "cBio": 0.0,
+          "hBio": 0.22,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.46,
+          "abund": 0.5
+        }
+      },
+      "matchWeights": {
+        "ph": 0.36,
+        "clay": 0.35,
+        "map": 0.3,
+        "cmd": 0.36
+      },
+      "climatePredictors": [
+        {
+          "var": "ph",
+          "r": 0.09,
+          "n": 18
+        },
+        {
+          "var": "clay",
+          "r": -0.08,
+          "n": 18
+        },
+        {
+          "var": "cmd",
+          "r": -0.08,
+          "n": 18
+        },
+        {
+          "var": "map",
+          "r": 0.0,
+          "n": 18
+        }
+      ]
+    },
+    "sideoats-grama": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Poor",
+      "reliabilityFactor": 0.4,
+      "nFarms": 6,
+      "nFarmsEstablished": 6,
+      "meanPerf": 0.671,
+      "meanAbund": 0.178,
+      "perFarm": {
+        "DS": {
+          "cBio": 0.0,
+          "hBio": 0.01,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.362,
+          "abund": 0.233
+        },
+        "GF": {
+          "cBio": 0.0,
+          "hBio": 1.09,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.686,
+          "abund": 0.036
+        },
+        "QF": {
+          "cBio": 0.0,
+          "hBio": 7.67,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.939,
+          "abund": 0.256
+        },
+        "SB": {
+          "cBio": 0.0,
+          "hBio": 0.12,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.194,
+          "abund": 0.004
+        },
+        "TH": {
+          "cBio": 0.0,
+          "hBio": 12.29,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.961,
+          "abund": 0.41
+        },
+        "WB": {
+          "cBio": 0.0,
+          "hBio": 3.93,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.887,
+          "abund": 0.131
+        }
+      },
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "slender-lespedeza": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Poor",
+      "reliabilityFactor": 0.4,
+      "nFarms": 2,
+      "nFarmsEstablished": 2,
+      "meanPerf": 0.618,
+      "meanAbund": 0.028,
+      "perFarm": {
+        "PA": {
+          "cBio": 0.0,
+          "hBio": 0.68,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.577,
+          "abund": 0.023
+        },
+        "RF1": {
+          "cBio": 0.0,
+          "hBio": 0.97,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.659,
+          "abund": 0.032
+        }
+      },
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "small-burnet": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Good",
+      "reliabilityFactor": 1.0,
+      "nFarms": 19,
+      "nFarmsEstablished": 17,
+      "meanPerf": 0.619,
+      "meanAbund": 0.102,
+      "perFarm": {
+        "AS": {
+          "cBio": 0.0,
+          "hBio": 0.69,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.384,
+          "abund": 0.003
+        },
+        "DS": {
+          "cBio": 0.0,
+          "hBio": 0.47,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.499,
+          "abund": 0.037
+        },
+        "GF": {
+          "cBio": 0.0,
+          "hBio": 8.75,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.943,
+          "abund": 0.5
+        },
+        "HH": {
+          "cBio": 0.0,
+          "hBio": 0.01,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.02,
+          "abund": 0.0
+        },
+        "KA": {
+          "cBio": 0.0,
+          "hBio": 3.69,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.828,
+          "abund": 0.1
+        },
+        "MM": {
+          "cBio": 0.0,
+          "hBio": 0.05,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.085,
+          "abund": 0.002
+        },
+        "PA": {
+          "cBio": 0.0,
+          "hBio": 1.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.61,
+          "abund": 0.037
+        },
+        "PV": {
+          "cBio": 0.0,
+          "hBio": 2.13,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.786,
+          "abund": 0.1
+        },
+        "QF": {
+          "cBio": 0.0,
+          "hBio": 0.59,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.625,
+          "abund": 0.1
+        },
+        "RF1": {
+          "cBio": 0.0,
+          "hBio": 8.23,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.602,
+          "abund": 0.003
+        },
+        "RF2": {
+          "cBio": 0.0,
+          "hBio": 7.48,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.912,
+          "abund": 0.233
+        },
+        "RF3": {
+          "cBio": 0.0,
+          "hBio": 17.02,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.883,
+          "abund": 0.1
+        },
+        "RV": {
+          "cBio": 0.0,
+          "hBio": 0.82,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.583,
+          "abund": 0.037
+        },
+        "SB": {
+          "cBio": 0.0,
+          "hBio": 0.05,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.264,
+          "abund": 0.037
+        },
+        "TE": {
+          "cBio": 0.0,
+          "hBio": 4.11,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.885,
+          "abund": 0.233
+        },
+        "TF": {
+          "cBio": 0.0,
+          "hBio": 0.89,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.593,
+          "abund": 0.037
+        },
+        "TH": {
+          "cBio": 0.0,
+          "hBio": 3.25,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.87,
+          "abund": 0.233
+        },
+        "TS": {
+          "cBio": 0.0,
+          "hBio": 1.87,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 1.5,
+          "lCov": 0.0,
+          "perf": 0.773,
+          "abund": 0.1
+        },
+        "WB": {
+          "cBio": 0.0,
+          "hBio": 1.04,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.615,
+          "abund": 0.037
+        }
+      },
+      "matchWeights": {
+        "ph": 0.4,
+        "clay": 0.46,
+        "map": 0.31,
+        "cmd": 0.44
+      },
+      "climatePredictors": [
+        {
+          "var": "clay",
+          "r": 0.23,
+          "n": 19
+        },
+        {
+          "var": "cmd",
+          "r": -0.2,
+          "n": 19
+        },
+        {
+          "var": "ph",
+          "r": 0.14,
+          "n": 19
+        },
+        {
+          "var": "map",
+          "r": 0.02,
+          "n": 19
+        }
+      ]
+    },
+    "smooth-bromegrass": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Moderate",
+      "reliabilityFactor": 0.7,
+      "nFarms": 16,
+      "nFarmsEstablished": 11,
+      "meanPerf": 0.307,
+      "meanAbund": 0.551,
+      "perFarm": {
+        "AS": {
+          "cBio": 0.0,
+          "hBio": 4.21,
+          "lBio": 1.11,
+          "cCov": 17.5,
+          "hCov": 7.5,
+          "lCov": 37.5,
+          "perf": 0.379,
+          "abund": 1.0
+        },
+        "GF": {
+          "cBio": 0.0,
+          "hBio": 9.15,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.605,
+          "abund": 0.003
+        },
+        "HH": {
+          "cBio": 0.05,
+          "hBio": 0.23,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.239,
+          "abund": 0.008
+        },
+        "KA": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.938,
+          "abund": 0.5
+        },
+        "PA": {
+          "cBio": 0.0,
+          "hBio": 2.66,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 0.0,
+          "perf": 0.542,
+          "abund": 0.003
+        },
+        "PV": {
+          "cBio": 0.0,
+          "hBio": 0.33,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.55,
+          "perf": 0.4,
+          "abund": 0.037
+        },
+        "QF": {
+          "cBio": 0.67,
+          "hBio": 0.18,
+          "lBio": 0.0,
+          "cCov": 0.05,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": -0.253,
+          "abund": 0.003
+        },
+        "RF1": {
+          "cBio": 1.19,
+          "hBio": 11.5,
+          "lBio": 0.0,
+          "cCov": 17.5,
+          "hCov": 17.5,
+          "lCov": 1.5,
+          "perf": 0.469,
+          "abund": 1.0
+        },
+        "RF2": {
+          "cBio": 1.11,
+          "hBio": 15.82,
+          "lBio": 0.0,
+          "cCov": 17.5,
+          "hCov": 17.5,
+          "lCov": 7.5,
+          "perf": 0.506,
+          "abund": 1.0
+        },
+        "RF3": {
+          "cBio": 7.79,
+          "hBio": 4.2,
+          "lBio": 0.0,
+          "cCov": 3.5,
+          "hCov": 17.5,
+          "lCov": 7.5,
+          "perf": 0.088,
+          "abund": 1.0
+        },
+        "SB": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.875,
+          "abund": 0.233
+        },
+        "TE": {
+          "cBio": 0.0,
+          "hBio": 0.35,
+          "lBio": 0.0,
+          "cCov": 17.5,
+          "hCov": 17.5,
+          "lCov": 3.5,
+          "perf": 0.246,
+          "abund": 1.0
+        },
+        "TF": {
+          "cBio": 0.0,
+          "hBio": 1.16,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 17.5,
+          "lCov": 0.0,
+          "perf": 0.809,
+          "abund": 1.0
+        },
+        "TH": {
+          "cBio": 36.1,
+          "hBio": 26.55,
+          "lBio": 47.3,
+          "cCov": 37.5,
+          "hCov": 37.5,
+          "lCov": 37.5,
+          "perf": -0.091,
+          "abund": 1.0
+        },
+        "TS": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.55,
+          "hCov": 0.0,
+          "lCov": 0.55,
+          "perf": -0.524,
+          "abund": 0.037
+        },
+        "WB": {
+          "cBio": 28.25,
+          "hBio": 13.13,
+          "lBio": 14.0,
+          "cCov": 62.5,
+          "hCov": 37.5,
+          "lCov": 62.5,
+          "perf": -0.316,
+          "abund": 1.0
+        }
+      },
+      "matchWeights": {
+        "ph": 0.5,
+        "clay": 0.75,
+        "map": 0.47,
+        "cmd": 0.41
+      },
+      "climatePredictors": [
+        {
+          "var": "clay",
+          "r": -0.65,
+          "n": 16
+        },
+        {
+          "var": "ph",
+          "r": -0.29,
+          "n": 16
+        },
+        {
+          "var": "map",
+          "r": 0.24,
+          "n": 16
+        },
+        {
+          "var": "cmd",
+          "r": -0.16,
+          "n": 16
+        }
+      ]
+    },
+    "strawberry-clover": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Poor",
+      "reliabilityFactor": 0.4,
+      "nFarms": 1,
+      "nFarmsEstablished": 0,
+      "meanPerf": 0.085,
+      "meanAbund": 0.002,
+      "perFarm": {
+        "TS": {
+          "cBio": 0.0,
+          "hBio": 0.05,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.085,
+          "abund": 0.002
+        }
+      },
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "tall-fescue": {
+      "inHighMix": false,
+      "inLowMix": false,
+      "signalType": "volunteer",
+      "outcome": "detected",
+      "idReliability": "Moderate",
+      "reliabilityFactor": 0.7,
+      "nFarms": 17,
+      "nFarmsEstablished": 2,
+      "meanPerf": -0.557,
+      "meanAbund": 0.925,
+      "perFarm": {
+        "AS": {
+          "cBio": 208.13,
+          "hBio": 0.0,
+          "lBio": 42.52,
+          "cCov": 62.5,
+          "hCov": 0.0,
+          "lCov": 17.5,
+          "perf": -0.787,
+          "abund": 1.0
+        },
+        "DS": {
+          "cBio": 55.99,
+          "hBio": 15.03,
+          "lBio": 9.37,
+          "cCov": 7.5,
+          "hCov": 0.05,
+          "lCov": 17.5,
+          "perf": -0.352,
+          "abund": 1.0
+        },
+        "GF": {
+          "cBio": 89.03,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 3.5,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": -0.947,
+          "abund": 0.233
+        },
+        "HH": {
+          "cBio": 33.93,
+          "hBio": 2.18,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": -0.925,
+          "abund": 1.0
+        },
+        "KA": {
+          "cBio": 72.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 37.5,
+          "hCov": 0.0,
+          "lCov": 7.5,
+          "perf": -0.919,
+          "abund": 1.0
+        },
+        "MM": {
+          "cBio": 110.56,
+          "hBio": 0.0,
+          "lBio": 6.57,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": -0.938,
+          "abund": 1.0
+        },
+        "PA": {
+          "cBio": 234.01,
+          "hBio": 68.21,
+          "lBio": 62.79,
+          "cCov": 62.5,
+          "hCov": 37.5,
+          "lCov": 37.5,
+          "perf": -0.437,
+          "abund": 1.0
+        },
+        "PV": {
+          "cBio": 176.18,
+          "hBio": 52.53,
+          "lBio": 15.22,
+          "cCov": 37.5,
+          "hCov": 7.5,
+          "lCov": 17.5,
+          "perf": -0.604,
+          "abund": 1.0
+        },
+        "QF": {
+          "cBio": 45.14,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 37.5,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": -0.988,
+          "abund": 1.0
+        },
+        "RF1": {
+          "cBio": 132.92,
+          "hBio": 7.25,
+          "lBio": 0.0,
+          "cCov": 87.5,
+          "hCov": 37.5,
+          "lCov": 37.5,
+          "perf": -0.725,
+          "abund": 1.0
+        },
+        "RF2": {
+          "cBio": 0.0,
+          "hBio": 69.48,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 62.5,
+          "lCov": 0.0,
+          "perf": 0.985,
+          "abund": 1.0
+        },
+        "RF3": {
+          "cBio": 102.79,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 62.5,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": -0.994,
+          "abund": 1.0
+        },
+        "RV": {
+          "cBio": 90.57,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 17.5,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": -0.986,
+          "abund": 1.0
+        },
+        "TE": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 13.93,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 7.5,
+          "perf": 0.913,
+          "abund": 0.5
+        },
+        "TF": {
+          "cBio": 252.73,
+          "hBio": 14.18,
+          "lBio": 0.23,
+          "cCov": 62.5,
+          "hCov": 17.5,
+          "lCov": 37.5,
+          "perf": -0.72,
+          "abund": 1.0
+        },
+        "TH": {
+          "cBio": 154.63,
+          "hBio": 121.74,
+          "lBio": 46.13,
+          "cCov": 62.5,
+          "hCov": 62.5,
+          "lCov": 62.5,
+          "perf": -0.177,
+          "abund": 1.0
+        },
+        "WB": {
+          "cBio": 195.19,
+          "hBio": 0.0,
+          "lBio": 20.18,
+          "cCov": 37.5,
+          "hCov": 0.0,
+          "lCov": 7.5,
+          "perf": -0.863,
+          "abund": 1.0
+        }
+      },
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "timothy": {
+      "inHighMix": false,
+      "inLowMix": false,
+      "signalType": "volunteer",
+      "outcome": "detected",
+      "idReliability": "Moderate",
+      "reliabilityFactor": 0.7,
+      "nFarms": 14,
+      "nFarmsEstablished": 4,
+      "meanPerf": -0.159,
+      "meanAbund": 0.322,
+      "perFarm": {
+        "AS": {
+          "cBio": 1.1,
+          "hBio": 0.27,
+          "lBio": 0.89,
+          "cCov": 3.5,
+          "hCov": 3.5,
+          "lCov": 1.5,
+          "perf": -0.205,
+          "abund": 0.233
+        },
+        "DS": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.55,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": -0.524,
+          "abund": 0.037
+        },
+        "GF": {
+          "cBio": 2.15,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 3.5,
+          "hCov": 7.5,
+          "lCov": 1.5,
+          "perf": -0.44,
+          "abund": 0.5
+        },
+        "KA": {
+          "cBio": 1.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.55,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": -0.61,
+          "abund": 0.037
+        },
+        "PA": {
+          "cBio": 0.0,
+          "hBio": 0.67,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.593,
+          "abund": 0.5
+        },
+        "RF1": {
+          "cBio": 0.0,
+          "hBio": 3.98,
+          "lBio": 2.66,
+          "cCov": 3.5,
+          "hCov": 7.5,
+          "lCov": 3.5,
+          "perf": 0.606,
+          "abund": 0.5
+        },
+        "RF2": {
+          "cBio": 15.43,
+          "hBio": 0.0,
+          "lBio": 0.66,
+          "cCov": 0.55,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": -0.386,
+          "abund": 0.233
+        },
+        "RF3": {
+          "cBio": 15.29,
+          "hBio": 10.44,
+          "lBio": 0.0,
+          "cCov": 7.5,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": -0.415,
+          "abund": 0.5
+        },
+        "RV": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.55,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": -0.524,
+          "abund": 0.037
+        },
+        "SB": {
+          "cBio": 0.56,
+          "hBio": 5.51,
+          "lBio": 0.0,
+          "cCov": 3.5,
+          "hCov": 3.5,
+          "lCov": 0.0,
+          "perf": 0.224,
+          "abund": 0.233
+        },
+        "TE": {
+          "cBio": 1.58,
+          "hBio": 0.0,
+          "lBio": 0.87,
+          "cCov": 0.55,
+          "hCov": 1.5,
+          "lCov": 3.5,
+          "perf": -0.054,
+          "abund": 0.233
+        },
+        "TF": {
+          "cBio": 0.23,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 3.5,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": -0.539,
+          "abund": 0.233
+        },
+        "TS": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 3.5,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": -0.875,
+          "abund": 0.233
+        },
+        "WB": {
+          "cBio": 0.0,
+          "hBio": 32.17,
+          "lBio": 1.52,
+          "cCov": 0.55,
+          "hCov": 17.5,
+          "lCov": 3.5,
+          "perf": 0.927,
+          "abund": 1.0
+        }
+      },
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "virginia-wildrye": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Poor",
+      "reliabilityFactor": 0.4,
+      "nFarms": 10,
+      "nFarmsEstablished": 10,
+      "meanPerf": 0.592,
+      "meanAbund": 0.078,
+      "perFarm": {
+        "KA": {
+          "cBio": 0.0,
+          "hBio": 2.43,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.83,
+          "abund": 0.081
+        },
+        "MM": {
+          "cBio": 0.0,
+          "hBio": 0.18,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.268,
+          "abund": 0.006
+        },
+        "QF": {
+          "cBio": 0.0,
+          "hBio": 0.26,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.342,
+          "abund": 0.009
+        },
+        "RF1": {
+          "cBio": 0.0,
+          "hBio": 1.75,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.778,
+          "abund": 0.058
+        },
+        "RF3": {
+          "cBio": 0.0,
+          "hBio": 0.24,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.327,
+          "abund": 0.008
+        },
+        "SB": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.524,
+          "abund": 0.037
+        },
+        "TE": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.524,
+          "abund": 0.037
+        },
+        "TF": {
+          "cBio": 0.0,
+          "hBio": 2.56,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.837,
+          "abund": 0.085
+        },
+        "TS": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.524,
+          "abund": 0.037
+        },
+        "WB": {
+          "cBio": 0.0,
+          "hBio": 12.57,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.962,
+          "abund": 0.419
+        }
+      },
+      "matchWeights": {
+        "ph": 0.46,
+        "clay": 0.42,
+        "map": 0.47,
+        "cmd": 0.43
+      },
+      "climatePredictors": [
+        {
+          "var": "map",
+          "r": 0.24,
+          "n": 10
+        },
+        {
+          "var": "ph",
+          "r": 0.23,
+          "n": 10
+        },
+        {
+          "var": "cmd",
+          "r": -0.18,
+          "n": 10
+        },
+        {
+          "var": "clay",
+          "r": 0.17,
+          "n": 10
+        }
+      ]
+    },
+    "white-clover": {
+      "inHighMix": true,
+      "inLowMix": true,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Moderate",
+      "reliabilityFactor": 0.7,
+      "nFarms": 19,
+      "nFarmsEstablished": 17,
+      "meanPerf": 0.528,
+      "meanAbund": 0.342,
+      "perFarm": {
+        "AS": {
+          "cBio": 0.24,
+          "hBio": 23.53,
+          "lBio": 20.99,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.05,
+          "perf": 0.724,
+          "abund": 0.037
+        },
+        "DS": {
+          "cBio": 4.02,
+          "hBio": 5.36,
+          "lBio": 2.52,
+          "cCov": 0.55,
+          "hCov": 0.05,
+          "lCov": 0.55,
+          "perf": -0.08,
+          "abund": 0.037
+        },
+        "GF": {
+          "cBio": 3.71,
+          "hBio": 13.26,
+          "lBio": 3.93,
+          "cCov": 0.05,
+          "hCov": 0.05,
+          "lCov": 0.05,
+          "perf": 0.229,
+          "abund": 0.003
+        },
+        "HH": {
+          "cBio": 0.37,
+          "hBio": 5.99,
+          "lBio": 2.6,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.76,
+          "abund": 0.2
+        },
+        "KA": {
+          "cBio": 3.41,
+          "hBio": 42.36,
+          "lBio": 74.45,
+          "cCov": 1.5,
+          "hCov": 1.5,
+          "lCov": 7.5,
+          "perf": 0.714,
+          "abund": 0.5
+        },
+        "MM": {
+          "cBio": 3.2,
+          "hBio": 6.87,
+          "lBio": 4.63,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.27,
+          "abund": 0.229
+        },
+        "PA": {
+          "cBio": 0.01,
+          "hBio": 16.22,
+          "lBio": 10.8,
+          "cCov": 0.05,
+          "hCov": 0.55,
+          "lCov": 0.05,
+          "perf": 0.696,
+          "abund": 0.037
+        },
+        "PV": {
+          "cBio": 0.0,
+          "hBio": 21.77,
+          "lBio": 11.51,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.971,
+          "abund": 0.726
+        },
+        "QF": {
+          "cBio": 4.0,
+          "hBio": 1.28,
+          "lBio": 2.11,
+          "cCov": 3.5,
+          "hCov": 0.55,
+          "lCov": 0.05,
+          "perf": -0.521,
+          "abund": 0.233
+        },
+        "RF1": {
+          "cBio": 5.23,
+          "hBio": 38.9,
+          "lBio": 7.83,
+          "cCov": 3.5,
+          "hCov": 17.5,
+          "lCov": 17.5,
+          "perf": 0.634,
+          "abund": 1.0
+        },
+        "RF2": {
+          "cBio": 0.96,
+          "hBio": 7.05,
+          "lBio": 10.53,
+          "cCov": 3.5,
+          "hCov": 7.5,
+          "lCov": 17.5,
+          "perf": 0.677,
+          "abund": 1.0
+        },
+        "RF3": {
+          "cBio": 0.56,
+          "hBio": 3.55,
+          "lBio": 2.23,
+          "cCov": 0.0,
+          "hCov": 7.5,
+          "lCov": 37.5,
+          "perf": 0.745,
+          "abund": 1.0
+        },
+        "RV": {
+          "cBio": 0.38,
+          "hBio": 7.83,
+          "lBio": 6.19,
+          "cCov": 1.5,
+          "hCov": 1.5,
+          "lCov": 1.5,
+          "perf": 0.505,
+          "abund": 0.1
+        },
+        "SB": {
+          "cBio": 0.16,
+          "hBio": 3.3,
+          "lBio": 1.95,
+          "cCov": 0.55,
+          "hCov": 1.5,
+          "lCov": 3.5,
+          "perf": 0.671,
+          "abund": 0.233
+        },
+        "TE": {
+          "cBio": 2.38,
+          "hBio": 9.13,
+          "lBio": 2.99,
+          "cCov": 0.55,
+          "hCov": 1.5,
+          "lCov": 0.55,
+          "perf": 0.339,
+          "abund": 0.1
+        },
+        "TF": {
+          "cBio": 2.51,
+          "hBio": 36.29,
+          "lBio": 0.26,
+          "cCov": 0.55,
+          "hCov": 1.5,
+          "lCov": 1.5,
+          "perf": 0.594,
+          "abund": 0.1
+        },
+        "TH": {
+          "cBio": 0.0,
+          "hBio": 11.34,
+          "lBio": 6.78,
+          "cCov": 0.0,
+          "hCov": 0.05,
+          "lCov": 1.5,
+          "perf": 0.812,
+          "abund": 0.1
+        },
+        "TS": {
+          "cBio": 5.55,
+          "hBio": 8.58,
+          "lBio": 28.43,
+          "cCov": 3.5,
+          "hCov": 1.5,
+          "lCov": 7.5,
+          "perf": 0.364,
+          "abund": 0.5
+        },
+        "WB": {
+          "cBio": 0.0,
+          "hBio": 10.85,
+          "lBio": 3.67,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.936,
+          "abund": 0.362
+        }
+      },
+      "matchWeights": {
+        "ph": 0.55,
+        "clay": 0.4,
+        "map": 0.36,
+        "cmd": 0.35
+      },
+      "climatePredictors": [
+        {
+          "var": "ph",
+          "r": 0.36,
+          "n": 19
+        },
+        {
+          "var": "clay",
+          "r": 0.14,
+          "n": 19
+        },
+        {
+          "var": "map",
+          "r": 0.09,
+          "n": 19
+        },
+        {
+          "var": "cmd",
+          "r": -0.07,
+          "n": 19
+        }
+      ]
+    },
+    "white-sweetclover": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Good",
+      "reliabilityFactor": 1.0,
+      "nFarms": 1,
+      "nFarmsEstablished": 1,
+      "meanPerf": 0.524,
+      "meanAbund": 0.037,
+      "perFarm": {
+        "QF": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.524,
+          "abund": 0.037
+        }
+      },
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "yellow-sweetclover": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "detected",
+      "idReliability": "Good",
+      "reliabilityFactor": 1.0,
+      "nFarms": 4,
+      "nFarmsEstablished": 3,
+      "meanPerf": 0.227,
+      "meanAbund": 0.392,
+      "perFarm": {
+        "AS": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.55,
+          "lCov": 0.0,
+          "perf": 0.524,
+          "abund": 0.037
+        },
+        "QF": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 1.5,
+          "hCov": 7.5,
+          "lCov": 0.0,
+          "perf": 0.632,
+          "abund": 0.5
+        },
+        "TS": {
+          "cBio": 0.0,
+          "hBio": 0.0,
+          "lBio": 0.0,
+          "cCov": 17.5,
+          "hCov": 0.55,
+          "lCov": 7.5,
+          "perf": -0.914,
+          "abund": 1.0
+        },
+        "WB": {
+          "cBio": 0.0,
+          "hBio": 0.99,
+          "lBio": 0.0,
+          "cCov": 0.0,
+          "hCov": 0.0,
+          "lCov": 0.0,
+          "perf": 0.664,
+          "abund": 0.033
+        }
+      },
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "alsike-clover": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "not_detected",
+      "failureType": "inconclusive",
+      "idReliability": "Poor",
+      "reliabilityFactor": 0.4,
+      "nFarms": 19,
+      "nFarmsEstablished": 0,
+      "meanPerf": 0.0,
+      "perFarm": {},
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "balansa-clover": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "not_detected",
+      "failureType": "inconclusive",
+      "idReliability": "Poor",
+      "reliabilityFactor": 0.4,
+      "nFarms": 19,
+      "nFarmsEstablished": 0,
+      "meanPerf": 0.0,
+      "perFarm": {},
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "kura-clover": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "not_detected",
+      "failureType": "inconclusive",
+      "idReliability": "Poor",
+      "reliabilityFactor": 0.4,
+      "nFarms": 19,
+      "nFarmsEstablished": 0,
+      "meanPerf": 0.0,
+      "perFarm": {},
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "maximilian-sunflower": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "not_detected",
+      "failureType": "inconclusive",
+      "idReliability": "n/a",
+      "reliabilityFactor": 0.3,
+      "nFarms": 19,
+      "nFarmsEstablished": 0,
+      "meanPerf": 0.0,
+      "perFarm": {},
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "purple-prairie-clover": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "not_detected",
+      "failureType": "genuine",
+      "idReliability": "Good",
+      "reliabilityFactor": 1.0,
+      "nFarms": 19,
+      "nFarmsEstablished": 0,
+      "meanPerf": -0.35,
+      "perFarm": {},
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    },
+    "sainfoin": {
+      "inHighMix": true,
+      "inLowMix": false,
+      "signalType": "establishment",
+      "outcome": "not_detected",
+      "failureType": "genuine",
+      "idReliability": "Good",
+      "reliabilityFactor": 1.0,
+      "nFarms": 19,
+      "nFarmsEstablished": 0,
+      "meanPerf": -0.35,
+      "perFarm": {},
+      "matchWeights": {
+        "ph": 0.6,
+        "clay": 0.5,
+        "map": 0.5,
+        "cmd": 0.5
+      }
+    }
+  }
+}

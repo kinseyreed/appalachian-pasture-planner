@@ -2,3 +2,7 @@
 .DS_Store
 node_modules/
 *.log
+
+# ClimateNA fetch intermediates (regenerate via tools/climatena/)
+tools/climatena/grid_input.csv
+tools/climatena/grid_climate.csv

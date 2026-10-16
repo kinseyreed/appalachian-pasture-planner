@@ -79,11 +79,43 @@
 
   // Try the Census geocoder first (best for exact U.S. addresses), then fall
   // back to Nominatim (best for town names). If both miss, guide the farmer.
+  // Geocode a typed query. Photon (same source as the suggestions dropdown) is
+  // tried first so the pin lands where the user expects, with the US Census and
+  // Nominatim geocoders as fallbacks.
+  async function geocodePhoton(query) {
+    const res = await suggest(query);
+    if (res && res.length) return { lat: res[0].lat, lon: res[0].lon, label: res[0].label };
+    throw new Error('no match');
+  }
   async function geocode(query) {
+    try { return await geocodePhoton(query); } catch (e) { /* fall through */ }
     try { return await geocodeCensus(query); } catch (e) { /* fall through */ }
     try { return await geocodeNominatim(query); } catch (e) { /* fall through */ }
     throw new Error('Couldn’t find that address. Try a nearby town + state (e.g. "Martinsburg, WV"), ' +
       'check the spelling, or use “Use my location” and drag the pin.');
+  }
+
+  // As-you-type suggestions via Photon (OpenStreetMap). Forgiving of partial /
+  // imprecise input, biased toward West Virginia. Returns [{label, lat, lon}].
+  async function suggest(query) {
+    const u = 'https://photon.komoot.io/api/?q=' + encodeURIComponent(query) +
+      '&limit=6&lang=en&lat=38.9&lon=-80.6';
+    const data = await getJson(u, {}, 7000);
+    if (!data || !data.features) return [];
+    const out = [];
+    const seen = {};
+    data.features.forEach(function (f) {
+      const p = f.properties || {}, c = (f.geometry || {}).coordinates;
+      if (!c) return;
+      const line1 = p.name || [p.housenumber, p.street].filter(Boolean).join(' ');
+      const place = p.city || p.town || p.village || p.hamlet || p.county;
+      const label = [line1, place, p.state, p.country === 'United States' ? null : p.country]
+        .filter(Boolean).join(', ');
+      if (!label || seen[label]) return;
+      seen[label] = 1;
+      out.push({ label: label, lat: c[1], lon: c[0] });
+    });
+    return out;
   }
 
   /* ---- 2. Soil: SSURGO via Soil Data Access -------------------------- */
@@ -229,7 +261,7 @@
   }
   const ZONE_6A_RANK = 6; // index of '6a' above; at/below this we treat the site as cold
 
-  async function lookupClimate(lat, lon) {
+  async function lookupClimateLive(lat, lon) {
     const url = 'https://archive-api.open-meteo.com/v1/archive?latitude=' + lat + '&longitude=' + lon +
       '&start_date=1991-01-01&end_date=2020-12-31' +
       '&daily=temperature_2m_min,precipitation_sum&temperature_unit=celsius&precipitation_unit=mm&timezone=auto';
@@ -295,8 +327,91 @@
       droughtLabel: drought ? drought.label : null,
       // derived hints
       cold: hz.rank <= ZONE_6A_RANK || frostFreeDays < 150, // zone 6a or colder, or short season
-      lowRainfall: (avgAnnualPrecipMm / 25.4) < 35
+      lowRainfall: (avgAnnualPrecipMm / 25.4) < 35,
+      source: 'Open-Meteo ERA5 1991–2020'
     };
+  }
+
+  /* ---- 4b. Climate normals: precomputed ClimateNA grid --------------- */
+  // Nearest-point lookup over data/climate-grid.json (built offline from
+  // ClimateNA; see tools/climatena/). Returns the normals in the same shape as
+  // lookupClimateLive, minus live drought. null if the grid is absent or the
+  // nearest point is beyond CLIMATE_GRID_MAX_DEG of the site.
+  let _climateGrid = null, _climateGridTried = false;
+  async function loadClimateGrid() {
+    if (_climateGridTried) return _climateGrid;
+    _climateGridTried = true;
+    try {
+      const res = await fetch('data/climate-grid.json');
+      if (res.ok) _climateGrid = await res.json();
+    } catch (e) { _climateGrid = null; }
+    return _climateGrid;
+  }
+
+  const CLIMATE_GRID_MAX_DEG = 0.75; // trust a grid point within ~0.75° (generous for the sparse seed grid)
+
+  async function lookupClimateGrid(lat, lon) {
+    const grid = await loadClimateGrid();
+    if (!grid || !grid.points || !grid.points.length) return null;
+    let best = null, bestD = Infinity;
+    const cosLat = Math.cos(lat * Math.PI / 180);
+    for (let i = 0; i < grid.points.length; i++) {
+      const p = grid.points[i];
+      const dLat = lat - p.lat, dLon = (lon - p.lon) * cosLat; // longitude shrinks with latitude
+      const d = Math.sqrt(dLat * dLat + dLon * dLon);
+      if (d < bestD) { bestD = d; best = p; }
+    }
+    if (!best || bestD > CLIMATE_GRID_MAX_DEG || best.emtF == null) return null;
+    const hz = hardinessZone(best.emtF); // app's own zone bands, for a consistent rank
+    const ffd = best.ffd != null ? best.ffd : null;
+    const precipIn = best.precipIn != null ? best.precipIn : null;
+    return {
+      hardinessZone: hz.zone,
+      hardinessRank: hz.rank,
+      avgExtremeMinF: best.emtF,
+      frostFreeDays: ffd,
+      annualPrecipIn: precipIn,
+      // ClimateNA extras not available from the ERA5 path
+      meanAnnualTempC: best.mat != null ? best.mat : null,
+      growingDegreeDays5: best.dd5 != null ? best.dd5 : null,
+      climateMoistureDeficit: best.cmd != null ? best.cmd : null,
+      cold: hz.rank <= ZONE_6A_RANK || (ffd != null && ffd < 150),
+      lowRainfall: precipIn != null && precipIn < 35,
+      source: (grid.meta && grid.meta.source) || 'ClimateNA',
+      gridDistanceDeg: Math.round(bestD * 100) / 100
+    };
+  }
+
+  // Climate normals, preferring the precomputed ClimateNA grid and falling back
+  // to Open-Meteo (ERA5). When the grid is used, recent-drought (a current-
+  // conditions signal, not a normal) is still fetched live from Open-Meteo.
+  async function lookupClimate(lat, lon) {
+    let grid = null;
+    try { grid = await lookupClimateGrid(lat, lon); } catch (e) { grid = null; }
+    if (!grid) return lookupClimateLive(lat, lon);
+    let live = null;
+    try { live = await lookupClimateLive(lat, lon); } catch (e) { live = null; }
+    // ClimateNA supplies the agronomic normals (precip, frost-free period, growing
+    // degree-days, moisture deficit). Hardiness ZONE, though, comes from Open-Meteo
+    // when available: ClimateNA's EMT is the *extreme* minimum, which runs colder
+    // than the *average* annual minimum USDA zones are defined on. Grid EMT is only
+    // the fallback when there's no live data (offline).
+    if (live) {
+      grid.hardinessZone = live.hardinessZone;
+      grid.hardinessRank = live.hardinessRank;
+      grid.avgExtremeMinF = live.avgExtremeMinF;
+      grid.cold = live.cold; // cold follows the zone, which we take from Open-Meteo
+      grid.recentPrecipPctNormal = live.recentPrecipPctNormal;
+      grid.droughtStress = live.droughtStress;
+      grid.droughtLabel = live.droughtLabel;
+      grid.zoneSource = 'Open-Meteo ERA5';
+    } else {
+      grid.recentPrecipPctNormal = null;
+      grid.droughtStress = 0;
+      grid.droughtLabel = null;
+      grid.zoneSource = grid.source;
+    }
+    return grid;
   }
 
   // Recent drought: last ~90 days of precipitation vs. the 1991–2020 normal for
@@ -532,11 +647,13 @@
 
   window.APP_GEO = {
     geocode: geocode,
+    suggest: suggest,
     browserLocation: browserLocation,
     lookupAll: lookupAll,
     lookupSoil: lookupSoil,
     lookupTerrain: lookupTerrain,
     lookupClimate: lookupClimate,
+    lookupClimateGrid: lookupClimateGrid,
     lookupPastureSoils: lookupPastureSoils,
     pinSquare: pinSquare
   };

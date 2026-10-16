@@ -1,0 +1,306 @@
+{
+ "_note": "Lead photos from Wikipedia/Wikimedia Commons, with per-image credit + license. Rebuild with tools/fetch-photos.py.",
+ "photos": {
+  "tall-fescue": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/Schedonorus_elatior_%E2%80%94_Flora_Batava_%E2%80%94_Volume_v5.jpg/500px-Schedonorus_elatior_%E2%80%94_Flora_Batava_%E2%80%94_Volume_v5.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Jan Kops",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Schedonorus_elatior_%E2%80%94_Flora_Batava_%E2%80%94_Volume_v5.jpg",
+   "title": "Schedonorus arundinaceus"
+  },
+  "orchardgrass": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c0/DactylisGlomerataIreland.JPG/500px-DactylisGlomerataIreland.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Notafly2",
+   "license": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:DactylisGlomerataIreland.JPG",
+   "title": "Dactylis glomerata"
+  },
+  "kentucky-bluegrass": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/Veldbeemdgras_Poa_pratensis.jpg/500px-Veldbeemdgras_Poa_pratensis.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Rasbak",
+   "license": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Veldbeemdgras_Poa_pratensis.jpg",
+   "title": "Poa pratensis"
+  },
+  "timothy": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/Timothy_grass.jpg/500px-Timothy_grass.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Blokenearexeter",
+   "license": "CC0",
+   "source": "https://commons.wikimedia.org/wiki/File:Timothy_grass.jpg",
+   "title": "Phleum pratense"
+  },
+  "perennial-ryegrass": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/Lolium_perenne_Engels_raaigras_doorschietend.jpg/500px-Lolium_perenne_Engels_raaigras_doorschietend.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Rasbak",
+   "license": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Lolium_perenne_Engels_raaigras_doorschietend.jpg",
+   "title": "Lolium perenne"
+  },
+  "smooth-bromegrass": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/BromusInermisFlowering.jpg/500px-BromusInermisFlowering.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Christian Fischer",
+   "license": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:BromusInermisFlowering.jpg",
+   "title": "Bromus inermis"
+  },
+  "white-clover": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Trifolium_repens_-_white_clover_on_way_from_Govindghat_to_Gangria_at_Valley_of_Flowers_National_Park_-_during_LGFC_-_VOF_2019_%281%29.jpg/500px-Trifolium_repens_-_white_clover_on_way_from_Govindghat_to_Gangria_at_Valley_of_Flowers_National_Park_-_during_LGFC_-_VOF_2019_%281%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Vinayaraj",
+   "license": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Trifolium_repens_-_white_clover_on_way_from_Govindghat_to_Gangria_at_Valley_of_Flowers_National_Park_-_during_LGFC_-_VOF_2019_(1).jpg",
+   "title": "Trifolium repens"
+  },
+  "red-clover": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Trifolium_pratense_-_Keila2.jpg/500px-Trifolium_pratense_-_Keila2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Ivar Leidus",
+   "license": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Trifolium_pratense_-_Keila2.jpg",
+   "title": "Trifolium pratense"
+  },
+  "alfalfa": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/75_Medicago_sativa_L.jpg/500px-75_Medicago_sativa_L.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Am\u00e9d\u00e9e Masclef",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:75_Medicago_sativa_L.jpg",
+   "title": "Medicago sativa"
+  },
+  "birdsfoot-trefoil": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/%28MHNT%29_Lotus_corniculatus_-_Plant_habit.jpg/500px-%28MHNT%29_Lotus_corniculatus_-_Plant_habit.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Didier Descouens",
+   "license": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:(MHNT)_Lotus_corniculatus_-_Plant_habit.jpg",
+   "title": "Lotus corniculatus"
+  },
+  "alsike-clover": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b6/Trifolium_hybridum_inflorescence_-_Keila.jpg/500px-Trifolium_hybridum_inflorescence_-_Keila.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Ivar Leidus",
+   "license": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Trifolium_hybridum_inflorescence_-_Keila.jpg",
+   "title": "Trifolium hybridum"
+  },
+  "annual-lespedeza": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/27/Kummerowia_striata_%28Lespedeza_striata%29.JPG/500px-Kummerowia_striata_%28Lespedeza_striata%29.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Show_ryu",
+   "license": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Kummerowia_striata_(Lespedeza_striata).JPG",
+   "title": "Kummerowia striata"
+  },
+  "crimson-clover": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Kals_am_Grossglockner_flowers_256.jpg/500px-Kals_am_Grossglockner_flowers_256.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Jacquesverlaeken",
+   "license": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Kals_am_Grossglockner_flowers_256.jpg",
+   "title": "Trifolium incarnatum"
+  },
+  "chicory": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Illustration_Cichorium_intybus0_clean.jpg/500px-Illustration_Cichorium_intybus0_clean.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Original book source: Prof. Dr. Otto Wilhelm Thom\u00e9 Flora von Deutschland, \u00d6sterreich und der Schweiz 1885, Gera, Germany",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Illustration_Cichorium_intybus0_clean.jpg",
+   "title": "Cichorium intybus"
+  },
+  "plantain": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Ribwort_600.jpg/500px-Ribwort_600.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "sannse",
+   "license": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Ribwort_600.jpg",
+   "title": "Plantago lanceolata"
+  },
+  "switchgrass": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Panicum_virgatum.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+   "credit": "Warren Gretz, DOE/NREL",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Panicum_virgatum.jpg",
+   "title": "Panicum virgatum"
+  },
+  "big-bluestem": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4f/Andropogon_gerardii_%283904160434%29.jpg/500px-Andropogon_gerardii_%283904160434%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Matt Lavin from Bozeman, Montana, USA",
+   "license": "CC BY-SA 2.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Andropogon_gerardii_(3904160434).jpg",
+   "title": "Andropogon gerardii"
+  },
+  "indiangrass": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Sorghastrum_nutans_Tennessee.jpg/500px-Sorghastrum_nutans_Tennessee.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Mason Brock (Masebrock)",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Sorghastrum_nutans_Tennessee.jpg",
+   "title": "Sorghastrum nutans"
+  },
+  "eastern-gamagrass": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Tripsacum_dactyloides_Arkansas.jpg/500px-Tripsacum_dactyloides_Arkansas.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Eric Hunt",
+   "license": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Tripsacum_dactyloides_Arkansas.jpg",
+   "title": "Tripsacum dactyloides"
+  },
+  "little-bluestem": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/Andropogon_scoparius.jpg/500px-Andropogon_scoparius.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Wikimedia Commons",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Andropogon_scoparius.jpg",
+   "title": "Schizachyrium scoparium"
+  },
+  "sideoats-grama": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/Bouteloua_curtipendula.jpg/500px-Bouteloua_curtipendula.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Wikimedia Commons",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Bouteloua_curtipendula.jpg",
+   "title": "Bouteloua curtipendula"
+  },
+  "virginia-wildrye": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Elymus_virginicus.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+   "credit": "Wikimedia Commons",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Elymus_virginicus.jpg",
+   "title": "Elymus virginicus"
+  },
+  "canada-wildrye": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/Elymus_canadensisEVB.jpg/500px-Elymus_canadensisEVB.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Crazytwoknobs",
+   "license": "CC BY 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Elymus_canadensisEVB.jpg",
+   "title": "Elymus canadensis"
+  },
+  "bottlebrush-grass": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Elymus_hystrix_inflorescences_001.JPG/500px-Elymus_hystrix_inflorescences_001.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "User:SB_Johnny",
+   "license": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Elymus_hystrix_inflorescences_001.JPG",
+   "title": "Elymus hystrix"
+  },
+  "intermediate-wheatgrass": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Thinopyrum_intermedium_field.jpg/500px-Thinopyrum_intermedium_field.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Dehaan",
+   "license": "CC BY-SA 3.0 us",
+   "source": "https://commons.wikimedia.org/wiki/File:Thinopyrum_intermedium_field.jpg",
+   "title": "Thinopyrum intermedium"
+  },
+  "ryegrass-blend": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/Lolium_perenne_Engels_raaigras_doorschietend.jpg/500px-Lolium_perenne_Engels_raaigras_doorschietend.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Rasbak",
+   "license": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Lolium_perenne_Engels_raaigras_doorschietend.jpg",
+   "title": "Lolium perenne"
+  },
+  "meadow-fescue": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Festuca_pratensis.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+   "credit": "Wikimedia Commons",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Festuca_pratensis.jpg",
+   "title": "Festuca pratensis"
+  },
+  "maximilian-sunflower": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/Helianthus_maximiliani_NPS-1.jpg/500px-Helianthus_maximiliani_NPS-1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Jim Pisarowicz",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Helianthus_maximiliani_NPS-1.jpg",
+   "title": "Helianthus maximiliani"
+  },
+  "oxeye-sunflower": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/15/Heliopsis_July_2011-2.jpg/500px-Heliopsis_July_2011-2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Alvesgaspar",
+   "license": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Heliopsis_July_2011-2.jpg",
+   "title": "Heliopsis helianthoides"
+  },
+  "grayhead-coneflower": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Ratibida_pinnata_%282%29.jpg/500px-Ratibida_pinnata_%282%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Joshua Mayer from Madison, WI, USA",
+   "license": "CC BY-SA 2.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Ratibida_pinnata_(2).jpg",
+   "title": "Ratibida pinnata"
+  },
+  "lanceleaf-coreopsis": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Coreopsis_lanceolata_Sterntaler.JPG/500px-Coreopsis_lanceolata_Sterntaler.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "User:Qwertzy2",
+   "license": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Coreopsis_lanceolata_Sterntaler.JPG",
+   "title": "Coreopsis lanceolata"
+  },
+  "small-burnet": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/48/Wiesenknopf_Bl%C3%BCte_6260037-PSD-PSD.jpg/500px-Wiesenknopf_Bl%C3%BCte_6260037-PSD-PSD.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Ermell",
+   "license": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Wiesenknopf_Bl%C3%BCte_6260037-PSD-PSD.jpg",
+   "title": "Sanguisorba minor"
+  },
+  "purple-prairie-clover": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2e/Dalea_purpurea_Arkansas.jpg/500px-Dalea_purpurea_Arkansas.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Eric Hunt",
+   "license": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Dalea_purpurea_Arkansas.jpg",
+   "title": "Dalea purpurea"
+  },
+  "illinois-bundleflower": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Illinois_Bundleflower_1.jpg/500px-Illinois_Bundleflower_1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "ThumYorky",
+   "license": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Illinois_Bundleflower_1.jpg",
+   "title": "Desmanthus illinoensis"
+  },
+  "showy-ticktrefoil": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Desmodium_canadense_NRCS-1.jpg/500px-Desmodium_canadense_NRCS-1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Jennifer Anderson. United States, IA, Scott Co., Davenport, Nahant Marsh. 2002.",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Desmodium_canadense_NRCS-1.jpg",
+   "title": "Desmodium canadense"
+  },
+  "slender-lespedeza": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/Lespedeza_virginica_-_Slender_lespedeza.jpg/500px-Lespedeza_virginica_-_Slender_lespedeza.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Fritzflohrreynolds",
+   "license": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Lespedeza_virginica_-_Slender_lespedeza.jpg",
+   "title": "Lespedeza virginica"
+  },
+  "partridge-pea": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/Partridge.jpg/500px-Partridge.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Crazytwoknobs",
+   "license": "CC BY 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Partridge.jpg",
+   "title": "Chamaecrista fasciculata"
+  },
+  "sainfoin": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/Onobrychis_viciifolia_Inflorescence_11April2009_CampoCalatrava.jpg/500px-Onobrychis_viciifolia_Inflorescence_11April2009_CampoCalatrava.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "javier martin",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Onobrychis_viciifolia_Inflorescence_11April2009_CampoCalatrava.jpg",
+   "title": "Onobrychis viciifolia"
+  },
+  "kura-clover": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Trifolium_ambiguum_Y01.jpg/500px-Trifolium_ambiguum_Y01.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "\u042e\u0440\u0438\u0439 \u0414\u0430\u043d\u0438\u043b\u0435\u0432\u0441\u043a\u0438\u0439",
+   "license": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Trifolium_ambiguum_Y01.jpg",
+   "title": "Trifolium ambiguum"
+  },
+  "balansa-clover": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cd/Trifolium_michelianum_Savi_cultivar_Paradana.JPG/500px-Trifolium_michelianum_Savi_cultivar_Paradana.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Chernandez69",
+   "license": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Trifolium_michelianum_Savi_cultivar_Paradana.JPG",
+   "title": "Trifolium michelianum"
+  },
+  "strawberry-clover": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/TrifoliumFragiferum2.jpg/500px-TrifoliumFragiferum2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Christian Fischer",
+   "license": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:TrifoliumFragiferum2.jpg",
+   "title": "Trifolium fragiferum"
+  },
+  "white-sweetclover": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/Apis_mellifera_-_Melilotus_albus_-_Keila.jpg/500px-Apis_mellifera_-_Melilotus_albus_-_Keila.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Ivar Leidus",
+   "license": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Apis_mellifera_-_Melilotus_albus_-_Keila.jpg",
+   "title": "Melilotus alba"
+  },
+  "yellow-sweetclover": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c4/Bombus_lapidarius_-_Melilotus_officinalis_-_Tallinn.jpg/500px-Bombus_lapidarius_-_Melilotus_officinalis_-_Tallinn.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "credit": "Ivar Leidus",
+   "license": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Bombus_lapidarius_-_Melilotus_officinalis_-_Tallinn.jpg",
+   "title": "Melilotus officinalis"
+  }
+ }
+}

@@ -4,6 +4,10 @@ An open-access, interactive tool that helps Appalachian cattle producers design 
 
 Developed under a **USDA NRCS Conservation Innovation Grant (Soil Health Demonstration)**. Inspired by the Beef Cattle Research Council's [Forage U-Pick](https://www.beefresearch.ca/tools/forage-u-pick/) tool.
 
+> **This is the trial-integrated edition (v2).** On top of the trait-based engine, it folds in real
+> establishment results from a **20-farm West Virginia plant-diversity field trial** (2022 seedings),
+> site-matched to the producer's land. See [West Virginia field-trial integration](#west-virginia-field-trial-integration) below.
+
 The app is a **static website** — plain HTML, CSS, and JavaScript with JSON data files. No build step, no server, no dependencies. It runs anywhere static files are served, and is set up to deploy to **GitHub Pages** automatically.
 
 ---
@@ -35,7 +39,16 @@ appalachian-pasture-planner/
 │   ├── seed-vendors.json         Reputable seed-supplier registry
 │   ├── sources.json              Citation registry
 │   ├── extension-resources.json  Management/bulletin cards keyed to goals & challenges
-│   └── local-observations.json   >>> YOUR West Virginia trial data goes here <<<
+│   ├── trial-establishment.json  WV field-trial establishment signal (site-matched; see below)
+│   ├── climate-grid.json         Precomputed ClimateNA normals grid (nearest-point lookup)
+│   ├── species-photos.json       Cited lead photos per species (Wikimedia Commons)
+│   └── local-observations.json   >>> add your own extra observations here (optional) <<<
+├── tools/
+│   ├── build-trial-data.py       Rebuilds trial-establishment.json from the raw research files
+│   ├── id_reliability.csv        Per-species ID-confidence ratings (feeds the trial build)
+│   ├── fetch-photos.py           Rebuilds species-photos.json from Wikipedia/Wikimedia (with credits)
+│   ├── README.md                 How to regenerate the trial data
+│   └── climatena/                Offline ClimateNA → climate-grid.json pipeline (R + Python)
 └── .github/workflows/deploy.yml  Auto-deploy to GitHub Pages
 ```
 
@@ -101,7 +114,7 @@ Two continuous, map-derived signals feed the scoring engine (`buildContext` in [
 Auto-filled answers are **map-unit representative values** (e.g., SSURGO surface pH is the dominant soil's typical value for that map unit, not a lab test of the farmer's field). They are shown with 📍 "from map" markers and a reminder to confirm pH with a real soil test. Per the design decision, they **pre-fill** the questionnaire and remain fully editable — they never silently drive the results.
 
 ### About ClimateNA
-The grant references downscaled climate from **ClimateNA**. ClimateNA is a desktop/batch application with **no browser-callable API**, so it cannot be queried live from a static site. Open-Meteo's ERA5 normals are used as the live substitute for the climate variables that actually gate forage choice (winter hardiness, growing-season length, rainfall). If you later want ClimateNA's specific bioclimatic variables, they can be added the same way as trial data — export ClimateNA point values and fold them in (a future `climate-overrides` hook, mirroring `local-observations.json`).
+The grant references downscaled climate from **ClimateNA**. Rather than query it live (not possible from a static site), this edition reads a **precomputed ClimateNA grid** (`data/climate-grid.json`) and does a nearest-point lookup client-side. The grid is built offline through the **ClimateNA web API** (`api.climatena.ca`), which runs on macOS with only base R + `jsonlite` — no Windows desktop app and no large data download; see [`tools/climatena/`](tools/climatena/). It carries the ClimateNA normals that ERA5 can't give as cleanly: frost-free period, precipitation, growing degree-days, and climate-moisture deficit. **Open-Meteo ERA5 is the automatic fallback** for any point beyond the grid, and always supplies the live recent-drought signal (ClimateNA gives normals, not current weather). The shipped grid is seeded from the 20 trial farms' own ClimateNA values so it works across WV today. Two caveats: the public API is throttled (the fetch script retries and is resumable), and **hardiness zone is taken from Open-Meteo** rather than ClimateNA's `EMT` (an *extreme* minimum that runs colder than the *average* minimum USDA zones use). The address box labels each climate row with its source.
 
 ### Notes for production
 - **Nominatim usage policy** asks for ≤1 request/second and light use; that's fine for a low-traffic extension tool. If APP gets heavy traffic, swap in a dedicated geocoder (e.g., a keyed Census/Mapbox endpoint or a small proxy).
@@ -145,9 +158,67 @@ Prices in `seed-prep.json` are **rough 2026 planning figures in $/PLS-lb** and v
 ### Species coverage (43 species)
 Reed canarygrass was removed as an aggressive/invasive wetland species (WVDNR documents it escaping into WV wetlands); bermudagrass and forage crabgrass were dropped as well; sericea lespedeza was never included. **Tall fescue is gated**: it is only suggested where the ground is genuinely difficult (two or more severe soil constraints - strongly acidic, wet, very low fertility, compacted, heavy clay, or steep), because on decent soil it crowds out more palatable and more diverse options. The database spans introduced forages **and** natives, with an emphasis on species native to Appalachia. Highlights added for this: native warm-season grasses (little bluestem, sideoats grama + existing big bluestem/indiangrass/switchgrass/gamagrass); **native cool-season grasses** (Virginia wildrye/PA ecotype, Canada wildrye, bottlebrush grass); native legumes (purple prairie clover, Illinois bundleflower, showy tick-trefoil, slender/Virginia lespedeza, partridge pea); native forbs (Maximilian & oxeye sunflower, gray-headed coneflower, lanceleaf coreopsis); and introduced options requested (sainfoin, kura clover, balansa clover, strawberry clover, white/yellow sweetclover, intermediate wheatgrass/Kernza, a perennial×Italian ryegrass blend, small burnet, plus meadow fescue). The `native` flag is on each record. Species data draws on UT Extension **PB1752** (native grasses, PLS, seeding), USDA-NRCS plant guides, and Extension forage references.
 
+## West Virginia field-trial integration
+
+This edition folds in a **20-farm West Virginia plant-diversity field trial** (seeded spring 2022) so
+the planner is tuned by what actually established on the ground, not traits alone.
+
+**The trial.** Each farm had three plots: an unseeded **Control**, a **High-diversity** mix (~40 species,
+most of the natives and many clovers/forbs), and a **Low-diversity / traditional** mix (orchardgrass,
+festulolium, perennial ryegrass, red + white clover). High and Low were no-till drill-seeded. Plant
+surveys recorded dry-weight **biomass each year 2023–2025** and **% cover in 2026**.
+
+**The signal.** For every planner species found in the survey, [`tools/build-trial-data.py`](tools/build-trial-data.py)
+computes an *establishment index* — the seeded-vs-Control contrast, combining biomass (weight 0.6) and
+2026 cover (weight 0.4), in −1…+1 — **per farm**, and stores it in
+[`data/trial-establishment.json`](data/trial-establishment.json) alongside each farm's site metadata
+(soil pH, clay %, hardiness zone, organic matter, grazing intensity).
+
+**Site matching — per species, on the variables that predict its success.** At runtime the planner weights
+each trial farm by similarity to the producer's land over soil pH, clay %, **precipitation (MAP)** and
+**moisture deficit (CMD)**, then averages that species' per-farm index. Crucially the *weighting of those
+four variables is learned per species* from the trial (`matchWeights`): the build step correlates each
+species' establishment against each variable, so a species whose success tracks moisture is matched mostly
+on moisture, while a pH-sensitive legume is matched mostly on pH. This is how the trial decides which
+climate variable matters for which plant. A species that thrived on farms like yours is nudged up; the
+nudge is **moderate** — a strong, widely-observed, confidently-identified signal moves a species about as
+much as a clean soil-pH fit, and a one- or two-farm signal moves it less (small-sample confidence scaling).
+
+Because precipitation and moisture deficit are in the match, the **rain-shadowed eastern panhandle**
+(markedly drier than the mountains) automatically steers toward the drier trial farms: moisture-demanding
+species like eastern gamagrass are pulled back there, while drought-tolerant ones hold up. The producer's
+MAP/CMD come from the ClimateNA climate grid (see *About ClimateNA*).
+
+**ID reliability.** Every species' nudge is scaled by how reliably it could be identified in the survey
+(from `id_reliability.csv`: Good 1.0 → Poor 0.4 → n/a 0.3), so the "blue mystery grass" determinations
+move the score far less than distinctive species like eastern gamagrass or indiangrass.
+
+**Three honest cases:**
+- **Sown & detected** — the seeded-vs-Control contrast is a real establishment test; nudged up or down.
+- **Sown but not detected** — only a *genuine* failure (distinctive, confidently identified, truly absent
+  — e.g. **sainfoin**, **purple prairie clover**) is nudged down. One that could have been misidentified
+  or folded into a look-alike (kura, alsike, balansa, Maximilian sunflower) is left **neutral**, not
+  penalised.
+- **Unsown volunteer** — species that were never seeded but grow well anyway (tall fescue, timothy,
+  birdsfoot trefoil, annual lespedeza) get a **positive-only** nudge: thriving unsown is evidence the
+  species suits that kind of site, while absence of an unsown species means nothing.
+
+Every species carries a compact **WV-trial badge** (✓ established / thrives unsown · ○ mixed / volunteer ·
+✕ genuine failure · ? inconclusive) with a one-line explanation; the results banner and Sources list carry
+the trial citation. (The farm-by-farm detail is kept out of the producer-facing interface.)
+
+**Caveats (shown in the UI).** Plant identification was imperfect, and the no-till drill seeding method
+was not controlled as a separate factor — so the trial is treated as **supporting evidence, not proof**,
+and weighted accordingly. See [`tools/README.md`](tools/README.md) to regenerate the data.
+
+---
+
 ## Adding your own data
 
-This is built so **you never edit the base database** to add your findings. All of your data lives in [`data/local-observations.json`](data/local-observations.json), which is layered on top of `species.json` at runtime. There are three ways to contribute data, and you can use any combination:
+Beyond the built-in field trial, you can layer in your **own** findings without editing the base
+database. All of it lives in [`data/local-observations.json`](data/local-observations.json), which is
+applied on top of `species.json` at runtime. There are three ways to contribute data, and you can use
+any combination:
 
 ### 1. Establishment / performance observations
 Nudge a species up or down in the rankings based on how it actually did, and show a trial badge in the results.

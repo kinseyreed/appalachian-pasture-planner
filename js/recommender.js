@@ -85,14 +85,18 @@ const CHALLENGE_REASON = {
   'weeds': 'Competes against weeds once established'
 };
 
-// Grazing pressure by management category (1 = gentle, 5 = severe). Higher
-// pressure rewards grazing-tolerant species and penalizes sensitive ones.
+// Grazing pressure by recovery pattern (1 = gentle, 5 = severe). Driven by rest:
+// the less recovery time a stand gets, the more it favors tough, grazing-tolerant
+// species over sensitive legumes and forbs. The WV "big pastures, swapped every
+// month or two" pattern is set-stocked within each pasture for weeks at a time, so
+// preferred plants get hit repeatedly — moderately high pressure, eased only a
+// little by the long rest between pastures.
 const GRAZING_PRESSURE = {
-  'continuous-heavy': 5,
-  'rot-overgrazed': 4.5,
-  'continuous-light': 3.5,
-  'rot-managed': 2,
-  'mob': 1
+  'set-stocked': 5,
+  'extensive-slow': 4,
+  'short-rest': 3.5,
+  'adequate-rest': 2,
+  'long-rest': 1
 };
 
 // Importance-weighted matching: each goal/challenge the farmer cares about is a
@@ -222,15 +226,140 @@ function localObservationFor(sp, ctx, local) {
   return null;
 }
 
+/* ---- WV field-trial establishment signal ------------------------------ */
+
+// Site-match features: each maps a species matchWeight key to the trial-farm
+// field, the producer's own value, and a distance scale. pH and clay cover soil;
+// MAP (precipitation) and CMD (moisture deficit) cover wetness/dryness — the axis
+// that governs the rain-shadowed eastern panhandle.
+// Approximate annual grazing intensity (animal-unit-days per acre) for each
+// recovery pattern, so the producer's grazing can be compared to the trial farms'
+// measured stocking. Coarse by nature — management style isn't the same as
+// stocking — so it carries only the default match weight.
+const GRAZE_INTENSITY = {
+  'set-stocked': 110, 'extensive-slow': 70, 'short-rest': 55,
+  'adequate-rest': 45, 'long-rest': 40
+};
+const TRIAL_MATCH = {
+  ph:    { farm: 'ph',      user: function (c) { return c.phValue; },        scale: 0.9 },
+  clay:  { farm: 'clayPct', user: function (c) { return c.clayPct; },        scale: 8 },
+  map:   { farm: 'map_mm',  user: function (c) { return c.annualPrecipMm; }, scale: 150 },
+  cmd:   { farm: 'cmd',     user: function (c) { return c.cmd; },            scale: 60 },
+  graze: { farm: 'grazingAuDaysPerAcre', user: function (c) { return GRAZE_INTENSITY[c.grazing]; }, scale: 45 }
+};
+const DEFAULT_MATCH_WEIGHTS = { ph: 0.6, clay: 0.5, map: 0.5, cmd: 0.5, graze: 0.4 };
+
+// Weight each trial farm by similarity to the producer's site, emphasising the
+// variables that best predict THIS species' establishment (rec.matchWeights,
+// learned from the trial). Features the producer has no value for are skipped;
+// a farm with nothing to compare gets weight 1 (pooled average).
+function trialFarmWeights(rec, ctx, trial) {
+  if (!trial || !trial.farms) return null;
+  const mw = rec.matchWeights || DEFAULT_MATCH_WEIGHTS;
+  const uv = {};
+  for (const feat in TRIAL_MATCH) {
+    const v = TRIAL_MATCH[feat].user(ctx);
+    if (v != null && !isNaN(v)) uv[feat] = v;
+  }
+  const weights = {};
+  for (const f in trial.farms) {
+    const fm = trial.farms[f];
+    let d = 0, n = 0;
+    for (const feat in uv) {
+      const fv = fm[TRIAL_MATCH[feat].farm];
+      if (fv == null) continue;
+      const w = mw[feat] != null ? mw[feat] : 0.4;
+      const dz = (uv[feat] - fv) / TRIAL_MATCH[feat].scale;
+      d += w * dz * dz; n += w;
+    }
+    weights[f] = n > 0 ? Math.exp(-d / n) : 1;
+  }
+  return weights;
+}
+
+// Resolve the trial signal for one species at this site: a site-weighted average
+// of the per-farm establishment index (for sown species) and abundance index (for
+// unsown volunteers), with small-sample and ID-reliability confidence factors.
+function trialSignalFor(sp, ctx, trial) {
+  if (!trial || !trial.species) return null;
+  const rec = trial.species[sp.id];
+  if (!rec) return null;
+  const weights = trialFarmWeights(rec, ctx, trial);
+  const farmIds = rec.perFarm ? Object.keys(rec.perFarm) : [];
+  let perf, abund = 0, siteMatched = false, topFarms = [];
+  if (rec.outcome === 'not_detected' || !farmIds.length) {
+    perf = rec.meanPerf; // uniform across farms (sown but never detected) — pooled
+  } else {
+    let np = 0, na = 0, den = 0;
+    farmIds.forEach(function (f) {
+      const w = weights && weights[f] != null ? weights[f] : 1;
+      np += w * rec.perFarm[f].perf;
+      na += w * (rec.perFarm[f].abund || 0);
+      den += w;
+    });
+    perf = den > 0 ? np / den : rec.meanPerf;
+    abund = den > 0 ? na / den : (rec.meanAbund || 0);
+    siteMatched = !!weights;
+    if (weights) {
+      topFarms = farmIds.slice().sort(function (a, b) { return weights[b] - weights[a]; }).slice(0, 3);
+    }
+  }
+  const confidence = Math.min(1, rec.nFarms / 5);      // small-sample scaling
+  const reliability = rec.reliabilityFactor != null ? rec.reliabilityFactor : 0.7; // ID-confidence scaling
+
+  // Site-match %: how similar the producer's climate, soil and grazing are to the
+  // trial farms behind this species' signal. Mean of the closest few farm weights.
+  // Only meaningful when at least two site features were available to compare.
+  let nFeat = 0;
+  for (const feat in TRIAL_MATCH) { const v = TRIAL_MATCH[feat].user(ctx); if (v != null && !isNaN(v)) nFeat++; }
+  let matchPct = null;
+  if (weights && nFeat >= 2) {
+    const mf = farmIds.length ? farmIds : Object.keys(trial.farms);
+    const ws = mf.map(function (f) { return weights[f] != null ? weights[f] : 0; }).sort(function (a, b) { return b - a; });
+    const k = Math.min(5, ws.length);
+    if (k > 0) {
+      let s = 0; for (let i = 0; i < k; i++) s += ws[i];
+      matchPct = Math.round(100 * s / k);
+    }
+  }
+  return { perf: perf, abund: abund, confidence: confidence, reliability: reliability,
+           matchPct: matchPct, rec: rec, siteMatched: siteMatched, topFarms: topFarms };
+}
+
+// Moderate weighting: a strong, well-sampled, confidently-identified signal moves
+// a species about as much as a clean pH or drainage fit (~3-4 pts), never more.
+const TRIAL_WEIGHT = 4;
+// Unsown presence is weaker, indirect evidence that a species suits a site, so it
+// carries less weight — and only ever upward (absence of an unsown species means
+// nothing).
+const VOLUNTEER_WEIGHT = 2.5;
+
+// Plain, outcome-focused reason text — no methodology/ID caveats in the UI.
+// (The inconclusive case is handled upstream: it gets no trial note at all.)
+function trialReason(info) {
+  const rec = info.rec;
+  if (rec.outcome === 'not_detected') {
+    return 'WV trial: didn’t establish well on farms like yours';
+  }
+  if (rec.signalType === 'volunteer') {
+    return 'WV trial: does well in WV pastures on its own';
+  }
+  const p = info.perf;
+  if (p >= 0.45) return 'WV trial: established strongly on farms like yours';
+  if (p >= 0.15) return 'WV trial: established well on farms like yours';
+  if (p > -0.15) return 'WV trial: established modestly on farms like yours';
+  return 'WV trial: slow to establish on farms like yours';
+}
+
 /* ---- per-species score ------------------------------------------------- */
 
-function scoreSpecies(sp, ctx, local) {
+function scoreSpecies(sp, ctx, local, trial) {
   const reasons = [];
   const ph = scorePh(sp, ctx);
   const drain = scoreDrainage(sp, ctx);
 
   if (ph.hardFail || drain.hardFail) {
-    return { species: sp, score: -Infinity, disqualified: true, reasons: [], limeNote: false, local: null };
+    return { species: sp, score: -Infinity, disqualified: true, reasons: [], limeNote: false, local: null, trial: null };
   }
 
   let score = ph.points + drain.points;
@@ -254,6 +383,56 @@ function scoreSpecies(sp, ctx, local) {
     reasons.unshift('WV trial: ' + Math.round(obs.establishmentSuccess * 100) + '% establishment on comparable sites');
   }
 
+  // WV field-trial signal (data-driven, site-matched). Every nudge is scaled by
+  // ID reliability (uncertain determinations move the score less) and sample size.
+  //   - sown & detected: the seeded-vs-Control contrast is a real establishment test.
+  //   - sown but not detected: only a GENUINE (confident-ID) failure nudges down;
+  //     a possible misidentification is left neutral.
+  //   - unsown volunteer: positive-only — thriving where unsown is evidence the
+  //     species suits a site; absence of an unsown species means nothing.
+  let trialInfo = null;
+  const tsig = trialSignalFor(sp, ctx, trial);
+  // Skip species the trial can't speak to clearly: a sown-but-not-detected
+  // species that could have been misidentified (inconclusive) gets no note or
+  // badge at all, and a faint unsown-volunteer trace isn't worth surfacing.
+  const skipTrial = tsig && (
+    (tsig.rec.outcome === 'not_detected' && tsig.rec.failureType !== 'genuine') ||
+    (tsig.rec.signalType === 'volunteer' && tsig.abund < 0.25)
+  );
+  if (tsig && !skipTrial) {
+    const rec = tsig.rec;
+    let nudge = 0;
+    if (rec.signalType === 'volunteer') {
+      const abund = Math.max(0, Math.min(1, tsig.abund));
+      nudge = VOLUNTEER_WEIGHT * abund * tsig.confidence * tsig.reliability; // positive only
+    } else if (rec.outcome === 'not_detected') {
+      if (rec.failureType === 'genuine') {
+        const perf = Math.max(-1, Math.min(1, tsig.perf));
+        nudge = TRIAL_WEIGHT * perf * tsig.confidence * tsig.reliability; // negative
+      } // inconclusive -> neutral (no nudge)
+    } else {
+      const perf = Math.max(-1, Math.min(1, tsig.perf));
+      nudge = TRIAL_WEIGHT * perf * tsig.confidence * tsig.reliability;
+    }
+    // Scale by how well the producer's land matches the trial farms: a strong
+    // overall match leans fully on the trial, a weak one leans less (floor 0.5 so
+    // it still counts). When match can't be assessed (too little site info),
+    // apply the nudge in full as before.
+    const matchFactor = tsig.matchPct != null ? (0.5 + 0.5 * tsig.matchPct / 100) : 1;
+    nudge *= matchFactor;
+    if (nudge) score += nudge;
+    trialInfo = {
+      perf: tsig.perf, abund: tsig.abund, nudge: nudge, nudged: !!nudge,
+      outcome: rec.outcome, signalType: rec.signalType, failureType: rec.failureType || null,
+      idReliability: rec.idReliability || null,
+      nFarms: rec.nFarms, nFarmsEstablished: rec.nFarmsEstablished,
+      inHighMix: rec.inHighMix, inLowMix: rec.inLowMix,
+      siteMatched: tsig.siteMatched, topFarms: tsig.topFarms,
+      matchPct: tsig.matchPct
+    };
+    reasons.unshift(trialReason(tsig));
+  }
+
   // de-duplicate reasons, keep order
   const seen = {};
   const uniqueReasons = reasons.filter(function (r) { if (seen[r]) return false; seen[r] = 1; return true; });
@@ -264,7 +443,8 @@ function scoreSpecies(sp, ctx, local) {
     disqualified: false,
     reasons: uniqueReasons,
     limeNote: ph.limeNote,
-    local: localInfo
+    local: localInfo,
+    trial: trialInfo
   };
 }
 
@@ -500,7 +680,7 @@ function gatherResources(ctx, resourcesData) {
   });
 }
 
-function gatherSources(mix, resources, sourcesData, local) {
+function gatherSources(mix, resources, sourcesData, local, trial) {
   const ids = {};
   mix.forEach(function (r) { (r.species.sources || []).forEach(function (s) { ids[s] = true; }); });
   resources.forEach(function (r) { (r.sources || []).forEach(function (s) { ids[s] = true; }); });
@@ -512,6 +692,19 @@ function gatherSources(mix, resources, sourcesData, local) {
   const usedLocal = mix.some(function (r) { return r.local; });
   if (usedLocal && local && local.meta && local.meta.citation && local.meta.citation.title) {
     list.unshift(Object.assign({ id: local.meta.citationId || 'local', isLocal: true }, local.meta.citation));
+  }
+
+  // Include the WV field-trial citation if the trial establishment data moved
+  // any species in the mix.
+  const usedTrial = mix.some(function (r) { return r.trial && r.trial.nudged; });
+  if (usedTrial && trial && trial.meta) {
+    list.unshift({
+      id: 'wv-trial', isTrial: true,
+      title: trial.meta.source,
+      org: 'WVU / USDA NRCS CIG',
+      url: '',
+      note: trial.meta.caveats
+    });
   }
   return list;
 }
@@ -612,22 +805,28 @@ function buildContext(answers) {
     zone: zone,
     imp: function (id) { return priorities[id] || 0; },
     methods: answers.methods || [],
-    grazing: answers.grazing || 'rot-managed',
+    grazing: answers.grazing || 'extensive-slow',
     cold: cold,
     season: answers.season || 'both',
     aspectDryness: aspectDryness,
-    recentDroughtStress: Math.max(0, Math.min(1, af.recentDroughtStress || 0))
+    recentDroughtStress: Math.max(0, Math.min(1, af.recentDroughtStress || 0)),
+    // Climate normals for the trial site-match (precipitation + moisture deficit).
+    // From the ClimateNA grid / Open-Meteo lookup; null when the producer typed no
+    // location, in which case those match features are simply skipped.
+    annualPrecipMm: af.annualPrecipIn != null ? af.annualPrecipIn * 25.4 : null,
+    cmd: af.cmd != null ? af.cmd : null
   };
 }
 
 function recommend(answers, data) {
   const ctx = buildContext(answers);
-  const scored = data.species.map(function (sp) { return scoreSpecies(sp, ctx, data.local); });
+  const scored = data.species.map(function (sp) { return scoreSpecies(sp, ctx, data.local, data.trial); });
   const composed = composeMix(scored, ctx);
   const resources = gatherResources(ctx, data.resources);
-  const sources = gatherSources(composed.mix, resources, data.sources, data.local);
+  const sources = gatherSources(composed.mix, resources, data.sources, data.local, data.trial);
   const usedLocal = composed.mix.some(function (r) { return r.local; });
-  return { ctx: ctx, mix: composed.mix, scored: scored, alternates: composed.alternates, resources: resources, sources: sources, usedLocal: usedLocal };
+  const usedTrial = composed.mix.some(function (r) { return r.trial && r.trial.nudged; });
+  return { ctx: ctx, mix: composed.mix, scored: scored, alternates: composed.alternates, resources: resources, sources: sources, usedLocal: usedLocal, usedTrial: usedTrial };
 }
 
 /* ---- pasture-wide (multi-soil) recommendation -------------------------- */
@@ -688,11 +887,11 @@ function recommendPasture(farmer, profile, data) {
 /* ---- custom establishment plan ----------------------------------------- */
 
 const GRAZE_ADVICE = {
-  'continuous-heavy': 'This stand is grazed continuously and short. Be straight with yourself: a diverse mix will not persist under that. If you change one thing, add rest — even splitting the field in two and alternating will hold legumes and forbs far longer. Otherwise the mix will drift toward the toughest grasses.',
-  'continuous-light': 'Light continuous grazing will hold a simple stand, but legumes and forbs still thin out without recovery time. Splitting into 2–3 paddocks to give 20–30 days of rest would pay for itself.',
-  'rot-overgrazed': 'You already have the paddocks — the gap is rest and residual, and this is the most common way good mixes are lost in West Virginia. More paddocks will not fix it; longer rest will. Stop grazing at a 3–4 inch residual and do not return until regrowth reaches 8–10 inches.',
-  'rot-managed': 'Keep doing what you are doing: graze to a 3–4 inch residual and rest each paddock until it regrows to 8–10 inches. That residual is exactly what keeps legumes and forbs in the stand.',
-  'mob': 'High-density grazing with long rest suits this mix well. Just watch that rest periods do not stretch so long that the grasses go rank and shade out the legumes and forbs.'
+  'set-stocked': 'With animals on the same ground all season, a diverse mix will not persist — the legumes and forbs get bitten off again and again with no recovery. If you change one thing, add rest: even splitting the field in two and alternating will hold the mix far longer. Otherwise it drifts toward the toughest grasses.',
+  'extensive-slow': 'Running a herd in one big pasture for a month or two before moving is common in West Virginia, but during those weeks the animals keep regrazing the plants they like best, which thins the legumes and forbs. The mix will hold better if you can sub-divide those big pastures so each piece is grazed for a week or two and then rested — the long gaps between pastures already help; shorter stays are what protect the diversity.',
+  'short-rest': 'You already move animals — the gap is rest. Coming back within a week or two catches plants before they have recovered, and that is the most common way good mixes are lost here. Longer rest, not more paddocks, is the fix: stop at a 3–4 inch residual and do not return until regrowth reaches 8–10 inches (that is usually 3–5 weeks).',
+  'adequate-rest': 'Keep doing what you are doing: graze to a 3–4 inch residual and rest each paddock until it regrows to 8–10 inches. That residual and recovery is exactly what keeps legumes and forbs in the stand.',
+  'long-rest': 'High-density grazing with long rest suits this mix well. Just watch that rest periods do not stretch so long that the grasses go rank and shade out the legumes and forbs.'
 };
 
 // Builds a step-by-step establishment plan written for THIS mix, THIS soil and
@@ -900,7 +1099,7 @@ function buildEstablishmentPlan(ctx, mix, prepData) {
     '. In practice that is roughly <strong>21–30 days</strong> of rest during spring growth and <strong>35–45+ days</strong> in midsummer heat or drought, when regrowth slows right down. Stop grazing at a <strong>3–4 inch residual</strong>' +
     (warmSp.length ? ' (leave 8 inches on native warm-season)' : '') +
     ' — that leftover leaf area is the engine for regrowth and is what keeps legumes and forbs in the stand.';
-  steps.push({ title: 'Grazing to keep the mix diverse', body: (GRAZE_ADVICE[ctx.grazing] || GRAZE_ADVICE['rot-managed']) + restBody });
+  steps.push({ title: 'Grazing to keep the mix diverse', body: (GRAZE_ADVICE[ctx.grazing] || GRAZE_ADVICE['adequate-rest']) + restBody });
 
   return steps;
 }
